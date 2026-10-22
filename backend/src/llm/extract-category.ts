@@ -3,7 +3,7 @@ import { AppError } from "../errors.js";
 import type { ExtractedDocument } from "../pdf/index.js";
 import { serializeDocument } from "../pdf/index.js";
 import { addUsage, type LlmProvider, type LlmUsage, type SystemBlock } from "./provider.js";
-import { buildUserMessage, ExtractionOutputSchema, type ExtractionOutput } from "./prompts/categories.js";
+import { buildUserMessage, outputSchemaFor } from "./prompts/categories.js";
 import { buildSystemBlocks } from "./prompts/system.js";
 
 export interface CategoryRun<T> {
@@ -23,8 +23,8 @@ export interface CategoryRunOptions {
 }
 
 /**
- * One category, one model call against the cached document prefix (same system blocks, same
- * output schema for every category; only the user message differs).
+ * One category, one model call against the cached document prefix (same system blocks for
+ * every category; only the user message differs).
  *
  * Two recovery paths keep a bad call from failing the whole report:
  *  - output truncated at max_tokens: the pages are split in two and each half is extracted on
@@ -43,11 +43,11 @@ export async function runCategory<T>(
   const system = options.systemBlocks ?? buildSystemBlocks(serializeDocument(doc, options.focused ? { categories: [category] } : {}));
 
   const pageNumbers = doc.pages.filter((p) => p.role !== "administrative").map((p) => p.pageNumber);
-  const result = await extractPages(provider, category, user, system, doc, pageNumbers, options, 0);
-  return { category, items: result.items as T[], usage: result.usage, calls: result.calls };
+  const result = await extractPages<T>(provider, category, user, system, doc, pageNumbers, options, 0);
+  return { category, items: result.items, usage: result.usage, calls: result.calls };
 }
 
-async function extractPages(
+async function extractPages<T>(
   provider: LlmProvider,
   category: Category,
   user: string,
@@ -56,9 +56,10 @@ async function extractPages(
   pageNumbers: number[],
   options: CategoryRunOptions,
   depth: number,
-): Promise<{ items: unknown[]; usage: LlmUsage; calls: number }> {
-  const request = { label: category, schema: ExtractionOutputSchema, system, user, maxTokens: options.maxTokens };
-  let result = await provider.extract<ExtractionOutput>(request);
+): Promise<{ items: T[]; usage: LlmUsage; calls: number }> {
+  const schema = outputSchemaFor(category);
+  const request = { label: category, schema, system, user, maxTokens: options.maxTokens };
+  let result = await provider.extract(request);
   let usage = result.usage;
   let calls = 1;
 
@@ -69,7 +70,7 @@ async function extractPages(
     const parts = await Promise.all(
       halves.map((pages) => {
         const sys = buildSystemBlocks(serializeDocument(doc, { pages: new Set(pages), ...(options.focused ? { categories: [category] } : {}) }));
-        return extractPages(provider, category, user, sys, doc, pages, options, depth + 1);
+        return extractPages<T>(provider, category, user, sys, doc, pages, options, depth + 1);
       }),
     );
     return {
@@ -80,9 +81,9 @@ async function extractPages(
   }
 
   if (result.data === null && !result.truncated) {
-    result = await provider.extract<ExtractionOutput>({
+    result = await provider.extract({
       ...request,
-      user: `${user}\n\nYour previous answer did not match the required JSON schema. Return only the JSON object with the six arrays.`,
+      user: `${user}\n\nYour previous answer was not a valid JSON object for this schema. Reply with only the JSON object.`,
     });
     usage = addUsage(usage, result.usage);
     calls++;
@@ -91,5 +92,5 @@ async function extractPages(
   if (result.data === null) {
     throw new AppError("llm_invalid_output", `The model did not return valid ${category} data.`);
   }
-  return { items: result.data[category], usage, calls };
+  return { items: result.data.items as T[], usage, calls };
 }

@@ -1,40 +1,19 @@
 import { z } from "zod";
-import {
-  LlmBmpSchema,
-  LlmGeographicAreaSchema,
-  LlmGoalSchema,
-  LlmImplementationActivitySchema,
-  LlmMonitoringMetricSchema,
-  LlmOutreachActivitySchema,
-  type Category,
-} from "@det/shared";
+import { LLM_ITEM_SCHEMAS, type Category } from "@det/shared";
+import { schemaForPrompt } from "../json.js";
 
 /**
  * Per-category instructions. Each becomes the user message of one call that shares the cached
- * document prefix. Examples are written for both document families (narrative plans and
- * nine-element plans) because the failure mode we guard against is the model treating
- * explanatory prose as commitments.
- *
- * All six calls use the SAME output schema (six arrays, five of them left empty). The output
- * format is part of the prompt-cache prefix, so a different schema per category would defeat
- * the cache and the document would be re-billed six times.
+ * document prefix; only this message differs between the six calls. Examples are written for
+ * both document families (narrative plans and nine-element plans) because the failure mode we
+ * guard against is the model treating explanatory prose as commitments.
  */
 
-export const ExtractionOutputSchema = z.object({
-  goals: z.array(LlmGoalSchema),
-  bmps: z.array(LlmBmpSchema),
-  implementation: z.array(LlmImplementationActivitySchema),
-  monitoring: z.array(LlmMonitoringMetricSchema),
-  outreach: z.array(LlmOutreachActivitySchema),
-  geographic: z.array(LlmGeographicAreaSchema),
-});
-export type ExtractionOutput = z.infer<typeof ExtractionOutputSchema>;
-
-function outputReminder(category: Category): string {
-  return `Output: a JSON object with the six arrays goals, bmps, implementation, monitoring, outreach and geographic. For this request fill ONLY the "${category}" array and return the other five as empty arrays. Every item needs name, description, page, sourceQuote, sectionTitle (the heading the quote sits under, or null) and confidence, plus the fields described above.`;
+export function outputSchemaFor(category: Category) {
+  return z.object({ items: z.array(LLM_ITEM_SCHEMAS[category]) });
 }
 
-export const CATEGORY_INSTRUCTIONS: Record<Category, string> = {
+const CATEGORY_INSTRUCTIONS: Record<Category, string> = {
   goals: `Extract the plan's GOALS and OBJECTIVES.
 
 Include:
@@ -48,9 +27,7 @@ Exclude:
 - Milestones and tasks (those are implementation activities) and BMPs (those are management measures) unless the sentence itself states an outcome.
 - Mission statements that do not name an outcome.
 
-Fields: kind ("goal" or "objective"); pollutants named in the goal (e.g. "sediment", "nutrients", "fecal coliform"); targetValue + targetUnit when the goal gives one number (e.g. 35 and "%"); targetText for ranges or qualitative targets ("35% to 56% reduction", "meet the dissolved oxygen criterion"); timeframe when stated ("by 2025", "within 3 years").
-
-${outputReminder("goals")}`,
+Fields: kind ("goal" or "objective"); pollutants named in the goal (e.g. "sediment", "nutrients", "fecal coliform"); targetValue + targetUnit when the goal gives one number (e.g. 35 and "%"); targetText for ranges or qualitative targets ("35% to 56% reduction", "meet the dissolved oxygen criterion"); timeframe when stated ("by 2025", "within 3 years").`,
 
   bmps: `Extract the BEST MANAGEMENT PRACTICES (BMPs) / MANAGEMENT MEASURES the plan proposes, funds or has installed for this watershed.
 
@@ -63,9 +40,7 @@ Exclude:
 - General descriptions of what a practice is or does, lists of NRCS practice standards offered as background, and practices mentioned only as examples of what could be used elsewhere.
 - Education activities (those are outreach) and monitoring.
 
-Fields: category (agricultural: cropland/pasture practices; structural: engineered water control, grade stabilization, sediment basins; streambank_riparian: buffers, bank stabilization, fencing cattle out of streams; urban_stormwater: LID, detention, ordinances; forestry; wastewater_septic; education; other); quantity + unit when stated; estimatedCost in dollars when stated; targetPollutants; expectedLoadReduction when the document gives a number for this practice; status (planned / in_progress / completed / unknown); location (priority area, sub-watershed or site when named).
-
-${outputReminder("bmps")}`,
+Fields: category (agricultural: cropland/pasture practices; structural: engineered water control, grade stabilization, sediment basins; streambank_riparian: buffers, bank stabilization, fencing cattle out of streams; urban_stormwater: LID, detention, ordinances; forestry; wastewater_septic; education; other); quantity + unit when stated; estimatedCost in dollars when stated; targetPollutants; expectedLoadReduction when the document gives a number for this practice; status (planned / in_progress / completed / unknown); location (priority area, sub-watershed or site when named).`,
 
   implementation: `Extract IMPLEMENTATION ACTIVITIES: tasks, milestones and scheduled steps for carrying out the plan.
 
@@ -79,9 +54,7 @@ Exclude:
 - The BMPs themselves (extract the act of installing them only when the plan schedules it as a task).
 - Monitoring activities (those go to monitoring) and education events (outreach), unless the sentence is a scheduling/milestone statement about them.
 
-Fields: responsibleParty (organisation or role named); timeframe as written ("Months 1-6", "Year 2", "by December 2020"); isMilestone (true for milestone/outcome tables and dated deliverables); status; relatedBmp when the task is about a specific practice; cost when a dollar figure is attached to the task.
-
-${outputReminder("implementation")}`,
+Fields: responsibleParty (organisation or role named); timeframe as written ("Months 1-6", "Year 2", "by December 2020"); isMilestone (true for milestone/outcome tables and dated deliverables); status; relatedBmp when the task is about a specific practice; cost when a dollar figure is attached to the task.`,
 
   monitoring: `Extract MONITORING METRICS: what the plan measures, its values, and the monitoring arrangements.
 
@@ -94,9 +67,7 @@ Include:
 Exclude:
 - Generic statements that monitoring is important, and descriptions of state-wide monitoring programs not applied to this watershed.
 
-Fields: metricType; parameter (the thing measured); value + unit when stated; valueKind; comparator (<, <=, =, >=, >) for thresholds and targets; location; frequency; responsibleParty.
-
-${outputReminder("monitoring")}`,
+Fields: metricType; parameter (the thing measured); value + unit when stated; valueKind; comparator (<, <=, =, >=, >) for thresholds and targets; location; frequency; responsibleParty.`,
 
   outreach: `Extract OUTREACH ACTIVITIES: education, information and public participation activities the plan commits to or reports.
 
@@ -107,9 +78,7 @@ Include:
 Exclude:
 - Statements that outreach matters in general, and descriptions of programs offered state-wide unless the plan says they will be used in this watershed.
 
-Fields: activityType; audience (landowners, students, teachers, general public...); count when a number of events/materials/people is stated; timeframe; responsibleParty.
-
-${outputReminder("outreach")}`,
+Fields: activityType; audience (landowners, students, teachers, general public...); count when a number of events/materials/people is stated; timeframe; responsibleParty.`,
 
   geographic: `Extract GEOGRAPHIC AREAS the plan covers or refers to.
 
@@ -121,12 +90,10 @@ Include:
 Exclude:
 - Places mentioned only as the location of an organisation's office or as a comparison from another region.
 
-Fields: areaType; hucCode when stated (digits only, as written); areaValue + areaUnit when the document gives an area or length (acres, square miles, miles); isPrimary.
-
-${outputReminder("geographic")}`,
+Fields: areaType; hucCode when stated (digits only, as written); areaValue + areaUnit when the document gives an area or length (acres, square miles, miles); isPrimary.`,
 };
 
-/** The user message for one category call: instructions plus the headings most likely to hold the content. */
+/** The user message for one category call: instructions, section hints, and the exact JSON shape. */
 export function buildUserMessage(category: Category, relevantSections: string[]): string {
   const hints =
     relevantSections.length > 0
@@ -135,5 +102,8 @@ export function buildUserMessage(category: Category, relevantSections: string[])
           .map((s) => `- ${s}`)
           .join("\n")}`
       : "";
-  return `${CATEGORY_INSTRUCTIONS[category]}${hints}`;
+  return `${CATEGORY_INSTRUCTIONS[category]}${hints}
+
+Output: reply with ONE JSON object and nothing else (no prose, no code fences) of the form {"items": [...]}, where every item matches this JSON Schema exactly (all fields present; null where the document does not state a value; empty list when nothing qualifies):
+${schemaForPrompt(LLM_ITEM_SCHEMAS[category])}`;
 }

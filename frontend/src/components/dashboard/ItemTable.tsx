@@ -1,0 +1,247 @@
+import { Fragment, useMemo, useState } from "react";
+import type { Category, Confidence, ReportItem } from "@det/shared";
+import { formatMoney, formatNumber } from "../../lib/format.js";
+import { Icon } from "../ui.js";
+
+interface Column {
+  key: string;
+  label: string;
+  numeric?: boolean;
+  render: (item: Record<string, unknown>) => string | null;
+}
+
+const text = (k: string) => (i: Record<string, unknown>) => (typeof i[k] === "string" && (i[k] as string).length ? (i[k] as string) : null);
+const list = (k: string) => (i: Record<string, unknown>) => (Array.isArray(i[k]) && (i[k] as string[]).length ? (i[k] as string[]).join(", ") : null);
+const num = (k: string, unitKey?: string) => (i: Record<string, unknown>) => {
+  const v = i[k];
+  if (typeof v !== "number") return null;
+  const unit = unitKey && typeof i[unitKey] === "string" ? ` ${i[unitKey] as string}` : "";
+  return `${formatNumber(v)}${unit}`;
+};
+const money = (k: string) => (i: Record<string, unknown>) => (typeof i[k] === "number" ? formatMoney(i[k] as number) : null);
+const title = (s: string | null) => (s ? s.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase()) : null);
+
+/** Five useful columns per category, chosen for the person reading a plan, not for the schema. */
+const COLUMNS: Record<Category, Column[]> = {
+  goals: [
+    { key: "kind", label: "Kind", render: (i) => title(text("kind")(i)) },
+    { key: "pollutants", label: "Pollutants", render: list("pollutants") },
+    { key: "target", label: "Target", numeric: true, render: (i) => num("targetValue", "targetUnit")(i) ?? text("targetText")(i) },
+    { key: "timeframe", label: "Timeframe", render: text("timeframe") },
+  ],
+  bmps: [
+    { key: "category", label: "Type", render: (i) => title(text("category")(i)) },
+    { key: "quantity", label: "Quantity", numeric: true, render: num("quantity", "unit") },
+    { key: "estimatedCost", label: "Est. cost", numeric: true, render: money("estimatedCost") },
+    { key: "status", label: "Status", render: (i) => (text("status")(i) === "unknown" ? null : title(text("status")(i))) },
+    { key: "targetPollutants", label: "Pollutants", render: list("targetPollutants") },
+  ],
+  implementation: [
+    { key: "responsibleParty", label: "Responsible", render: text("responsibleParty") },
+    { key: "timeframe", label: "Timeframe", render: text("timeframe") },
+    { key: "isMilestone", label: "Milestone", render: (i) => (i.isMilestone ? "Yes" : null) },
+    { key: "status", label: "Status", render: (i) => (text("status")(i) === "unknown" ? null : title(text("status")(i))) },
+    { key: "cost", label: "Cost", numeric: true, render: money("cost") },
+  ],
+  monitoring: [
+    { key: "parameter", label: "Parameter", render: text("parameter") },
+    { key: "value", label: "Value", numeric: true, render: (i) => (typeof i.value === "number" ? `${i.comparator ? `${i.comparator as string} ` : ""}${formatNumber(i.value as number)}${i.unit ? ` ${i.unit as string}` : ""}` : null) },
+    { key: "valueKind", label: "Kind", render: (i) => (text("valueKind")(i) === "unspecified" ? null : title(text("valueKind")(i))) },
+    { key: "frequency", label: "Frequency", render: text("frequency") },
+    { key: "location", label: "Location", render: text("location") },
+  ],
+  outreach: [
+    { key: "activityType", label: "Type", render: (i) => title(text("activityType")(i)) },
+    { key: "audience", label: "Audience", render: text("audience") },
+    { key: "count", label: "Count", numeric: true, render: num("count") },
+    { key: "timeframe", label: "Timeframe", render: text("timeframe") },
+    { key: "responsibleParty", label: "Responsible", render: text("responsibleParty") },
+  ],
+  geographic: [
+    { key: "areaType", label: "Type", render: (i) => title(text("areaType")(i)) },
+    { key: "hucCode", label: "HUC", render: text("hucCode") },
+    { key: "areaValue", label: "Area", numeric: true, render: num("areaValue", "areaUnit") },
+    { key: "isPrimary", label: "Primary", render: (i) => (i.isPrimary ? "Yes" : null) },
+  ],
+};
+
+const CONFIDENCE: Record<Confidence, string> = { high: "High", medium: "Medium", low: "Low" };
+
+/**
+ * One table per category. Numbers right-aligned with tabular figures, a hairline between rows,
+ * a text filter, and every row expands to the verbatim quote and page it came from, which is
+ * the reader's way to check the tool's work. Below ~770px the same rows render as cards.
+ */
+export function ItemTable({ category, items }: { category: Category; items: ReportItem[] }) {
+  const [filter, setFilter] = useState("");
+  const [open, setOpen] = useState<string | null>(null);
+  const [sortNum, setSortNum] = useState<string | null>(null);
+  const columns = COLUMNS[category];
+
+  const rows = useMemo(() => {
+    const q = filter.trim().toLowerCase();
+    let list = items as unknown as Array<Record<string, unknown> & ReportItem>;
+    if (q) list = list.filter((i) => JSON.stringify(i).toLowerCase().includes(q));
+    if (sortNum) {
+      const col = columns.find((c) => c.key === sortNum);
+      if (col) list = [...list].sort((a, b) => (parseFloat((col.render(b) ?? "").replace(/[^0-9.-]/g, "")) || -Infinity) - (parseFloat((col.render(a) ?? "").replace(/[^0-9.-]/g, "")) || -Infinity));
+    }
+    return list;
+  }, [items, filter, sortNum, columns]);
+
+  if (items.length === 0) {
+    return (
+      <div className="rounded-lg border border-dashed border-line-strong px-6 py-10 text-center">
+        <p className="font-semibold">Nothing in this category</p>
+        <p className="mt-1 text-sm text-ink-2">The model found no {labelOf(category)} it could quote from this plan. Other categories may still have content.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="mb-3 flex flex-wrap items-center gap-3">
+        <label className="flex min-w-0 flex-1 items-center gap-2 rounded-md border border-line-strong bg-surface px-3 py-1.5 focus-within:border-accent">
+          <span className="sr-only">Filter {labelOf(category)}</span>
+          <input type="search" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder={`Filter ${items.length} ${labelOf(category)}`} className="min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-ink-3" />
+        </label>
+        <p className="num text-sm text-ink-2">{filter ? `${rows.length} of ${items.length}` : `${items.length} items`}</p>
+      </div>
+
+      {rows.length === 0 ? (
+        <div className="rounded-lg border border-line px-6 py-8 text-center text-sm text-ink-2">
+          No matches for “{filter}”.{" "}
+          <button type="button" className="font-semibold text-accent" onClick={() => setFilter("")}>
+            Clear the filter
+          </button>
+        </div>
+      ) : (
+        <div className="@container">
+          {/* Table from ~770px up */}
+          <div className="hidden overflow-hidden rounded-lg border border-line bg-surface @3xl:block">
+            <table className="w-full text-sm">
+              <thead className="bg-surface-2 text-left text-ink-2">
+                <tr>
+                  <th className="w-8 px-2 py-2" />
+                  <th className="px-3 py-2 font-semibold">Name</th>
+                  {columns.map((c) => (
+                    <th key={c.key} className={`px-3 py-2 font-semibold ${c.numeric ? "text-right" : ""}`}>
+                      {c.numeric ? (
+                        <button type="button" className="hover:text-ink" onClick={() => setSortNum(sortNum === c.key ? null : c.key)} aria-label={`Sort by ${c.label}`}>
+                          {c.label}
+                          {sortNum === c.key ? " ↓" : ""}
+                        </button>
+                      ) : (
+                        c.label
+                      )}
+                    </th>
+                  ))}
+                  <th className="px-3 py-2 text-right font-semibold">Page</th>
+                  <th className="px-3 py-2 font-semibold">Confidence</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((item) => {
+                  const isOpen = open === item.id;
+                  return (
+                    <Fragment key={item.id}>
+                      <tr className={`cursor-pointer border-t border-line hover:bg-surface-2 ${isOpen ? "bg-surface-2" : ""}`} onClick={() => setOpen(isOpen ? null : item.id)}>
+                        <td className="px-2 py-2 text-ink-3">
+                          <button type="button" className="row-action flex items-center" aria-expanded={isOpen} aria-label={isOpen ? "Hide source" : "Show source"}>
+                            <Icon.Chevron open={isOpen} />
+                          </button>
+                        </td>
+                        <td className="max-w-md px-3 py-2 font-semibold text-ink">{item.name}</td>
+                        {columns.map((c) => {
+                          const v = c.render(item);
+                          return (
+                            <td key={c.key} className={`px-3 py-2 ${c.numeric ? "num text-right whitespace-nowrap" : "max-w-xs"} ${v === null ? "text-ink-3" : "text-ink-2"}`}>
+                              {v ?? "–"}
+                            </td>
+                          );
+                        })}
+                        <td className="num px-3 py-2 text-right text-ink-2">{item.page}</td>
+                        <td className="px-3 py-2 text-ink-2">{CONFIDENCE[item.confidence]}</td>
+                      </tr>
+                      {isOpen && (
+                        <tr className="border-t border-line bg-surface-2">
+                          <td />
+                          <td colSpan={columns.length + 3} className="px-3 pt-1 pb-4">
+                            <SourceDetail item={item} />
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Cards below ~770px: name and the key number first, the rest underneath. */}
+          <ul className="divide-y divide-line rounded-lg border border-line bg-surface @3xl:hidden">
+            {rows.map((item) => {
+              const isOpen = open === item.id;
+              const primaryNum = columns.find((c) => c.numeric && c.render(item) !== null);
+              return (
+                <li key={item.id}>
+                  <button type="button" className="row-action w-full px-4 py-3 text-left" onClick={() => setOpen(isOpen ? null : item.id)} aria-expanded={isOpen}>
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="min-w-0 flex-1 font-semibold">{item.name}</span>
+                      {primaryNum && <span className="num shrink-0 font-semibold">{primaryNum.render(item)}</span>}
+                    </div>
+                    <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-sm text-ink-2">
+                      {columns
+                        .filter((c) => c !== primaryNum)
+                        .map((c) => {
+                          const v = c.render(item);
+                          return v ? (
+                            <span key={c.key}>
+                              <span className="text-ink-3">{c.label} </span>
+                              {v}
+                            </span>
+                          ) : null;
+                        })}
+                      <span>
+                        <span className="text-ink-3">Page </span>
+                        <span className="num">{item.page}</span>
+                      </span>
+                      <span>
+                        <span className="text-ink-3">Confidence </span>
+                        {CONFIDENCE[item.confidence]}
+                      </span>
+                    </div>
+                  </button>
+                  {isOpen && (
+                    <div className="bg-surface-2 px-4 pt-1 pb-4">
+                      <SourceDetail item={item} />
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SourceDetail({ item }: { item: ReportItem }) {
+  return (
+    <div className="text-sm">
+      <p className="text-ink-2">{item.description}</p>
+      <blockquote className="mt-2 border-l-2 border-accent pl-3 text-ink">
+        “{item.sourceQuote}”
+      </blockquote>
+      <p className="num mt-1 text-ink-3">
+        Page {item.page}
+        {item.sectionTitle ? ` · ${item.sectionTitle}` : ""} · quote found verbatim in the PDF
+      </p>
+    </div>
+  );
+}
+
+function labelOf(category: Category): string {
+  return { goals: "goals", bmps: "BMPs", implementation: "activities", monitoring: "metrics", outreach: "activities", geographic: "areas" }[category];
+}

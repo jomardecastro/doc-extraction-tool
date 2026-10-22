@@ -220,10 +220,16 @@ function detectTables(lines: Line[]): TableSpan[] {
       const matches = line.cells.map((c) => columnIndex(columns, c));
       const matched = matches.filter((m) => m >= 0).length;
       const isAnchor = line.cells.length >= 2 && matched >= 2;
-      // A continuation line has fewer cells than the table, every cell under a known column, and
-      // sits tight under the previous line (cell padding adds space between real rows).
+      // A continuation line has fewer cells than the table, every cell under a known column and
+      // staying inside that column (a paragraph after the table would run across the columns),
+      // and sits reasonably tight under the previous line.
       const isContinuation =
-        !isAnchor && matched === line.cells.length && line.cells.length < columns.length && gap <= 1.6 * line.fontSize && anchors >= 1;
+        !isAnchor &&
+        matched === line.cells.length &&
+        line.cells.length < columns.length &&
+        gap <= 2.2 * line.fontSize &&
+        anchors >= 1 &&
+        line.cells.every((c, k) => fitsColumn(columns, matches[k]!, c));
       if (!isAnchor && !isContinuation) break;
 
       const firstCol = leftmostColumn(columns);
@@ -287,6 +293,14 @@ function detectTables(lines: Line[]): TableSpan[] {
     }
   }
   return tables;
+}
+
+/** A cell belongs to its column only if it ends before the next column to the right begins. */
+function fitsColumn(columns: Cell[], col: number, cell: Cell): boolean {
+  const x = columns[col]!.x;
+  let nextX = Infinity;
+  for (const c of columns) if (c.x > x + COLUMN_TOLERANCE && c.x < nextX) nextX = c.x;
+  return cell.xEnd <= nextX + COLUMN_TOLERANCE;
 }
 
 function leftmostColumn(columns: Cell[]): number {

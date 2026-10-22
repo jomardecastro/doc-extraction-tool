@@ -14,18 +14,7 @@ export class MockProvider implements LlmProvider {
   async extract<T>(request: LlmRequest<T>): Promise<LlmResult<T>> {
     const document = request.system.map((b) => b.text).join("\n");
     const pages = parsePages(document);
-    const candidate =
-      request.label === "metadata"
-        ? mockMetadata(pages)
-        : {
-            goals: [],
-            bmps: [],
-            implementation: [],
-            monitoring: [],
-            outreach: [],
-            geographic: [],
-            [request.label]: mockItems(request.label, pages),
-          };
+    const candidate = request.label === "metadata" ? mockMetadata(pages) : { items: mockItems(request.label, pages) };
     const parsed = request.schema.safeParse(candidate);
     return {
       data: parsed.success ? parsed.data : null,

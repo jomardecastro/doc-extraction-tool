@@ -5,10 +5,9 @@ import { CATEGORIES } from "../categories.js";
  * The extraction data model.
  *
  * Two layers of schema per item type:
- *  - `Llm*`: what the model is asked to produce. Every field is required and nullable rather than
- *    optional, enums are closed, and there are no string formats or length limits, because that
- *    is what structured-output JSON schemas support and because a model forced to fill every
- *    field is less likely to drop provenance.
+ *  - `Llm*`: what the model is asked to produce. Every field is required (nullable rather than
+ *    optional) and enums are closed, so a model that forgets a field fails validation instead of
+ *    silently dropping provenance. The JSON schema of each is embedded in the prompt.
  *  - the public item (`Goal`, `BMP`, ...): the `Llm*` shape plus `id` and `verified`, which the
  *    server computes after checking the quote against the PDF text.
  *
@@ -25,9 +24,9 @@ export type Status = z.infer<typeof StatusSchema>;
 
 /** Where an item came from. `sourceQuote` must be copied verbatim from one page of the PDF. */
 const provenanceFields = {
-  page: z.number().int(),
-  sourceQuote: z.string(),
-  sectionTitle: z.string().nullable(),
+  page: z.number().int().describe("The n attribute of the <page> element containing the quote"),
+  sourceQuote: z.string().describe("Exact verbatim copy of contiguous text from that page, under 300 characters"),
+  sectionTitle: z.string().nullable().describe("The heading the quote sits under, or null"),
   confidence: ConfidenceSchema,
 };
 
@@ -40,14 +39,13 @@ const serverFields = {
 // ---- Goals ----------------------------------------------------------------------------------
 
 export const LlmGoalSchema = z.object({
-  name: z.string(),
-  description: z.string(),
+  name: z.string().describe("Short label in the document's own words, under 80 characters"),
+  description: z.string().describe("One or two sentences in your own words"),
   kind: z.enum(["goal", "objective"]),
-  pollutants: z.array(z.string()),
-  targetValue: z.number().nullable(),
-  targetUnit: z.string().nullable(),
-  /** The target as written when it is not a single number ("reduce sediment by 35% to 56%"). */
-  targetText: z.string().nullable(),
+  pollutants: z.array(z.string()).describe("Pollutants named in the goal, e.g. sediment, nutrients, fecal coliform"),
+  targetValue: z.number().nullable().describe("A single number stated for the target, else null"),
+  targetUnit: z.string().nullable().describe("Unit of targetValue as written, e.g. %, mg/L"),
+  targetText: z.string().nullable().describe("The target as written when it is a range or qualitative"),
   timeframe: z.string().nullable(),
   ...provenanceFields,
 });
@@ -76,16 +74,16 @@ export const LoadReductionSchema = z.object({
 });
 
 export const LlmBmpSchema = z.object({
-  name: z.string(),
+  name: z.string().describe("The practice, e.g. Grade Stabilization Structure"),
   description: z.string(),
   category: BmpCategorySchema,
-  quantity: z.number().nullable(),
-  unit: z.string().nullable(),
-  estimatedCost: z.number().nullable(),
+  quantity: z.number().nullable().describe("Planned or installed amount stated in the source"),
+  unit: z.string().nullable().describe("Unit of quantity as written, e.g. #, acres, feet"),
+  estimatedCost: z.number().nullable().describe("Dollars, digits only"),
   targetPollutants: z.array(z.string()),
-  expectedLoadReduction: LoadReductionSchema.nullable(),
+  expectedLoadReduction: LoadReductionSchema.nullable().describe("Only when the document gives a number for this practice"),
   status: StatusSchema,
-  location: z.string().nullable(),
+  location: z.string().nullable().describe("Priority area, sub-watershed or site when named"),
   ...provenanceFields,
 });
 export const BmpSchema = LlmBmpSchema.extend(serverFields);
@@ -98,11 +96,11 @@ export const LlmImplementationActivitySchema = z.object({
   name: z.string(),
   description: z.string(),
   responsibleParty: z.string().nullable(),
-  timeframe: z.string().nullable(),
-  isMilestone: z.boolean(),
+  timeframe: z.string().nullable().describe('As written, e.g. "Months 1-6", "Year 2"'),
+  isMilestone: z.boolean().describe("True for milestone/outcome rows and dated deliverables"),
   status: StatusSchema,
   relatedBmp: z.string().nullable(),
-  cost: z.number().nullable(),
+  cost: z.number().nullable().describe("Dollars, digits only"),
   ...provenanceFields,
 });
 export const ImplementationActivitySchema = LlmImplementationActivitySchema.extend(serverFields);
@@ -119,12 +117,11 @@ export const LlmMonitoringMetricSchema = z.object({
   name: z.string(),
   description: z.string(),
   metricType: MetricTypeSchema,
-  /** The measured parameter: "Total Suspended Solids", "Dissolved Oxygen", "fecal coliform"... */
-  parameter: z.string(),
+  parameter: z.string().describe("The measured parameter, e.g. Dissolved Oxygen, Total Suspended Solids"),
   value: z.number().nullable(),
   unit: z.string().nullable(),
   valueKind: ValueKindSchema,
-  comparator: ComparatorSchema.nullable(),
+  comparator: ComparatorSchema.nullable().describe("For thresholds and targets"),
   location: z.string().nullable(),
   frequency: z.string().nullable(),
   responsibleParty: z.string().nullable(),
@@ -153,7 +150,7 @@ export const LlmOutreachActivitySchema = z.object({
   description: z.string(),
   activityType: OutreachTypeSchema,
   audience: z.string().nullable(),
-  count: z.number().nullable(),
+  count: z.number().nullable().describe("Number of events, materials or people when stated"),
   timeframe: z.string().nullable(),
   responsibleParty: z.string().nullable(),
   ...provenanceFields,
@@ -181,16 +178,25 @@ export const LlmGeographicAreaSchema = z.object({
   name: z.string(),
   description: z.string(),
   areaType: AreaTypeSchema,
-  hucCode: z.string().nullable(),
+  hucCode: z.string().nullable().describe("Digits only, as written"),
   areaValue: z.number().nullable(),
-  areaUnit: z.string().nullable(),
-  /** The watershed the plan is about, as opposed to places merely mentioned. */
-  isPrimary: z.boolean(),
+  areaUnit: z.string().nullable().describe("acres, square miles, miles"),
+  isPrimary: z.boolean().describe("True for the watershed the plan is about"),
   ...provenanceFields,
 });
 export const GeographicAreaSchema = LlmGeographicAreaSchema.extend(serverFields);
 export type LlmGeographicArea = z.infer<typeof LlmGeographicAreaSchema>;
 export type GeographicArea = z.infer<typeof GeographicAreaSchema>;
+
+/** The model-facing item schema per category. */
+export const LLM_ITEM_SCHEMAS = {
+  goals: LlmGoalSchema,
+  bmps: LlmBmpSchema,
+  implementation: LlmImplementationActivitySchema,
+  monitoring: LlmMonitoringMetricSchema,
+  outreach: LlmOutreachActivitySchema,
+  geographic: LlmGeographicAreaSchema,
+} as const;
 
 // ---- Document metadata (one small model call) -----------------------------------------------
 

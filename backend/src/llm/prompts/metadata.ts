@@ -1,8 +1,8 @@
-import { LlmDocumentMetaSchema } from "@det/shared";
+import { LlmDocumentMetaSchema, type LlmDocumentMeta } from "@det/shared";
 import type { ExtractedDocument } from "../../pdf/index.js";
 import { serializeDocument } from "../../pdf/index.js";
-import type { LlmRequest, LlmProvider } from "../provider.js";
-import type { LlmDocumentMeta } from "@det/shared";
+import { schemaForPrompt } from "../json.js";
+import type { LlmProvider, LlmRequest } from "../provider.js";
 
 /**
  * One small call that reads the front of the document (cover and contents pages included, which
@@ -23,7 +23,7 @@ export function buildMetadataRequest(doc: ExtractedDocument): LlmRequest<LlmDocu
     schema: LlmDocumentMetaSchema,
     system: [
       {
-        text: "You identify watershed management plans prepared for the Mississippi Department of Environmental Quality. Answer only from the text given; use null when something is not stated.",
+        text: "You identify watershed management plans prepared for the Mississippi Department of Environmental Quality. Answer only from the text given; use null when something is not stated. Reply with one JSON object and nothing else.",
       },
     ],
     user: `Here are the first pages of a document and its outline. Identify it.
@@ -36,7 +36,9 @@ ${front}
 
 <outline>
 ${headings}
-</outline>`,
+</outline>
+
+Reply with one JSON object matching this schema: ${schemaForPrompt(LlmDocumentMetaSchema)}`,
     maxTokens: 2000,
   };
 }

@@ -22,3 +22,6 @@ playwright-report/
 test-results/
 *.log
 .DS_Store
+
+# built frontend copied next to the backend for local production-style runs
+backend/public/

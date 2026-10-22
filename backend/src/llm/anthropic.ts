@@ -1,14 +1,21 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { AppError } from "../errors.js";
 import type { Effort } from "../config.js";
+import { extractJsonObject, normalizeForSchema } from "./json.js";
 import type { LlmProvider, LlmRequest, LlmResult } from "./provider.js";
 
 /**
- * Claude through the official SDK with structured outputs: the response is validated against
- * the zod schema server-side and arrives already parsed (`parsed_output`), so there is no JSON
- * repair code anywhere in the pipeline. Adaptive thinking is on by default for this model
- * family; `effort` is the dial that trades thoroughness for cost and latency.
+ * Claude through the official SDK.
+ *
+ * The reply is requested as a bare JSON object and validated against the zod schema here
+ * (after light normalisation of enum spelling and number formatting). Server-side structured
+ * outputs were tried first and rejected on purpose: the output grammar is part of the prompt
+ * cache prefix, so six category calls with six grammars re-billed the whole document six
+ * times, and one shared grammar exceeds the API's union and grammar-size limits. With plain
+ * JSON the six calls share one cached prefix and the document is billed once per run.
+ *
+ * Adaptive thinking is on by default for this model family; `effort` is the dial that trades
+ * thoroughness for cost and latency.
  */
 export class AnthropicProvider implements LlmProvider {
   readonly name = "anthropic";
@@ -29,7 +36,7 @@ export class AnthropicProvider implements LlmProvider {
 
   async extract<T>(request: LlmRequest<T>): Promise<LlmResult<T>> {
     try {
-      const response = await this.client.messages.parse({
+      const response = await this.client.messages.create({
         model: this.model,
         max_tokens: request.maxTokens,
         system: request.system.map((block) =>
@@ -38,14 +45,22 @@ export class AnthropicProvider implements LlmProvider {
             : { type: "text" as const, text: block.text },
         ),
         messages: [{ role: "user", content: request.user }],
-        output_config: { format: zodOutputFormat(request.schema), effort: this.effort },
+        output_config: { effort: this.effort },
       });
 
       if (response.stop_reason === "refusal") {
         throw new AppError("llm_refused", undefined, { cause: response.stop_details ?? undefined });
       }
+      const text = response.content
+        .filter((block): block is Anthropic.TextBlock => block.type === "text")
+        .map((block) => block.text)
+        .join("\n");
+      const truncated = response.stop_reason === "max_tokens";
+      const raw = truncated ? null : extractJsonObject(text);
+      const parsed = raw === null ? null : request.schema.safeParse(normalizeForSchema(raw, request.schema));
+
       return {
-        data: (response.parsed_output as T | null) ?? null,
+        data: parsed?.success ? parsed.data : null,
         usage: {
           inputTokens: response.usage.input_tokens,
           outputTokens: response.usage.output_tokens,
@@ -53,7 +68,7 @@ export class AnthropicProvider implements LlmProvider {
           cacheWriteTokens: response.usage.cache_creation_input_tokens ?? 0,
         },
         stopReason: response.stop_reason,
-        truncated: response.stop_reason === "max_tokens",
+        truncated,
       };
     } catch (err) {
       throw mapAnthropicError(err);
