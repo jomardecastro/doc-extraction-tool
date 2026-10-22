@@ -168,8 +168,9 @@ export function matchScore(goldName: string, p: Predicted): number {
   const quoteTokens = new Set(stemmedTokens(`${p.sourceQuote} ${p.name}`));
   const inQuote = goldTokens.length > 0 ? goldTokens.filter((t) => quoteTokens.has(t)).length / goldTokens.length : 0;
   // A name match is the primary signal; a quote that contains most of the gold name's words is
-  // nearly as good (the model chose a different label for the same statement).
-  return Math.max(byName, inQuote >= 0.7 ? 0.6 + 0.4 * inQuote : inQuote * 0.6);
+  // nearly as good (the model chose a different label for the same statement) but is capped
+  // below a strong name match so it can never outrank one.
+  return Math.max(byName, inQuote >= 0.7 ? 0.5 + 0.35 * inQuote : inQuote * 0.5);
 }
 
 /** 1 when one name key contains the other, otherwise the token Jaccard index over stemmed tokens. */

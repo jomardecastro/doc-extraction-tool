@@ -267,7 +267,10 @@ function detectTables(lines: Line[]): TableSpan[] {
           cols.push(col);
           row.push(cell.text);
         });
-        if (pendingRow >= 0 && cols[0] === firstCol && startsLikeContinuation(row[0]!)) {
+        // A one-cell line inside a table is almost always a wrapped first cell ("Chemical Oxygen"
+        // / "Demand | <50 mg/l"), so it is completed by the next row's short first cell. A group
+        // header ("Education/Outreach") merges too, which only costs a slightly longer label.
+        if (pendingRow >= 0 && cols[0] === firstCol && (startsLikeContinuation(row[0]!) || wordCount(row[0]!) <= 3)) {
           // The pending first cell's second line arrived together with the rest of the row.
           const target = rows[pendingRow]!;
           const targetCols = rowCols[pendingRow]!;
@@ -312,6 +315,10 @@ function leftmostColumn(columns: Cell[]): number {
 /** Does `next` read as the rest of `prev`'s sentence (so it belongs to the same cell)? */
 function continuesText(prev: string, next: string): boolean {
   return /[,;:\-–(]$/.test(prev) || TRAILING_FUNCTION_WORD_RE.test(prev) || startsLikeContinuation(next);
+}
+
+function wordCount(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
 function startsLikeContinuation(text: string): boolean {
@@ -449,7 +456,8 @@ function classifyLine(lines: Line[], i: number, body: BodyFont, leftMargin: numb
 function isNumberedHeading(text: string): boolean {
   if (!NUMBERED_HEADING_RE.test(text)) return false;
   if (text.length > 70 || TOC_LEADER_RE.test(text)) return false;
-  if (/[,;]/.test(text) || /[.;,]$/.test(text)) return false;
+  // "7. Conduct inspections of BMPs during construction (Months 3-36)" is a list item.
+  if (/[,;]/.test(text) || /[.;,)]$/.test(text)) return false;
   if (TRAILING_FUNCTION_WORD_RE.test(text)) return false;
   return text.split(/\s+/).length <= 12;
 }
