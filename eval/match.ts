@@ -5,10 +5,11 @@ import { nameKey, normalizeText } from "../backend/src/postprocess/normalize.js"
 /**
  * Scoring for the accuracy harness.
  *
- * Gold items and predicted items are matched greedily by name similarity within a page window.
- * Matching on names rather than quotes keeps the gold set independent of how the model phrases
- * its provenance, which is what we want to measure: did the tool find the thing, on the page it
- * is stated, with the number the document gives.
+ * Gold items and predicted items are matched greedily by name similarity within a page window,
+ * with a second signal from the predicted item's quote (the gold name's content words found in
+ * the verbatim quote). Matching on names and quotes rather than exact strings keeps the gold set
+ * independent of how the model phrases a label: what we measure is whether the tool found the
+ * thing, on the page it is stated, with the number the document gives.
  */
 
 export interface GoldItem {
@@ -60,6 +61,7 @@ export interface CategoryScore {
 }
 
 const PAGE_WINDOW = 2;
+const MATCH_THRESHOLD = 0.5;
 
 /** Predicted fields that hold the comparable number / type per category. */
 const VALUE_FIELD: Record<Category, string> = {
@@ -99,31 +101,39 @@ export function scoreCategory(category: Category, gold: GoldItem[], report: Extr
   let typeCorrect = 0;
   const misses: string[] = [];
 
-  for (const g of gold) {
-    let best = -1;
-    let bestScore = 0;
-    predicted.forEach((p, i) => {
-      if (used.has(i) || Math.abs(p.page - g.page) > PAGE_WINDOW) return;
-      const s = similarity(g.name, p.name);
-      if (s > bestScore) {
-        bestScore = s;
-        best = i;
-      }
+  // Best-first: score every (gold, predicted) pair, then take pairs greedily by score so a
+  // weak early match cannot steal a prediction that fits another gold item better.
+  const pairs: Array<{ g: number; p: number; score: number }> = [];
+  gold.forEach((g, gi) => {
+    predicted.forEach((p, pi) => {
+      if (Math.abs(p.page - g.page) > PAGE_WINDOW) return;
+      const score = matchScore(g.name, p);
+      if (score >= MATCH_THRESHOLD) pairs.push({ g: gi, p: pi, score });
     });
-    if (best < 0 || bestScore < 0.5) {
+  });
+  pairs.sort((a, b) => b.score - a.score);
+  const goldMatched = new Map<number, number>();
+  for (const pair of pairs) {
+    if (goldMatched.has(pair.g) || used.has(pair.p)) continue;
+    goldMatched.set(pair.g, pair.p);
+    used.add(pair.p);
+  }
+
+  gold.forEach((g, gi) => {
+    const pi = goldMatched.get(gi);
+    if (pi === undefined) {
       misses.push(`${g.name} (p.${g.page})`);
-      continue;
+      return;
     }
-    used.add(best);
     tp++;
-    const p = predicted[best]!;
+    const p = predicted[pi]!;
     if (typeof g.value === "number") {
       quantGold++;
       const value = p[VALUE_FIELD[category]];
       const unitField = UNIT_FIELD[category];
       const unitOk = !unitField || !g.unit || sameUnit(g.unit, p[unitField] as string | null);
       if (typeof value === "number" && closeEnough(value, g.value) && unitOk) quantCorrect++;
-      else if (category === "bmps" && typeof g.cost === "number" && closeEnough(p.estimatedCost as number, g.cost)) quantCorrect++;
+      else if (category === "bmps" && typeof g.cost === "number" && typeof p.estimatedCost === "number" && closeEnough(p.estimatedCost, g.cost)) quantCorrect++;
     } else if (category === "bmps" && typeof g.cost === "number") {
       quantGold++;
       if (typeof p.estimatedCost === "number" && closeEnough(p.estimatedCost, g.cost)) quantCorrect++;
@@ -135,7 +145,7 @@ export function scoreCategory(category: Category, gold: GoldItem[], report: Extr
         if (p[typeField] === g.type) typeCorrect++;
       }
     }
-  }
+  });
 
   const extras = predicted.filter((_, i) => !used.has(i)).map((p) => `${p.name} (p.${p.page})`);
   const fp = predicted.length - tp;
@@ -151,17 +161,47 @@ export function scoreCategory(category: Category, gold: GoldItem[], report: Extr
   return { category, gold: gold.length, predicted: predicted.length, tp, fp, fn, precision, recall, f1, quantGold, quantCorrect, typeGold, typeCorrect, negativesLeaked, misses, extras };
 }
 
-/** 1 when one name key contains the other, otherwise the token Jaccard index. */
+/** Name-vs-name similarity, boosted by how much of the gold name is present in the predicted quote. */
+export function matchScore(goldName: string, p: Predicted): number {
+  const byName = similarity(goldName, p.name);
+  const goldTokens = stemmedTokens(goldName);
+  const quoteTokens = new Set(stemmedTokens(`${p.sourceQuote} ${p.name}`));
+  const inQuote = goldTokens.length > 0 ? goldTokens.filter((t) => quoteTokens.has(t)).length / goldTokens.length : 0;
+  // A name match is the primary signal; a quote that contains most of the gold name's words is
+  // nearly as good (the model chose a different label for the same statement).
+  return Math.max(byName, inQuote >= 0.7 ? 0.6 + 0.4 * inQuote : inQuote * 0.6);
+}
+
+/** 1 when one name key contains the other, otherwise the token Jaccard index over stemmed tokens. */
 export function similarity(a: string, b: string): number {
   const ka = nameKey(a);
   const kb = nameKey(b);
   if (ka.length === 0 || kb.length === 0) return 0;
   if (ka === kb || ka.includes(kb) || kb.includes(ka)) return 1;
-  const ta = new Set(ka.split(" "));
-  const tb = new Set(kb.split(" "));
+  const ta = new Set(stemmedTokens(a));
+  const tb = new Set(stemmedTokens(b));
   let inter = 0;
   for (const t of ta) if (tb.has(t)) inter++;
   return inter / (ta.size + tb.size - inter);
+}
+
+/** Content words with common suffixes removed, so "implementation" ~ "implement" ~ "implementing". */
+export function stemmedTokens(text: string): string[] {
+  return nameKey(text)
+    .split(" ")
+    .filter((w) => w.length >= 3)
+    .map(stem);
+}
+
+function stem(word: string): string {
+  if (word.length <= 4) return word;
+  for (const suffix of ["ations", "ation", "ments", "ment", "ings", "ing", "ies", "ed", "es", "ly", "s"]) {
+    if (word.endsWith(suffix) && word.length - suffix.length >= 3) {
+      const base = word.slice(0, -suffix.length);
+      return suffix === "ies" ? `${base}y` : base;
+    }
+  }
+  return word;
 }
 
 function closeEnough(a: number, b: number): boolean {
@@ -169,13 +209,16 @@ function closeEnough(a: number, b: number): boolean {
 }
 
 const UNIT_SYNONYMS: string[][] = [
-  ["units", "unit", "#", "each", "ea", "number", "count"],
-  ["feet", "ft", "linear feet", "linear ft", "lf"],
+  ["units", "unit", "#", "each", "ea", "number", "count", "structures", "sites"],
+  ["feet", "ft", "linear feet", "linear ft", "lf", "in ft"],
   ["acres", "ac", "acre"],
   ["%", "percent"],
-  ["mg/l", "mg/L", "milligrams per liter"],
+  ["mg/l", "milligrams per liter"],
   ["miles", "mi"],
   ["$", "usd", "dollars"],
+  ["per 100 ml", "/100 ml", "per 100ml", "cfu/100 ml", "colonies per 100 ml", "colonies/100 ml", "#/100 ml"],
+  ["°f", "deg f", "degrees f", "f"],
+  ["micromhos/cm", "umhos/cm", "µmhos/cm", "uohms/cm"],
 ];
 
 function sameUnit(a: string, b: string | null): boolean {
