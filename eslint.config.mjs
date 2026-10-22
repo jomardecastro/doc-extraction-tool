@@ -9,7 +9,7 @@ import globals from "globals";
 const hooksRecommended = reactHooks.configs.flat?.recommended ?? reactHooks.configs["recommended-latest"];
 
 export default defineConfig([
-  { ignores: ["**/dist/**", "**/node_modules/**", "data/**", "eval/docs/**", "eval/results/**", "backend/samples/**"] },
+  { ignores: ["**/dist/**", "**/node_modules/**", "backend/public/**", "data/**", "eval/docs/**", "eval/results/**", "backend/samples/**"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

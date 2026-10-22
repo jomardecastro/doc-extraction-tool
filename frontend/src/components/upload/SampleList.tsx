@@ -67,7 +67,7 @@ export function SampleList() {
               onClick={() => run.mutate({ id: s.id, live: false })}
               aria-label={`Open ${s.title}`}
             >
-              <span className="block truncate font-semibold text-ink hover:text-accent">{s.title}</span>
+              <span className="block font-semibold text-ink hover:text-accent">{s.title}</span>
               <span className="block text-sm text-ink-2">
                 {FAMILY[s.family]} · {s.year} · {s.pages} pages · {formatBytes(s.sizeBytes)}
               </span>

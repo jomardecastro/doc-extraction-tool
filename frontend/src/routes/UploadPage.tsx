@@ -16,9 +16,7 @@ export function UploadPage() {
       <Section title="Or try a sample plan">
         <SampleList />
       </Section>
-      <Section title="Recently processed in this browser" className="[&:has(ul)]:block">
-        <RecentList />
-      </Section>
+      <RecentList />
     </div>
   );
 }

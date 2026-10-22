@@ -82,7 +82,7 @@ export function ReportView({ job, report }: { job: JobView; report: ExtractedRep
         <ItemsPerCategoryChart report={report} />
         <BmpCategoryChart report={report} />
         <StatusChart report={report} />
-        <ItemsByPageChart report={report} />
+        <ItemsByPageChart report={report} className={s.completionRateBasis === "status" ? "" : "md:col-span-2"} />
       </section>
 
       <section className="mt-8">
