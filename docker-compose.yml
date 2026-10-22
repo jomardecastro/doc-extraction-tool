@@ -1,0 +1,40 @@
+# Local or server run of the whole tool. Needs a .env (copy .env.example) with ANTHROPIC_API_KEY,
+# or LLM_PROVIDER=mock for a key-less smoke test. Then:  docker compose up --build
+# The app answers on http://localhost:3120 (bound to loopback; put nginx or another proxy in front
+# for a public URL, see DEPLOYMENT.md).
+services:
+  app:
+    build:
+      context: .
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+    image: doc-extraction-tool:${APP_VERSION:-latest}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DATA_DIR: /data
+      # A 60 MB PDF plus its parsed text fits comfortably; the limit stops a pathological file
+      # from taking the box down.
+      NODE_OPTIONS: --max-old-space-size=1024
+    ports:
+      - "127.0.0.1:${HOST_PORT:-3120}:3000"
+    volumes:
+      - docextract-data:/data
+    mem_limit: 1500m
+    stop_grace_period: 60s
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+volumes:
+  docextract-data:

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "steele-bayou-2009",
+    "file": "steele_bayou_2009.pdf",
+    "title": "Steele Bayou Watershed Implementation Plan",
+    "year": 2009,
+    "family": "watershed_plan",
+    "pages": 27,
+    "description": "Narrative plan organised by priority concern, each with goal, participants, actions and budget."
+  },
+  {
+    "id": "bell-creek-2012",
+    "file": "bell_creek_muddy_creek_2012.pdf",
+    "title": "Bell Creek-West Prong Muddy Creek Watershed Implementation Plan",
+    "year": 2012,
+    "family": "watershed_plan",
+    "pages": 53,
+    "description": "Roman-numbered sections, itemised education budget, appendices with the funded 319 proposal."
+  },
+  {
+    "id": "dry-creek-2017",
+    "file": "dry_creek_9ke_2017.pdf",
+    "title": "Dry Creek Watershed 9 Key Element Plan",
+    "year": 2017,
+    "family": "nine_element",
+    "pages": 12,
+    "description": "Short EPA nine-element plan (Element a to i) with a BMP cost table and milestones."
+  },
+  {
+    "id": "old-fort-bayou-2019",
+    "file": "old_fort_bayou_2019.pdf",
+    "title": "Old Fort Bayou Watershed Implementation Plan",
+    "year": 2019,
+    "family": "watershed_plan",
+    "pages": 66,
+    "description": "Long coastal plan with numbered sections, many tables and figures, and a management action list."
+  },
+  {
+    "id": "yazoo-pass-2021",
+    "file": "yazoo_pass_9ke_2021.pdf",
+    "title": "Yazoo Pass Watershed 9 Key Element Plan",
+    "year": 2021,
+    "family": "nine_element",
+    "pages": 14,
+    "description": "Nine-element plan with cost tables, a numbered work plan and a milestone table."
+  }
+]

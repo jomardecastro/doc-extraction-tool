@@ -1,0 +1,24 @@
+# dependencies and builds
+node_modules/
+dist/
+*.tsbuildinfo
+
+# runtime data (uploads, job records, caches, budget)
+data/
+
+# secrets
+.env
+.env.*
+!.env.example
+ops/deploy.env
+
+# evaluation inputs and raw runs (public MDEQ PDFs are re-fetched with `pnpm eval:fetch`)
+eval/docs/
+eval/results/*.json
+
+# tooling output
+coverage/
+playwright-report/
+test-results/
+*.log
+.DS_Store

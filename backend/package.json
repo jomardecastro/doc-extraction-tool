@@ -1,0 +1,37 @@
+{
+  "name": "backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Fastify API: PDF upload, text extraction, LLM extraction, verification, export. Serves the built frontend in production.",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "node esbuild.config.mjs",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "extract-text": "tsx src/cli/extract-text.ts",
+    "run-pipeline": "tsx src/cli/run-pipeline.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "1.1.0",
+    "@det/shared": "workspace:*",
+    "@fastify/cors": "11.3.1",
+    "@fastify/multipart": "10.1.6",
+    "@fastify/rate-limit": "11.2.1",
+    "@fastify/static": "10.1.7",
+    "exceljs": "4.4.0",
+    "fastify": "5.12.7",
+    "p-limit": "7.3.3",
+    "pdfjs-dist": "6.4.299",
+    "pino": "10.4.0",
+    "pino-pretty": "13.2.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.5",
+    "esbuild": "0.28.2",
+    "vitest": "5.0.5"
+  }
+}
