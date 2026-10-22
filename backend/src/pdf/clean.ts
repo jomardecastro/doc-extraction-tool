@@ -23,10 +23,12 @@ const PAGE_NUMBER_RE = /^\s*(?:page\s+)?\d{1,4}(?:\s+of\s+\d{1,4})?\s*$|^\s*[ivx
 const TOC_LEADER_RE = /(?:\.\s?){3,}\s*\d{1,3}\s*$/;
 /** "2.4 Water Resources 28": a contents line without leaders ends in a bare page number. */
 const TOC_PAGE_NUMBER_RE = /^[A-Z0-9].{2,105}\s\d{1,3}$/;
-const TOC_HEADING_RE = /^(?:table of contents|contents|list of (?:figures|tables|appendices|acronyms|abbreviations)|figures|tables)\b/i;
+const TOC_HEADING_RE =
+  /^(?:table of contents|contents|list of (?:figures|tables|appendices|acronyms|abbreviations)|figures|tables)\b/i;
 const COVER_MARKERS_RE =
   /\b(?:prepared (?:for|by)|submitted (?:to|by)|developed by|funded (?:by|through)|in cooperation with|grant (?:no|number|agreement)|project (?:no|number)|section 319|with (?:additional )?(?:technical )?assistance from|mississippi department of environmental quality)\b/i;
-const ACK_HEADING_RE = /^(?:acknowledg(?:e)?ments?|disclaimer|executive summary disclaimer|preface|foreword|signature page|certification)\b/i;
+const ACK_HEADING_RE =
+  /^(?:acknowledg(?:e)?ments?|disclaimer|executive summary disclaimer|preface|foreword|signature page|certification)\b/i;
 const ADMIN_SECTION_HEADING_RE =
   /^(?:(?:list of )?(?:acronyms|abbreviations)(?: and (?:acronyms|abbreviations))?|glossary(?: of terms)?|references(?: cited)?|literature cited|bibliography|works cited|citations)\b/i;
 const APPENDIX_HEADING_RE = /^(?:appendix|appendices|attachment)\b/i;
@@ -74,7 +76,9 @@ export function cleanPages(pages: PageContent[], bodyFontSize: number): CleanRes
     // "Contents" heading or continuing from a contents page. Checked before the appendix rule
     // because a TOC lists the appendices too.
     const leaderLines = lines.filter((l) => TOC_LEADER_RE.test(l)).length;
-    const numberedEndLines = lines.filter((l) => l.length <= 110 && TOC_PAGE_NUMBER_RE.test(l)).length;
+    const numberedEndLines = lines.filter(
+      (l) => l.length <= 110 && TOC_PAGE_NUMBER_RE.test(l),
+    ).length;
     const hasTocHeading = headings.some((h) => TOC_HEADING_RE.test(h.text));
     const isToc: boolean =
       lines.length > 0 &&
@@ -89,17 +93,33 @@ export function cleanPages(pages: PageContent[], bodyFontSize: number): CleanRes
 
     // Appendices start at a page whose first heading is "Appendix X", or that carries an
     // "Appendix X" title in display size (a table from the previous page may spill above it).
-    const appendixTitle = headings.find((h) => APPENDIX_HEADING_RE.test(h.text) && (h === headings[0] || h.fontSize >= 1.3 * bodyFontSize));
+    const appendixTitle = headings.find(
+      (h) =>
+        APPENDIX_HEADING_RE.test(h.text) && (h === headings[0] || h.fontSize >= 1.3 * bodyFontSize),
+    );
     if (appendixTitle) inAppendix = true;
-    if (page.pageNumber === 1 && (page.chars < 1500 || COVER_MARKERS_RE.test(text)) && !hasMainHeading(headings)) {
+    if (
+      page.pageNumber === 1 &&
+      (page.chars < 1500 || COVER_MARKERS_RE.test(text)) &&
+      !hasMainHeading(headings)
+    ) {
       setRole(page, "administrative", "cover page");
       continue;
     }
-    if (!firstMainSeen && page.pageNumber <= 4 && page.chars < 2500 && (COVER_MARKERS_RE.test(text) || ACK_HEADING_RE.test(headings[0]?.text ?? ""))) {
+    if (
+      !firstMainSeen &&
+      page.pageNumber <= 4 &&
+      page.chars < 2500 &&
+      (COVER_MARKERS_RE.test(text) || ACK_HEADING_RE.test(headings[0]?.text ?? ""))
+    ) {
       setRole(page, "administrative", "front matter");
       continue;
     }
-    if (headings.length > 0 && headings.every((h) => ACK_HEADING_RE.test(h.text)) && page.chars < 3000) {
+    if (
+      headings.length > 0 &&
+      headings.every((h) => ACK_HEADING_RE.test(h.text)) &&
+      page.chars < 3000
+    ) {
       setRole(page, "administrative", "acknowledgements");
       continue;
     }
@@ -122,7 +142,11 @@ export function cleanPages(pages: PageContent[], bodyFontSize: number): CleanRes
         block.role = "administrative";
         continue;
       }
-      if (block.lineCount <= 3 && block.text.length <= 240 && (CONTACT_RE.test(block.text) || FUNDING_BOILERPLATE_RE.test(block.text))) {
+      if (
+        block.lineCount <= 3 &&
+        block.text.length <= 240 &&
+        (CONTACT_RE.test(block.text) || FUNDING_BOILERPLATE_RE.test(block.text))
+      ) {
         block.role = "administrative";
       }
     }
@@ -150,7 +174,11 @@ function setRole(page: PageContent, role: PageRole, reason?: string) {
 }
 
 function hasMainHeading(headings: Block[]): boolean {
-  return headings.some((h) => /^(?:\d+\.?\s|introduction|element\s+[a-i]\b|executive summary|goals?|objectives?|background|watershed description)/i.test(h.text));
+  return headings.some((h) =>
+    /^(?:\d+\.?\s|introduction|element\s+[a-i]\b|executive summary|goals?|objectives?|background|watershed description)/i.test(
+      h.text,
+    ),
+  );
 }
 
 /** The first two and last two single-line blocks on a page, where headers and footers live. */

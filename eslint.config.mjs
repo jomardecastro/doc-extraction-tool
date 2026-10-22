@@ -6,16 +6,30 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import prettier from "eslint-config-prettier";
 import globals from "globals";
 
-const hooksRecommended = reactHooks.configs.flat?.recommended ?? reactHooks.configs["recommended-latest"];
+const hooksRecommended =
+  reactHooks.configs.flat?.recommended ?? reactHooks.configs["recommended-latest"];
 
 export default defineConfig([
-  { ignores: ["**/dist/**", "**/node_modules/**", "backend/public/**", "data/**", "eval/docs/**", "eval/results/**", "backend/samples/**"] },
+  {
+    ignores: [
+      "**/dist/**",
+      "**/node_modules/**",
+      "backend/public/**",
+      "data/**",
+      "eval/docs/**",
+      "eval/results/**",
+      "backend/samples/**",
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
     files: ["**/*.{ts,tsx,mjs,js}"],
     rules: {
-      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+      ],
       "@typescript-eslint/no-non-null-assertion": "off",
       "@typescript-eslint/consistent-type-imports": ["error", { fixStyle: "inline-type-imports" }],
     },

@@ -34,7 +34,8 @@ export class Budget {
   async check(): Promise<void> {
     if (!this.loaded) await this.load();
     this.rollover();
-    if (this.capUsd > 0 && this.ledger.usedUsd >= this.capUsd) throw new AppError("budget_exceeded");
+    if (this.capUsd > 0 && this.ledger.usedUsd >= this.capUsd)
+      throw new AppError("budget_exceeded");
   }
 
   async add(usd: number): Promise<void> {

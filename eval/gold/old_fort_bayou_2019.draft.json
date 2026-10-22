@@ -1,0 +1,194 @@
+{
+  "doc": "old_fort_bayou_2019",
+  "labelled": "corrected",
+  "goals": [
+    {
+      "name": "Fecal coliform 35% load reduction goal (2002 TMDL)",
+      "page": 46,
+      "value": 35,
+      "unit": "%",
+      "type": "goal"
+    },
+    {
+      "name": "Reduce nutrient loads and sediments from nonpoint sources",
+      "page": 12,
+      "type": "goal"
+    },
+    {
+      "name": "Vision: a cleaner watershed for healthier humans and ecosystems",
+      "page": 11,
+      "type": "goal"
+    },
+    {
+      "name": "Better understand and reduce pollutants entering the water system",
+      "page": 12,
+      "type": "goal"
+    },
+    {
+      "name": "Update and continue water quality monitoring, adding TN and TP",
+      "page": 12,
+      "type": "objective"
+    },
+    {
+      "name": "Identify and target contributors of pathogens",
+      "page": 12,
+      "type": "objective"
+    },
+    {
+      "name": "Promote and enforce litter prevention",
+      "page": 12,
+      "type": "objective"
+    },
+    {
+      "name": "Reduce erosion and sedimentation; protect navigability",
+      "page": 12,
+      "type": "goal"
+    },
+    {
+      "name": "Identify and target key sources of erosion",
+      "page": 12,
+      "type": "objective"
+    },
+    {
+      "name": "Promote Low Impact Development and reduce stormwater runoff",
+      "page": 12,
+      "type": "objective"
+    },
+    {
+      "name": "Protect and re-establish riparian buffers",
+      "page": 12,
+      "type": "objective"
+    },
+    {
+      "name": "Protect and improve access points and recreational opportunities",
+      "page": 12,
+      "type": "goal"
+    },
+    {
+      "name": "Re-assess, update and promote Old Fort Bayou blueway",
+      "page": 12,
+      "type": "objective"
+    },
+    {
+      "name": "Coordinate planning of future public access points",
+      "page": 12,
+      "type": "objective"
+    },
+    {
+      "name": "Support environmentally-sensitive recreation and economic development",
+      "page": 12,
+      "type": "objective"
+    },
+    {
+      "name": "Increase environmental awareness, stewardship and participation",
+      "page": 12,
+      "type": "goal"
+    },
+    {
+      "name": "Establish an Old Fort Bayou Watershed Partnership",
+      "page": 12,
+      "type": "objective"
+    },
+    {
+      "name": "Implement and improve education and outreach plan",
+      "page": 12,
+      "type": "objective"
+    },
+    {
+      "name": "Create opportunities for monitoring and stewardship participation",
+      "page": 12,
+      "type": "objective"
+    }
+  ],
+  "bmps": [],
+  "implementation": [
+    {
+      "name": "First assessment and plan revision in 2023",
+      "page": 62
+    },
+    {
+      "name": "Jackson County Stormwater Task Force adopts responsibility for the WIP",
+      "page": 46
+    },
+    {
+      "name": "Add Steering Committee members to the Stormwater Task Force",
+      "page": 47
+    },
+    {
+      "name": "MDEQ watershed coordinator grant program",
+      "page": 47
+    },
+    {
+      "name": "Acquire 13.98 acres along Old Fort Bayou and Bayou Talla",
+      "page": 48
+    },
+    {
+      "name": "Restore St. Martin High School trail and outdoor classroom",
+      "page": 48
+    },
+    {
+      "name": "Continue acquiring property or easements to protect critical land",
+      "page": 50
+    },
+    {
+      "name": "New kayak launch at The Inlets",
+      "page": 34
+    },
+    {
+      "name": "Blueway expansion up Bayou Talla and signage updates",
+      "page": 50
+    },
+    {
+      "name": "Complete LA-MS golf course BMP manual",
+      "page": 49
+    },
+    {
+      "name": "Student summer internship with Jackson County Planning Department",
+      "page": 49
+    },
+    {
+      "name": "Coastal supplement to MDEQ stormwater technical manual",
+      "page": 53
+    },
+    {
+      "name": "Increase capacity to enforce SWPPPs",
+      "page": 54
+    },
+    {
+      "name": "Jackson County logging ordinance mechanism",
+      "page": 56
+    },
+    {
+      "name": "Develop Refuge Visitor Services Plan",
+      "page": 51
+    },
+    {
+      "name": "MS4 2017 annual reports submitted",
+      "page": 44
+    },
+    {
+      "name": "LTMCP enlisted to facilitate WIP development",
+      "page": 8
+    },
+    {
+      "name": "First Steering and Technical Advisory Committee meeting",
+      "page": 8
+    },
+    {
+      "name": "Boat trip to document current conditions",
+      "page": 8
+    },
+    {
+      "name": "Consultant analysis of water quality data against TMDL",
+      "page": 9
+    },
+    {
+      "name": "Education Subcommittee work session reviewing 2007 strategies",
+      "page": 58
+    }
+  ],
+  "monitoring": [],
+  "outreach": [],
+  "geographic": [],
+  "negatives": []
+}

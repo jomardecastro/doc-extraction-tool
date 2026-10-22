@@ -51,7 +51,8 @@ const NUMBERED_HEADING_RE =
   /^(?:\d{1,2}(?:\.\d{1,2}){0,3}\.?|[A-Z]\.|[IVX]{1,5}\.|(?:Section|Chapter|Element|Part|Step|Phase|Task|Goal|Objective)\s+[A-Za-z0-9]{1,3}[.:]?)\s+[A-Z(]/;
 const TOC_LEADER_RE = /(?:\.\s?){3,}\s*\d{1,3}\s*$/;
 /** A line ending in a function word is mid-sentence, not a heading. */
-const TRAILING_FUNCTION_WORD_RE = /\b(?:shall|will|is|are|was|were|to|of|and|or|the|a|an|in|on|for|with|by|that|which)\s*$/i;
+const TRAILING_FUNCTION_WORD_RE =
+  /\b(?:shall|will|is|are|was|were|to|of|and|or|the|a|an|in|on|for|with|by|that|which)\s*$/i;
 /** Figure/table captions are labels, not section headings, even when set in bold. */
 const CAPTION_RE = /^(?:figure|fig\.|table|map|photo|chart|exhibit|plate|graph)\s*\d+[a-z]?\b/i;
 
@@ -124,7 +125,8 @@ function groupLines(items: TextItem[], body: BodyFont): Line[] {
       // Superscripts ("4th", footnote marks) sit above the baseline in a smaller size; keep them
       // on the line they belong to instead of spawning a one-glyph line. Items arrive top-down,
       // so the superscript is usually the group's reference and the baseline text follows it.
-      const superscript = Math.min(item.fontSize, ref.fontSize) < 0.8 * body.size && dy < 0.7 * body.size;
+      const superscript =
+        Math.min(item.fontSize, ref.fontSize) < 0.8 * body.size && dy < 0.7 * body.size;
       if (dy <= tolerance || superscript) {
         current.push(item);
         continue;
@@ -177,7 +179,8 @@ function toLine(items: TextItem[], body: BodyFont): Line {
     cellText += item.str;
     prevEnd = item.x + item.width;
   }
-  if (cellText.trim().length > 0) cells.push({ x: cellX, xEnd: prevEnd ?? cellX, text: cellText.trim() });
+  if (cellText.trim().length > 0)
+    cells.push({ x: cellX, xEnd: prevEnd ?? cellX, text: cellText.trim() });
 
   return {
     text: text.replace(/\s+/g, " ").trim(),
@@ -257,7 +260,12 @@ function detectTables(lines: Line[]): TableSpan[] {
         const lastCols = rowCols[rowCols.length - 1]!;
         const cell = line.cells[0]!;
         const prevFirstCell = lastRow[lastCols.indexOf(firstCol)] ?? "";
-        if (line.cells.length === 1 && matches[0] === firstCol && pendingRow < 0 && !continuesText(prevFirstCell, cell.text)) {
+        if (
+          line.cells.length === 1 &&
+          matches[0] === firstCol &&
+          pendingRow < 0 &&
+          !continuesText(prevFirstCell, cell.text)
+        ) {
           rows.push([cell.text]);
           rowCols.push([firstCol]);
           pendingRow = rows.length - 1;
@@ -289,7 +297,11 @@ function detectTables(lines: Line[]): TableSpan[] {
         // A one-cell line inside a table is almost always a wrapped first cell ("Chemical Oxygen"
         // / "Demand | <50 mg/l"), so it is completed by the next row's short first cell. A group
         // header ("Education/Outreach") merges too, which only costs a slightly longer label.
-        if (pendingRow >= 0 && cols[0] === firstCol && (startsLikeContinuation(row[0]!) || wordCount(row[0]!) <= 3)) {
+        if (
+          pendingRow >= 0 &&
+          cols[0] === firstCol &&
+          (startsLikeContinuation(row[0]!) || wordCount(row[0]!) <= 3)
+        ) {
           // The pending first cell's second line arrived together with the rest of the row.
           const target = rows[pendingRow]!;
           const targetCols = rowCols[pendingRow]!;
@@ -333,7 +345,9 @@ function leftmostColumn(columns: Cell[]): number {
 
 /** Does `next` read as the rest of `prev`'s sentence (so it belongs to the same cell)? */
 function continuesText(prev: string, next: string): boolean {
-  return /[,;:\-–(]$/.test(prev) || TRAILING_FUNCTION_WORD_RE.test(prev) || startsLikeContinuation(next);
+  return (
+    /[,;:\-–(]$/.test(prev) || TRAILING_FUNCTION_WORD_RE.test(prev) || startsLikeContinuation(next)
+  );
 }
 
 function wordCount(text: string): number {
@@ -347,7 +361,11 @@ function startsLikeContinuation(text: string): boolean {
 function columnIndex(columns: Cell[], cell: Cell): number {
   for (let k = 0; k < columns.length; k++) {
     const col = columns[k]!;
-    if (Math.abs(col.x - cell.x) <= COLUMN_TOLERANCE || Math.abs(col.xEnd - cell.xEnd) <= COLUMN_TOLERANCE) return k;
+    if (
+      Math.abs(col.x - cell.x) <= COLUMN_TOLERANCE ||
+      Math.abs(col.xEnd - cell.xEnd) <= COLUMN_TOLERANCE
+    )
+      return k;
   }
   return -1;
 }
@@ -367,7 +385,14 @@ function orderRows(rows: string[][], rowCols: number[][], columns: Cell[]): stri
 // ---------------------------------------------------------------------------------------------
 // Blocks
 
-function assembleBlocks(lines: Line[], tables: TableSpan[], body: BodyFont, leftMargin: number, textWidth: number, lineGap: number): Block[] {
+function assembleBlocks(
+  lines: Line[],
+  tables: TableSpan[],
+  body: BodyFont,
+  leftMargin: number,
+  textWidth: number,
+  lineGap: number,
+): Block[] {
   // Lines closer than this continue the current paragraph; the floor keeps single-spaced
   // documents on the old rule and the ceiling stops a double-spaced page from swallowing the
   // blank line that separates its paragraphs.
@@ -425,8 +450,15 @@ function assembleBlocks(lines: Line[], tables: TableSpan[], body: BodyFont, left
         current.type === "bullet"
           ? line.x0 >= current.x0 - 2 && line.x0 <= current.x0 + 4 * body.size
           : Math.abs(line.x0 - current.x0) <= 3 ||
-            (current.lineCount === 1 && line.x0 < current.x0 && current.x0 - line.x0 <= 4 * body.size);
-      if (gap > 0 && gap <= Math.max(maxParagraphGap, 1.7 * line.fontSize) && sameSize && indentOk) {
+            (current.lineCount === 1 &&
+              line.x0 < current.x0 &&
+              current.x0 - line.x0 <= 4 * body.size);
+      if (
+        gap > 0 &&
+        gap <= Math.max(maxParagraphGap, 1.7 * line.fontSize) &&
+        sameSize &&
+        indentOk
+      ) {
         current.text = joinLines(current.text, line.text);
         current.lineCount++;
         current.yBottom = line.y;
@@ -445,9 +477,16 @@ function assembleBlocks(lines: Line[], tables: TableSpan[], body: BodyFont, left
   return blocks;
 }
 
-type LineKind = { type: "heading"; level: number } | { type: "bullet"; markerLength: number } | { type: "text" };
+type LineKind =
+  { type: "heading"; level: number } | { type: "bullet"; markerLength: number } | { type: "text" };
 
-function classifyLine(lines: Line[], i: number, body: BodyFont, leftMargin: number, textWidth: number): LineKind {
+function classifyLine(
+  lines: Line[],
+  i: number,
+  body: BodyFont,
+  leftMargin: number,
+  textWidth: number,
+): LineKind {
   const line = lines[i]!;
   const text = line.text;
   if (CAPTION_RE.test(text)) return { type: "text" };
@@ -472,7 +511,8 @@ function classifyLine(lines: Line[], i: number, body: BodyFont, leftMargin: numb
       (prev !== undefined && prev.emphasized && fullWidth(prev) && tight(prev, line)) ||
       (next !== undefined && next.emphasized && fullWidth(next) && tight(line, next)));
 
-  if (!inEmphasizedParagraph && looksLikeHeading(line, body)) return { type: "heading", level: headingLevel(line, body) };
+  if (!inEmphasizedParagraph && looksLikeHeading(line, body))
+    return { type: "heading", level: headingLevel(line, body) };
   return { type: "text" };
 }
 
@@ -496,7 +536,8 @@ function looksLikeHeading(line: Line, body: BodyFont): boolean {
   if (line.fontSize >= 1.15 * body.size && words <= 20) return true;
   if (line.emphasized && words <= 14 && text.length <= 90) return true;
   // ALL CAPS short lines ("WATERSHED IMPLEMENTATION PLAN", "ELEMENT C")
-  if (letters.length >= 4 && letters === letters.toUpperCase() && words <= 12 && text.length <= 80) return true;
+  if (letters.length >= 4 && letters === letters.toUpperCase() && words <= 12 && text.length <= 80)
+    return true;
   return false;
 }
 

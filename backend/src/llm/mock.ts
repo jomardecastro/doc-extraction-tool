@@ -14,7 +14,10 @@ export class MockProvider implements LlmProvider {
   async extract<T>(request: LlmRequest<T>): Promise<LlmResult<T>> {
     const document = request.system.map((b) => b.text).join("\n");
     const pages = parsePages(document);
-    const candidate = request.label === "metadata" ? mockMetadata(pages) : { items: mockItems(request.label, pages) };
+    const candidate =
+      request.label === "metadata"
+        ? mockMetadata(pages)
+        : { items: mockItems(request.label, pages) };
     const parsed = request.schema.safeParse(candidate);
     return {
       data: parsed.success ? parsed.data : null,
@@ -79,7 +82,10 @@ function mockItems(label: string, pages: MockPage[]): Record<string, unknown>[] 
 }
 
 function mockItem(label: string, sentence: string, page: MockPage): Record<string, unknown> {
-  const name = sentence.split(/[,;:(]/)[0]!.trim().slice(0, 70);
+  const name = sentence
+    .split(/[,;:(]/)[0]!
+    .trim()
+    .slice(0, 70);
   const base = {
     name,
     description: `Mock extraction of: ${sentence.slice(0, 120)}`,
@@ -90,7 +96,15 @@ function mockItem(label: string, sentence: string, page: MockPage): Record<strin
   };
   switch (label) {
     case "goals":
-      return { ...base, kind: "goal", pollutants: [], targetValue: null, targetUnit: null, targetText: null, timeframe: null };
+      return {
+        ...base,
+        kind: "goal",
+        pollutants: [],
+        targetValue: null,
+        targetUnit: null,
+        targetText: null,
+        timeframe: null,
+      };
     case "bmps":
       return {
         ...base,
@@ -104,7 +118,15 @@ function mockItem(label: string, sentence: string, page: MockPage): Record<strin
         location: null,
       };
     case "implementation":
-      return { ...base, responsibleParty: null, timeframe: null, isMilestone: false, status: "unknown", relatedBmp: null, cost: null };
+      return {
+        ...base,
+        responsibleParty: null,
+        timeframe: null,
+        isMilestone: false,
+        status: "unknown",
+        relatedBmp: null,
+        cost: null,
+      };
     case "monitoring":
       return {
         ...base,
@@ -119,9 +141,23 @@ function mockItem(label: string, sentence: string, page: MockPage): Record<strin
         responsibleParty: null,
       };
     case "outreach":
-      return { ...base, activityType: "other", audience: null, count: null, timeframe: null, responsibleParty: null };
+      return {
+        ...base,
+        activityType: "other",
+        audience: null,
+        count: null,
+        timeframe: null,
+        responsibleParty: null,
+      };
     default:
-      return { ...base, areaType: "other", hucCode: null, areaValue: null, areaUnit: null, isPrimary: false };
+      return {
+        ...base,
+        areaType: "other",
+        hucCode: null,
+        areaValue: null,
+        areaUnit: null,
+        isPrimary: false,
+      };
   }
 }
 

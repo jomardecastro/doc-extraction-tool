@@ -5,7 +5,17 @@ import type { RawPage, TextItem } from "../src/pdf/types.js";
 /** Builds a text run; width approximates a proportional font. */
 function run(str: string, x: number, y: number, options: Partial<TextItem> = {}): TextItem {
   const fontSize = options.fontSize ?? 12;
-  return { str, x, y, width: str.length * fontSize * 0.5, height: fontSize, fontSize, fontName: options.fontName ?? "body", hasEOL: false, ...options };
+  return {
+    str,
+    x,
+    y,
+    width: str.length * fontSize * 0.5,
+    height: fontSize,
+    fontSize,
+    fontName: options.fontName ?? "body",
+    hasEOL: false,
+    ...options,
+  };
 }
 
 function page(items: TextItem[]): RawPage {
@@ -46,18 +56,44 @@ describe("buildBlocks", () => {
     // 24 pt between 12 pt lines (double spacing); a 48 pt gap marks the paragraph break.
     const blocks = buildBlocks(
       page([
-        run("Bell Creek-West Prong Muddy Creek Watershed was identified as a priority watershed", 72, 700),
-        run("by the Mississippi Department of Environmental Quality. Muddy Creek has 2 Total Maximum", 72, 676),
-        run("Daily Load (TMDL) documents written to address reductions needed to meet water quality", 72, 652),
-        run("standards, one for biological impairment due to Nutrients and one for Fecal Coliform.", 72, 628),
-        run("The key natural resource problems in this watershed are nutrient loading and", 72, 580),
-        run("sedimentation. The Watershed Implementation Plan has the goals of reducing the nutrients.", 72, 556),
+        run(
+          "Bell Creek-West Prong Muddy Creek Watershed was identified as a priority watershed",
+          72,
+          700,
+        ),
+        run(
+          "by the Mississippi Department of Environmental Quality. Muddy Creek has 2 Total Maximum",
+          72,
+          676,
+        ),
+        run(
+          "Daily Load (TMDL) documents written to address reductions needed to meet water quality",
+          72,
+          652,
+        ),
+        run(
+          "standards, one for biological impairment due to Nutrients and one for Fecal Coliform.",
+          72,
+          628,
+        ),
+        run(
+          "The key natural resource problems in this watershed are nutrient loading and",
+          72,
+          580,
+        ),
+        run(
+          "sedimentation. The Watershed Implementation Plan has the goals of reducing the nutrients.",
+          72,
+          556,
+        ),
       ]),
       body,
     );
     expect(blocks.map((b) => b.type)).toEqual(["paragraph", "paragraph"]);
     expect(blocks[0]!.lineCount).toBe(4);
-    expect(blocks[1]!.text).toMatch(/^The key natural resource problems .* reducing the nutrients\.$/);
+    expect(blocks[1]!.text).toMatch(
+      /^The key natural resource problems .* reducing the nutrients\.$/,
+    );
   });
 
   it("recognises bullets and numbered list items, but not numbered headings", () => {
@@ -65,7 +101,11 @@ describe("buildBlocks", () => {
       page([
         run("− Trey Cooke, Dan Prevost", 90, 700),
         run("• Structures for Water Control (25 units minimum)", 90, 680),
-        run("1. The grantee shall secure commitments from landowners within the priority area", 90, 660),
+        run(
+          "1. The grantee shall secure commitments from landowners within the priority area",
+          90,
+          660,
+        ),
         run("2. Monitoring", 90, 640),
       ]),
       body,
@@ -75,7 +115,16 @@ describe("buildBlocks", () => {
   });
 
   it("keeps superscripts on their line", () => {
-    const blocks = buildBlocks(page([run("tailored for 4", 72, 700), run("th", 156, 704, { fontSize: 8 }), run("and 5", 168, 700), run("th", 198, 704, { fontSize: 8 }), run("grade students.", 210, 700)]), body);
+    const blocks = buildBlocks(
+      page([
+        run("tailored for 4", 72, 700),
+        run("th", 156, 704, { fontSize: 8 }),
+        run("and 5", 168, 700),
+        run("th", 198, 704, { fontSize: 8 }),
+        run("grade students.", 210, 700),
+      ]),
+      body,
+    );
     expect(blocks).toHaveLength(1);
     expect(blocks[0]!.text).toMatch(/4 ?th and 5 ?th grade students/);
   });
@@ -110,14 +159,22 @@ describe("buildBlocks", () => {
   });
 
   it("does not turn a figure caption into a heading", () => {
-    const blocks = buildBlocks(page([run("Figure 3. BMP locations in the watershed", 72, 700, { fontName: "bold" })]), body);
+    const blocks = buildBlocks(
+      page([run("Figure 3. BMP locations in the watershed", 72, 700, { fontName: "bold" })]),
+      body,
+    );
     expect(blocks[0]!.type).toBe("paragraph");
   });
 });
 
 describe("estimateBodyFont", () => {
   it("picks the dominant size and font resource", () => {
-    const font = estimateBodyFont([page([run("A heading", 72, 700, { fontSize: 18, fontName: "h" }), run("Lots and lots of body text goes here in the normal font.", 72, 680)])]);
+    const font = estimateBodyFont([
+      page([
+        run("A heading", 72, 700, { fontSize: 18, fontName: "h" }),
+        run("Lots and lots of body text goes here in the normal font.", 72, 680),
+      ]),
+    ]);
     expect(font.size).toBe(12);
     expect(font.fontName).toBe("body");
     expect(font.share).toBeGreaterThan(0.5);

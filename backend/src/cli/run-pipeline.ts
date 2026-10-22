@@ -16,7 +16,9 @@ import { AppError } from "../errors.js";
 const args = process.argv.slice(2);
 const file = args.find((a) => !a.startsWith("--"));
 if (!file) {
-  console.error("usage: run-pipeline <file.pdf> [--provider mock] [--model id] [--no-cache] [--out report.json]");
+  console.error(
+    "usage: run-pipeline <file.pdf> [--provider mock] [--model id] [--no-cache] [--out report.json]",
+  );
   process.exit(2);
 }
 const flag = (name: string) => {
@@ -56,8 +58,11 @@ try {
   else process.stdout.write(`${json}\n`);
 
   const r = report.run;
-  console.error(`\n${report.document.title} (${report.document.planYear ?? "?"}, ${report.document.planFamily}) ${cached ? "[cached]" : ""}`);
-  for (const c of CATEGORIES) console.error(`  ${c.padEnd(15)} ${String(report[CATEGORY_KEYS[c]].length).padStart(3)}`);
+  console.error(
+    `\n${report.document.title} (${report.document.planYear ?? "?"}, ${report.document.planFamily}) ${cached ? "[cached]" : ""}`,
+  );
+  for (const c of CATEGORIES)
+    console.error(`  ${c.padEnd(15)} ${String(report[CATEGORY_KEYS[c]].length).padStart(3)}`);
   console.error(
     `  verified ${Math.round(report.summary.verifiedRate * 100)}%, dropped ${report.summary.droppedUnverified}, partial [${r.partialCategories.join(",")}]`,
   );

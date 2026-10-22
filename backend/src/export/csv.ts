@@ -7,7 +7,11 @@ import { CATEGORIES, CATEGORY_KEYS, type ExtractedReport } from "@det/shared";
  */
 export function reportToCsv(report: ExtractedReport): string {
   const rows = flattenReport(report);
-  const columns = COMMON_COLUMNS.concat(EXTRA_COLUMNS.filter((c) => rows.some((r) => r[c] !== undefined && r[c] !== null && r[c] !== "")));
+  const columns = COMMON_COLUMNS.concat(
+    EXTRA_COLUMNS.filter((c) =>
+      rows.some((r) => r[c] !== undefined && r[c] !== null && r[c] !== ""),
+    ),
+  );
   const lines = [columns.join(",")];
   for (const row of rows) lines.push(columns.map((c) => csvCell(row[c])).join(","));
   return `${lines.join("\r\n")}\r\n`;
@@ -15,7 +19,17 @@ export function reportToCsv(report: ExtractedReport): string {
 
 export type FlatRow = Record<string, string | number | boolean | null | undefined>;
 
-export const COMMON_COLUMNS = ["category", "id", "name", "description", "page", "confidence", "verified", "sectionTitle", "sourceQuote"];
+export const COMMON_COLUMNS = [
+  "category",
+  "id",
+  "name",
+  "description",
+  "page",
+  "confidence",
+  "verified",
+  "sectionTitle",
+  "sourceQuote",
+];
 export const EXTRA_COLUMNS = [
   "kind",
   "pollutants",
@@ -71,7 +85,8 @@ function flatten(value: unknown): string | number | boolean | null {
   if (Array.isArray(value)) return value.join("; ");
   if (typeof value === "object") {
     const o = value as Record<string, unknown>;
-    if ("value" in o && "unit" in o) return `${String(o.value)} ${String(o.unit)}${o.pollutant ? ` ${String(o.pollutant)}` : ""}`;
+    if ("value" in o && "unit" in o)
+      return `${String(o.value)} ${String(o.unit)}${o.pollutant ? ` ${String(o.pollutant)}` : ""}`;
     return JSON.stringify(value);
   }
   return value as string | number | boolean;

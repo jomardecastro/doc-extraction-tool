@@ -13,7 +13,10 @@ interface HealthRouteOptions {
 }
 
 /** Used by the container healthcheck, the deploy script (version match) and the UI footer. */
-export async function healthRoutes(app: FastifyInstance, options: HealthRouteOptions): Promise<void> {
+export async function healthRoutes(
+  app: FastifyInstance,
+  options: HealthRouteOptions,
+): Promise<void> {
   const started = Date.now();
   app.get<{ Reply: HealthView }>("/api/health", async () => ({
     ok: true,

@@ -7,7 +7,11 @@ import { formatBytes } from "../../lib/format.js";
 import { rememberRecent } from "../../lib/recent.js";
 import { Badge, Icon, Spinner } from "../ui.js";
 
-const FAMILY: Record<SampleInfo["family"], string> = { watershed_plan: "Watershed plan", nine_element: "9 Key Element plan", other: "Plan" };
+const FAMILY: Record<SampleInfo["family"], string> = {
+  watershed_plan: "Watershed plan",
+  nine_element: "9 Key Element plan",
+  other: "Plan",
+};
 
 /**
  * Public MDEQ plans bundled with the app so a reviewer can see results without hunting for a
@@ -24,7 +28,11 @@ export function SampleList() {
     onSettled: () => setBusy(null),
     onSuccess: (accepted, { id }) => {
       const sample = samples.data?.find((s) => s.id === id);
-      rememberRecent({ id: accepted.id, filename: sample ? `${sample.title}.pdf` : id, at: new Date().toISOString() });
+      rememberRecent({
+        id: accepted.id,
+        filename: sample ? `${sample.title}.pdf` : id,
+        at: new Date().toISOString(),
+      });
       navigate(`/documents/${accepted.id}`);
     },
   });
@@ -45,7 +53,11 @@ export function SampleList() {
     return (
       <p className="rounded-lg border border-line bg-surface px-4 py-3 text-sm text-ink-2">
         The sample list could not be loaded.{" "}
-        <button type="button" className="font-semibold text-accent" onClick={() => void samples.refetch()}>
+        <button
+          type="button"
+          className="font-semibold text-accent"
+          onClick={() => void samples.refetch()}
+        >
           Try again
         </button>
       </p>
@@ -77,7 +89,12 @@ export function SampleList() {
             ) : (
               <>
                 {s.precomputed && <Badge className="hidden sm:inline-flex">instant</Badge>}
-                <button type="button" className="row-action shrink-0 text-sm text-ink-2 hover:text-accent" disabled={busy !== null} onClick={() => run.mutate({ id: s.id, live: true })}>
+                <button
+                  type="button"
+                  className="row-action shrink-0 text-sm text-ink-2 hover:text-accent"
+                  disabled={busy !== null}
+                  onClick={() => run.mutate({ id: s.id, live: true })}
+                >
                   Re-run live
                 </button>
               </>
@@ -86,7 +103,8 @@ export function SampleList() {
         ))}
       </ul>
       <div className="min-h-6 pt-2 text-sm text-danger" aria-live="polite">
-        {run.isError && (run.error instanceof Error ? run.error.message : "The sample could not be started.")}
+        {run.isError &&
+          (run.error instanceof Error ? run.error.message : "The sample could not be started.")}
       </div>
     </div>
   );

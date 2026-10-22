@@ -4,9 +4,27 @@ import { dedupeItems } from "../src/postprocess/dedupe.js";
 describe("dedupeItems", () => {
   it("merges items with the same name key, keeping the higher confidence and filling gaps", () => {
     const { items, merged } = dedupeItems([
-      { name: "Water control structures", confidence: "medium" as const, quantity: null, estimatedCost: 37500, targetPollutants: ["sediment"] },
-      { name: "Water Control Structure", confidence: "high" as const, quantity: 25, estimatedCost: null, targetPollutants: ["turbidity"] },
-      { name: "Cover crops", confidence: "high" as const, quantity: 100, estimatedCost: null, targetPollutants: [] },
+      {
+        name: "Water control structures",
+        confidence: "medium" as const,
+        quantity: null,
+        estimatedCost: 37500,
+        targetPollutants: ["sediment"],
+      },
+      {
+        name: "Water Control Structure",
+        confidence: "high" as const,
+        quantity: 25,
+        estimatedCost: null,
+        targetPollutants: ["turbidity"],
+      },
+      {
+        name: "Cover crops",
+        confidence: "high" as const,
+        quantity: 100,
+        estimatedCost: null,
+        targetPollutants: [],
+      },
     ]);
     expect(merged).toBe(1);
     expect(items).toHaveLength(2);

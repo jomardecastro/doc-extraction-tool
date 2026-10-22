@@ -1,6 +1,13 @@
 import { mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { ApiError, Category, ExtractedReport, JobStage, JobStatus, JobView } from "@det/shared";
+import type {
+  ApiError,
+  Category,
+  ExtractedReport,
+  JobStage,
+  JobStatus,
+  JobView,
+} from "@det/shared";
 
 export interface JobRecord {
   id: string;
@@ -55,7 +62,11 @@ export class JobStore {
         if (job.status === "queued" || job.status === "processing") {
           job.status = "failed";
           job.stage = "failed";
-          job.error = { code: "server_restarted", message: "The server restarted while this document was processing. Upload it again.", retryable: true };
+          job.error = {
+            code: "server_restarted",
+            message: "The server restarted while this document was processing. Upload it again.",
+            retryable: true,
+          };
           job.tmpFile = null;
           restarted++;
           this.jobs.set(job.id, job);

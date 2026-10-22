@@ -8,7 +8,10 @@ import type { Block, ExtractedDocument, PageContent, PageRole, Section } from ".
  */
 
 const SECTION_TAGS: Array<[Category, RegExp]> = [
-  ["goals", /\b(?:goals?|objectives?|vision|desired (?:conditions?|outcomes?|future)|targets?|purpose|mission|priorit(?:y|ies)|concerns?|issues?)\b/i],
+  [
+    "goals",
+    /\b(?:goals?|objectives?|vision|desired (?:conditions?|outcomes?|future)|targets?|purpose|mission|priorit(?:y|ies)|concerns?|issues?)\b/i,
+  ],
   [
     "bmps",
     /\b(?:bmps?|best management|management (?:measures?|practices?|strateg)|conservation practices?|practices|load reductions?|nonpoint source controls?|element [bc]\b|treatment|restoration|structural|nutrient management|sediment control|pollutant reduction|critical areas?)/i,
@@ -98,7 +101,8 @@ export function serializeDocument(doc: ExtractedDocument, options: SerializeOpti
       const role = block.role ?? page.role;
       if (!roles.has(role)) continue;
       const section = block.sectionId ? sectionById.get(block.sectionId) : undefined;
-      if (wanted && section && block.type !== "heading" && !section.tags.some((t) => wanted.has(t))) continue;
+      if (wanted && section && block.type !== "heading" && !section.tags.some((t) => wanted.has(t)))
+        continue;
       pageSection ??= section;
       lines.push(renderBlock(block));
     }

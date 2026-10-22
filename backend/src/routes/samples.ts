@@ -22,8 +22,13 @@ interface SampleRouteOptions {
  * Results precomputed at build time ship in `samples/results/` and are copied into the
  * result cache on boot, so a sample opens instantly; "process live" bypasses the cache.
  */
-export async function sampleRoutes(app: FastifyInstance, options: SampleRouteOptions): Promise<void> {
-  const manifest = JSON.parse(await readFile(path.join(options.samplesDir, "manifest.json"), "utf8")) as SampleManifestEntry[];
+export async function sampleRoutes(
+  app: FastifyInstance,
+  options: SampleRouteOptions,
+): Promise<void> {
+  const manifest = JSON.parse(
+    await readFile(path.join(options.samplesDir, "manifest.json"), "utf8"),
+  ) as SampleManifestEntry[];
   const samples = new Map<string, SampleInfo & { file: string; sha256: string }>();
 
   const resultsDir = path.join(options.dataDir, "results");
@@ -45,7 +50,13 @@ export async function sampleRoutes(app: FastifyInstance, options: SampleRouteOpt
     } catch {
       // no precomputed results directory
     }
-    samples.set(entry.id, { ...entry, sizeBytes: (await stat(file)).size, precomputed, file, sha256: hash });
+    samples.set(entry.id, {
+      ...entry,
+      sizeBytes: (await stat(file)).size,
+      precomputed,
+      file,
+      sha256: hash,
+    });
   }
   app.log.info({ samples: samples.size }, "samples loaded");
 
@@ -53,20 +64,23 @@ export async function sampleRoutes(app: FastifyInstance, options: SampleRouteOpt
     return [...samples.values()].map(({ file: _file, sha256: _hash, ...info }) => info);
   });
 
-  app.post<{ Params: { id: string }; Querystring: { live?: string }; Reply: UploadAccepted }>("/api/samples/:id/process", async (request, reply) => {
-    const sample = samples.get(request.params.id);
-    if (!sample) throw new AppError("job_not_found", "Unknown sample.");
-    const tmpDir = path.join(options.dataDir, "tmp");
-    await mkdir(tmpDir, { recursive: true });
-    const tmpFile = path.join(tmpDir, `${randomUUID()}.pdf`);
-    await copyFile(sample.file, tmpFile);
-    const job = await options.jobs.submit({
-      filename: path.basename(sample.file),
-      sizeBytes: sample.sizeBytes,
-      sha256: sample.sha256,
-      tmpFile,
-      noCache: request.query.live === "1",
-    });
-    return reply.code(202).send({ id: job.id, status: job.status, cached: job.cached });
-  });
+  app.post<{ Params: { id: string }; Querystring: { live?: string }; Reply: UploadAccepted }>(
+    "/api/samples/:id/process",
+    async (request, reply) => {
+      const sample = samples.get(request.params.id);
+      if (!sample) throw new AppError("job_not_found", "Unknown sample.");
+      const tmpDir = path.join(options.dataDir, "tmp");
+      await mkdir(tmpDir, { recursive: true });
+      const tmpFile = path.join(tmpDir, `${randomUUID()}.pdf`);
+      await copyFile(sample.file, tmpFile);
+      const job = await options.jobs.submit({
+        filename: path.basename(sample.file),
+        sizeBytes: sample.sizeBytes,
+        sha256: sample.sha256,
+        tmpFile,
+        noCache: request.query.live === "1",
+      });
+      return reply.code(202).send({ id: job.id, status: job.status, cached: job.cached });
+    },
+  );
 }

@@ -1,0 +1,638 @@
+{
+  "doc": "bell_creek_muddy_creek_2012",
+  "labelled": "corrected",
+  "goals": [
+    {
+      "name": "Reduce nutrients and sediment and meet TMDL load allocations",
+      "page": 6,
+      "type": "goal"
+    },
+    {
+      "name": "Improve and/or protect the quality of water in streams and creeks",
+      "page": 8,
+      "type": "goal"
+    },
+    {
+      "name": "Reduce agricultural nutrient and sediment loading and stabilize creeks",
+      "page": 18,
+      "type": "goal"
+    },
+    {
+      "name": "Reduce nutrient loading and remove Muddy Creek segments from 303(d) list",
+      "page": 20,
+      "type": "goal"
+    },
+    {
+      "name": "45 to 70% nonpoint source nutrient reduction for Muddy Creek",
+      "page": 38,
+      "type": "goal"
+    },
+    {
+      "name": "Reduce soil loss on pasture land",
+      "page": 38,
+      "type": "objective"
+    },
+    {
+      "name": "Improve water quality and protect high quality waters",
+      "page": 37,
+      "type": "objective"
+    },
+    {
+      "name": "Reduced nutrient loads entering streams via agricultural BMPs",
+      "page": 37,
+      "type": "objective"
+    },
+    {
+      "name": "Promote sustained long-term protection of aquatic resources",
+      "page": 22,
+      "type": "objective"
+    },
+    {
+      "name": "Increase public awareness of the value of clean water",
+      "page": 22,
+      "type": "objective"
+    },
+    {
+      "name": "Increase awareness of agricultural runoff to reduce nutrients and sediments",
+      "page": 22,
+      "type": "objective"
+    },
+    {
+      "name": "Increase awareness of how BMPs reduce water quality and habitat effects",
+      "page": 22,
+      "type": "objective"
+    },
+    {
+      "name": "Increase awareness of advantages of protecting water quality and habitat",
+      "page": 22,
+      "type": "objective"
+    },
+    {
+      "name": "Inform and educate the public about BMPs that benefit water quality",
+      "page": 37,
+      "type": "objective"
+    }
+  ],
+  "bmps": [
+    {
+      "name": "Streambank and Shoreline Protection",
+      "page": 21,
+      "value": 2500,
+      "unit": "feet",
+      "cost": 172904,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Grade Stabilization Structure",
+      "page": 21,
+      "value": 12,
+      "unit": "structures",
+      "cost": 78000,
+      "type": "structural"
+    },
+    {
+      "name": "Pasture and Hay Land Planting",
+      "page": 21,
+      "value": 100,
+      "unit": "acres",
+      "cost": 20000,
+      "type": "agricultural"
+    },
+    {
+      "name": "Water and Sediment Control Basin",
+      "page": 21,
+      "value": 4,
+      "unit": "structures",
+      "cost": 40000,
+      "type": "structural"
+    },
+    {
+      "name": "Nutrient Management",
+      "page": 21,
+      "value": 700,
+      "unit": "acres",
+      "cost": 72156,
+      "type": "agricultural"
+    },
+    {
+      "name": "Tank/Trough",
+      "page": 21,
+      "value": 5,
+      "unit": "each",
+      "cost": 12500,
+      "type": "agricultural"
+    },
+    {
+      "name": "Diversions",
+      "page": 21,
+      "value": 1200,
+      "unit": "feet",
+      "cost": 1440,
+      "type": "structural"
+    },
+    {
+      "name": "Heavy Use Area Protection",
+      "page": 21,
+      "value": 4,
+      "unit": "each",
+      "cost": 10000,
+      "type": "agricultural"
+    },
+    {
+      "name": "Fencing",
+      "page": 21,
+      "value": 10000,
+      "unit": "feet",
+      "cost": 13000,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Critical Area Planting",
+      "page": 21,
+      "value": 100,
+      "unit": "acres",
+      "cost": 30000,
+      "type": "agricultural"
+    },
+    {
+      "name": "Stream Crossings",
+      "page": 7,
+      "type": "streambank_riparian"
+    }
+  ],
+  "implementation": [
+    {
+      "name": "Implement 319 water quality project on agricultural lands",
+      "page": 6
+    },
+    {
+      "name": "Landowners install BMPs across entire watershed 2012-2014",
+      "page": 7
+    },
+    {
+      "name": "Install BMPs under MSWCC cost-share program",
+      "page": 19
+    },
+    {
+      "name": "NRCS technical/planning assistance",
+      "page": 19
+    },
+    {
+      "name": "Landowner maintenance of BMPs for 10 years",
+      "page": 19
+    },
+    {
+      "name": "Identify landowners with agricultural land",
+      "page": 19
+    },
+    {
+      "name": "Develop Watershed Implementation Team (WIT)",
+      "page": 19
+    },
+    {
+      "name": "Develop Watershed Implementation Plan (WIP)",
+      "page": 19
+    },
+    {
+      "name": "Assist in development of watershed monitoring plan",
+      "page": 19
+    },
+    {
+      "name": "Present draft WIP for review",
+      "page": 19
+    },
+    {
+      "name": "Determine priority areas through intensive surveys",
+      "page": 19
+    },
+    {
+      "name": "Secure commitments from priority landowners",
+      "page": 19
+    },
+    {
+      "name": "Notify MDEQ project officer of project events",
+      "page": 19
+    },
+    {
+      "name": "Develop BMP plans per approved WIP",
+      "page": 19
+    },
+    {
+      "name": "Assist landowners in BMP installation and record data",
+      "page": 20
+    },
+    {
+      "name": "Assist MDEQ project officer with construction inspections",
+      "page": 20
+    },
+    {
+      "name": "Secure maintenance agreements from cooperators",
+      "page": 20
+    },
+    {
+      "name": "Submit bi-annual reports",
+      "page": 20
+    },
+    {
+      "name": "Submit final report to MDEQ",
+      "page": 20
+    },
+    {
+      "name": "MSWCC administers the 319 project",
+      "page": 21
+    },
+    {
+      "name": "Evaluate and revise plan every three to five years",
+      "page": 31
+    },
+    {
+      "name": "Notify stakeholders of opportunity to propose plan changes",
+      "page": 31
+    },
+    {
+      "name": "Plan evaluation and comment period",
+      "page": 31
+    },
+    {
+      "name": "MDEQ prepares revised watershed implementation plan",
+      "page": 32
+    },
+    {
+      "name": "Stakeholder review of revised draft plan",
+      "page": 32
+    },
+    {
+      "name": "Submit draft revised plan for approval",
+      "page": 32
+    },
+    {
+      "name": "Sign grant contract with MDEQ",
+      "page": 41
+    },
+    {
+      "name": "Issue policies and procedures to SWCD office",
+      "page": 41
+    },
+    {
+      "name": "Meet with SWCD board of commissioners",
+      "page": 41
+    },
+    {
+      "name": "Provide training to district staff",
+      "page": 41
+    },
+    {
+      "name": "Establish evaluation system with MDEQ",
+      "page": 41
+    },
+    {
+      "name": "Accelerate conservation planning and application assistance",
+      "page": 41
+    },
+    {
+      "name": "Assist DEQ with evaluations as requested",
+      "page": 41
+    },
+    {
+      "name": "Provide continued conservation planning assistance",
+      "page": 41
+    },
+    {
+      "name": "Review status of BMP application",
+      "page": 41
+    },
+    {
+      "name": "Redirect or accelerate planning/application assistance",
+      "page": 41
+    }
+  ],
+  "monitoring": [
+    {
+      "name": "Fecal coliform May-October geometric mean criterion",
+      "page": 16,
+      "value": 200,
+      "unit": "per 100ml",
+      "type": "threshold"
+    },
+    {
+      "name": "Fecal coliform May-October single-sample criterion",
+      "page": 16,
+      "value": 400,
+      "unit": "per 100 ml",
+      "type": "threshold"
+    },
+    {
+      "name": "Fecal coliform November-April geometric mean criterion",
+      "page": 16,
+      "value": 2000,
+      "unit": "per 100ml",
+      "type": "threshold"
+    },
+    {
+      "name": "Fecal coliform November-April single-sample criterion",
+      "page": 16,
+      "value": 4000,
+      "unit": "per 100 ml",
+      "type": "threshold"
+    },
+    {
+      "name": "Dissolved oxygen daily average criterion",
+      "page": 16,
+      "value": 5,
+      "unit": "mg/l",
+      "type": "threshold"
+    },
+    {
+      "name": "Dissolved oxygen instantaneous minimum criterion",
+      "page": 16,
+      "value": 4,
+      "unit": "mg/l",
+      "type": "threshold"
+    },
+    {
+      "name": "Nutrients narrative water quality standard",
+      "page": 16,
+      "type": "threshold"
+    },
+    {
+      "name": "TMDL nutrient load reduction of 45 to 70%",
+      "page": 17,
+      "unit": "%",
+      "type": "target"
+    },
+    {
+      "name": "Preliminary in-stream nutrient target range",
+      "page": 38,
+      "unit": "mg/l",
+      "type": "target"
+    },
+    {
+      "name": "Baseline erosion rate on pasture and hay land",
+      "page": 38,
+      "unit": "tons per acre per year",
+      "type": "baseline"
+    },
+    {
+      "name": "Before/after water sampling on main tributaries",
+      "page": 42,
+      "type": "unspecified"
+    },
+    {
+      "name": "Post-project pollutant reduction monitoring by MDEQ",
+      "page": 32,
+      "type": "unspecified"
+    },
+    {
+      "name": "Before and after soil loss on each BMP",
+      "page": 31,
+      "type": "unspecified"
+    },
+    {
+      "name": "Before and after photo documentation",
+      "page": 31,
+      "type": "unspecified"
+    },
+    {
+      "name": "R5 Load estimation Model data sheet per BMP",
+      "page": 31,
+      "type": "unspecified"
+    },
+    {
+      "name": "GPS coordinates of installed BMPs",
+      "page": 20,
+      "type": "unspecified"
+    },
+    {
+      "name": "At least two demonstration farms",
+      "page": 20,
+      "value": 2,
+      "unit": "demonstration farms",
+      "type": "target"
+    },
+    {
+      "name": "At least two informational field days/tours",
+      "page": 20,
+      "value": 2,
+      "unit": "field days/tours",
+      "type": "target"
+    },
+    {
+      "name": "No fewer than 1,000 fact sheets distributed",
+      "page": 20,
+      "value": 1000,
+      "unit": "fact sheets",
+      "type": "target"
+    },
+    {
+      "name": "No fewer than 4 published articles",
+      "page": 20,
+      "value": 4,
+      "unit": "articles",
+      "type": "target"
+    },
+    {
+      "name": "No fewer than 20 roadside signs",
+      "page": 20,
+      "value": 20,
+      "unit": "signs",
+      "type": "target"
+    },
+    {
+      "name": "Field day attendance documented",
+      "page": 23,
+      "type": "unspecified"
+    },
+    {
+      "name": "Individuals installing BMPs after field days",
+      "page": 23,
+      "type": "unspecified"
+    },
+    {
+      "name": "Watershed Harmony participants documented",
+      "page": 25,
+      "type": "unspecified"
+    },
+    {
+      "name": "Fair brochures handed out",
+      "page": 25,
+      "type": "unspecified"
+    },
+    {
+      "name": "Children receiving Sam E. Soil coloring books",
+      "page": 25,
+      "type": "unspecified"
+    },
+    {
+      "name": "Water bill flyers sent",
+      "page": 26,
+      "type": "unspecified"
+    },
+    {
+      "name": "Presentation attendance",
+      "page": 27,
+      "type": "unspecified"
+    },
+    {
+      "name": "Radio ads run and produced",
+      "page": 28,
+      "type": "unspecified"
+    },
+    {
+      "name": "Adopt-A-Stream participants and continuing adopters",
+      "page": 28,
+      "type": "unspecified"
+    }
+  ],
+  "outreach": [
+    {
+      "name": "Project roadside signs",
+      "page": 20,
+      "value": 20,
+      "type": "signage"
+    },
+    {
+      "name": "Landowner meeting",
+      "page": 23,
+      "type": "meeting"
+    },
+    {
+      "name": "Field days",
+      "page": 23,
+      "value": 2,
+      "type": "field_day"
+    },
+    {
+      "name": "Demonstration farms",
+      "page": 20,
+      "value": 2,
+      "type": "demonstration"
+    },
+    {
+      "name": "Informational fact sheets",
+      "page": 20,
+      "value": 1000,
+      "type": "publication"
+    },
+    {
+      "name": "Newsletter and newspaper articles",
+      "page": 20,
+      "value": 4,
+      "type": "media"
+    },
+    {
+      "name": "Watershed Harmony Puppet Show",
+      "page": 25,
+      "type": "school_program"
+    },
+    {
+      "name": "Tippah County Fair booth",
+      "page": 26,
+      "type": "other"
+    },
+    {
+      "name": "Water Bill Mailers",
+      "page": 26,
+      "type": "publication"
+    },
+    {
+      "name": "Presentations to civic organizations",
+      "page": 27,
+      "type": "meeting"
+    },
+    {
+      "name": "Radio advertisements",
+      "page": 28,
+      "type": "media"
+    },
+    {
+      "name": "Adopt-A-Stream workshop",
+      "page": 29,
+      "value": 1,
+      "type": "workshop"
+    },
+    {
+      "name": "Stakeholder notification and review for plan evaluation",
+      "page": 31,
+      "type": "meeting"
+    }
+  ],
+  "geographic": [
+    {
+      "name": "Bell Creek-West Prong Muddy Creek Watershed",
+      "page": 39,
+      "value": 19277,
+      "unit": "acres",
+      "type": "watershed"
+    },
+    {
+      "name": "Muddy Creek Watershed",
+      "page": 10,
+      "value": 63682,
+      "unit": "acres",
+      "type": "watershed"
+    },
+    {
+      "name": "Muddy Creek Watershed (08010207-0601)",
+      "page": 38,
+      "type": "huc"
+    },
+    {
+      "name": "Targeted project area in Bell Creek-West Prong Muddy Creek Subwatershed",
+      "page": 39,
+      "value": 3940,
+      "unit": "acres",
+      "type": "other"
+    },
+    {
+      "name": "Muddy Creek",
+      "page": 17,
+      "type": "stream"
+    },
+    {
+      "name": "West Prong Muddy Creek",
+      "page": 6,
+      "type": "stream"
+    },
+    {
+      "name": "Bell Creek",
+      "page": 10,
+      "type": "stream"
+    },
+    {
+      "name": "Fourmile Branch",
+      "page": 10,
+      "type": "stream"
+    },
+    {
+      "name": "North Prong",
+      "page": 10,
+      "type": "stream"
+    },
+    {
+      "name": "Tippah Lake",
+      "page": 10,
+      "type": "lake"
+    },
+    {
+      "name": "Holly Springs National Forest",
+      "page": 10,
+      "type": "other"
+    },
+    {
+      "name": "Tippah County",
+      "page": 10,
+      "type": "county"
+    },
+    {
+      "name": "Falkner",
+      "page": 10,
+      "type": "city"
+    },
+    {
+      "name": "Hatchie River",
+      "page": 17,
+      "type": "river"
+    }
+  ],
+  "negatives": []
+}

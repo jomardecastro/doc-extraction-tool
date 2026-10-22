@@ -16,7 +16,8 @@ export const EVAL_DOCS = {
   steele_bayou_2009: "Group_II/YZ/Watershed_Plans/Steele_Bayou_Watershed_Plan_2009.pdf",
   yazoo_pass_9ke_2021: "Group_II/YZ/Nine_Key_Element_Plans/Yazoo_Pass_9_Key_Element_Plan_2021.pdf",
   dry_creek_9ke_2017: "Group_IV/PA/Nine_Key_Element_Plans/Dry_Creek_9_Key_Element_Plan_2017.pdf",
-  bell_creek_muddy_creek_2012: "Group_I/NI/Watershed_Plans/Bell_Creek_Muddy_Creek_Watershed_Plan_2012.pdf",
+  bell_creek_muddy_creek_2012:
+    "Group_I/NI/Watershed_Plans/Bell_Creek_Muddy_Creek_Watershed_Plan_2012.pdf",
   old_fort_bayou_2019: "Group_IV/CS/Watershed_Plans/Old_Fort_Bayou_Watershed_Plan_2019.pdf",
 };
 
@@ -35,7 +36,9 @@ async function download(slug, rel) {
     return;
   }
   const url = BASE + rel;
-  const res = await fetch(url, { headers: { "user-agent": "Mozilla/5.0 (doc-extraction-tool eval fetch)" } });
+  const res = await fetch(url, {
+    headers: { "user-agent": "Mozilla/5.0 (doc-extraction-tool eval fetch)" },
+  });
   if (!res.ok || !res.body) throw new Error(`${slug}: HTTP ${res.status} for ${url}`);
   await pipeline(Readable.fromWeb(res.body), createWriteStream(dest));
   console.log(`saved  ${slug} (${(statSync(dest).size / 1024 / 1024).toFixed(1)} MB)`);

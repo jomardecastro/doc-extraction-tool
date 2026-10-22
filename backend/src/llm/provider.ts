@@ -44,7 +44,12 @@ export interface LlmProvider {
   countTokens(text: string): Promise<number>;
 }
 
-export const EMPTY_USAGE: LlmUsage = { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0 };
+export const EMPTY_USAGE: LlmUsage = {
+  inputTokens: 0,
+  outputTokens: 0,
+  cacheReadTokens: 0,
+  cacheWriteTokens: 0,
+};
 
 export function addUsage(a: LlmUsage, b: LlmUsage): LlmUsage {
   return {

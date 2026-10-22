@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { containsNumber, nameKey, normalizeText, numberForms, squash } from "../src/postprocess/normalize.js";
+import {
+  containsNumber,
+  nameKey,
+  normalizeText,
+  numberForms,
+  squash,
+} from "../src/postprocess/normalize.js";
 
 describe("normalizeText", () => {
   it("unifies quotes, dashes and odd whitespace", () => {
@@ -12,7 +18,9 @@ describe("normalizeText", () => {
 
 describe("squash", () => {
   it("keeps only letters and digits", () => {
-    expect(squash("Water Control Structures |  | $1,500 | 25")).toBe("watercontrolstructures150025");
+    expect(squash("Water Control Structures |  | $1,500 | 25")).toBe(
+      "watercontrolstructures150025",
+    );
   });
 });
 

@@ -26,7 +26,14 @@ export async function buildApp(config: Config): Promise<FastifyInstance> {
   const app = Fastify({
     logger: {
       level: config.NODE_ENV === "test" ? "silent" : "info",
-      ...(config.NODE_ENV === "development" ? { transport: { target: "pino-pretty", options: { translateTime: "HH:MM:ss", ignore: "pid,hostname" } } } : {}),
+      ...(config.NODE_ENV === "development"
+        ? {
+            transport: {
+              target: "pino-pretty",
+              options: { translateTime: "HH:MM:ss", ignore: "pid,hostname" },
+            },
+          }
+        : {}),
     },
     // Behind nginx: X-Real-IP / X-Forwarded-For identify the client for rate limiting.
     trustProxy: true,
@@ -58,15 +65,28 @@ export async function buildApp(config: Config): Promise<FastifyInstance> {
   });
 
   await app.register(healthRoutes, { config, provider, jobs, budget });
-  await app.register(documentRoutes, { jobs, dataDir: config.DATA_DIR, maxUploadBytes: config.maxUploadBytes, uploadsPerHourPerIp: config.UPLOADS_PER_HOUR_PER_IP });
+  await app.register(documentRoutes, {
+    jobs,
+    dataDir: config.DATA_DIR,
+    maxUploadBytes: config.maxUploadBytes,
+    uploadsPerHourPerIp: config.UPLOADS_PER_HOUR_PER_IP,
+  });
   await app.register(sampleRoutes, { jobs, samplesDir: samplesDir(), dataDir: config.DATA_DIR });
 
   const publicDir = path.resolve(here, "..", "public");
   if (existsSync(publicDir)) {
-    await app.register(fastifyStatic, { root: publicDir, prefix: "/", index: ["index.html"], maxAge: "1h", immutable: false });
+    await app.register(fastifyStatic, {
+      root: publicDir,
+      prefix: "/",
+      index: ["index.html"],
+      maxAge: "1h",
+      immutable: false,
+    });
   } else {
     await app.register(fastifyStatic, { root: here, serve: false });
-    app.log.warn("no public/ build found; only /api routes are served (run the frontend dev server separately)");
+    app.log.warn(
+      "no public/ build found; only /api routes are served (run the frontend dev server separately)",
+    );
   }
 
   return app;
@@ -75,11 +95,20 @@ export async function buildApp(config: Config): Promise<FastifyInstance> {
 /** Fastify's own errors (bad JSON, payload too large, rate limited) mapped to our codes. */
 function fromFastifyError(err: unknown): AppError {
   const e = err as { statusCode?: number; code?: string; message?: string };
-  if (e.statusCode === 429) return new AppError("queue_full", "Too many uploads from this address. Try again in a while.", { cause: err });
-  if (e.statusCode === 413 || e.code === "FST_REQ_FILE_TOO_LARGE") return new AppError("file_too_large", undefined, { cause: err });
-  if (e.statusCode === 415 || e.code === "FST_INVALID_MULTIPART_CONTENT_TYPE") return new AppError("invalid_file_type", undefined, { cause: err });
+  if (e.statusCode === 429)
+    return new AppError("queue_full", "Too many uploads from this address. Try again in a while.", {
+      cause: err,
+    });
+  if (e.statusCode === 413 || e.code === "FST_REQ_FILE_TOO_LARGE")
+    return new AppError("file_too_large", undefined, { cause: err });
+  if (e.statusCode === 415 || e.code === "FST_INVALID_MULTIPART_CONTENT_TYPE")
+    return new AppError("invalid_file_type", undefined, { cause: err });
   if (typeof e.statusCode === "number" && e.statusCode >= 400 && e.statusCode < 500) {
-    return new AppError("internal", e.message ?? "Bad request.", { cause: err, status: e.statusCode, retryable: false });
+    return new AppError("internal", e.message ?? "Bad request.", {
+      cause: err,
+      status: e.statusCode,
+      retryable: false,
+    });
   }
   return toAppError(err);
 }

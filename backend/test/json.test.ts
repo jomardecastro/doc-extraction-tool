@@ -5,7 +5,9 @@ import { extractJsonObject, normalizeForSchema, schemaForPrompt } from "../src/l
 
 describe("extractJsonObject", () => {
   it("finds the object inside prose and code fences", () => {
-    expect(extractJsonObject('Here you go:\n```json\n{"items": [1, 2]}\n```\nDone.')).toEqual({ items: [1, 2] });
+    expect(extractJsonObject('Here you go:\n```json\n{"items": [1, 2]}\n```\nDone.')).toEqual({
+      items: [1, 2],
+    });
   });
   it("ignores braces inside strings", () => {
     expect(extractJsonObject('{"a": "x } y", "b": {"c": 1}}')).toEqual({ a: "x } y", b: { c: 1 } });
@@ -46,8 +48,14 @@ describe("normalizeForSchema", () => {
   });
 
   it("falls back to the neutral enum member for unknown values", () => {
-    const schema = z.object({ status: z.enum(["planned", "completed", "unknown"]), kind: z.enum(["goal", "objective"]) });
-    expect(normalizeForSchema({ status: "maybe", kind: "aspiration" }, schema)).toEqual({ status: "unknown", kind: "goal" });
+    const schema = z.object({
+      status: z.enum(["planned", "completed", "unknown"]),
+      kind: z.enum(["goal", "objective"]),
+    });
+    expect(normalizeForSchema({ status: "maybe", kind: "aspiration" }, schema)).toEqual({
+      status: "unknown",
+      kind: "goal",
+    });
   });
 });
 

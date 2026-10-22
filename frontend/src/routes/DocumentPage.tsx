@@ -15,13 +15,19 @@ export function DocumentPage() {
   const job = useQuery({
     queryKey: ["job", id],
     queryFn: () => getJob(id),
-    refetchInterval: (q) => (q.state.data && (q.state.data.status === "done" || q.state.data.status === "failed") ? false : 2000),
+    refetchInterval: (q) =>
+      q.state.data && (q.state.data.status === "done" || q.state.data.status === "failed")
+        ? false
+        : 2000,
     retry: (count, err) => !(err instanceof ApiRequestError && err.status === 404) && count < 3,
   });
 
   if (job.isPending) {
     return (
-      <div className="mx-auto max-w-3xl rounded-lg border border-line bg-surface p-6" aria-busy="true">
+      <div
+        className="mx-auto max-w-3xl rounded-lg border border-line bg-surface p-6"
+        aria-busy="true"
+      >
         <div className="h-5 w-1/2 rounded-sm bg-surface-2" />
         <div className="mt-4 h-2 rounded-full bg-surface-2" />
         <div className="mt-5 space-y-3">
@@ -39,7 +45,11 @@ export function DocumentPage() {
     return (
       <ErrorCard
         title={notFound ? "This document is no longer available" : "Could not load this document"}
-        detail={notFound ? "Results are kept on the server for a while after processing; this one has expired or the link is wrong." : (err?.message ?? "The server could not be reached.")}
+        detail={
+          notFound
+            ? "Results are kept on the server for a while after processing; this one has expired or the link is wrong."
+            : (err?.message ?? "The server could not be reached.")
+        }
         primary={{ to: "/", label: "Upload a document" }}
         retry={notFound ? undefined : () => void job.refetch()}
       />
@@ -54,7 +64,15 @@ export function DocumentPage() {
         title={p.title}
         detail={p.detail}
         filename={data.filename}
-        primary={{ to: "/", label: p.action === "retry_upload" ? "Upload it again" : p.action === "upload_another" ? "Choose another PDF" : "Back to upload" }}
+        primary={{
+          to: "/",
+          label:
+            p.action === "retry_upload"
+              ? "Upload it again"
+              : p.action === "upload_another"
+                ? "Choose another PDF"
+                : "Back to upload",
+        }}
       />
     );
   }
@@ -70,7 +88,19 @@ export function DocumentPage() {
   );
 }
 
-function ErrorCard({ title, detail, filename, primary, retry }: { title: string; detail: string; filename?: string; primary: { to: string; label: string }; retry?: () => void }) {
+function ErrorCard({
+  title,
+  detail,
+  filename,
+  primary,
+  retry,
+}: {
+  title: string;
+  detail: string;
+  filename?: string;
+  primary: { to: string; label: string };
+  retry?: () => void;
+}) {
   return (
     <div className="mx-auto max-w-3xl rounded-lg border border-line bg-surface p-6" role="alert">
       <div className="flex items-start gap-3">
@@ -84,7 +114,11 @@ function ErrorCard({ title, detail, filename, primary, retry }: { title: string;
           <div className="mt-5 flex flex-wrap gap-3">
             <LinkButton to={primary.to}>{primary.label}</LinkButton>
             {retry && (
-              <button type="button" className="btn rounded-md px-4 py-2 font-semibold text-accent hover:bg-accent-soft" onClick={retry}>
+              <button
+                type="button"
+                className="btn rounded-md px-4 py-2 font-semibold text-accent hover:bg-accent-soft"
+                onClick={retry}
+              >
                 Try again
               </button>
             )}

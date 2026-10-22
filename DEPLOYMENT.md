@@ -37,24 +37,24 @@ Other scripts: `pnpm check` (typecheck, lint, format, unit tests), `pnpm build`,
 
 ## Environment variables
 
-| Variable | Default | Meaning |
-|---|---|---|
-| `ANTHROPIC_API_KEY` | | Required unless `LLM_PROVIDER=mock`. Never commit it. |
-| `LLM_PROVIDER` | `anthropic` | `mock` returns canned items so the whole app runs without a key (clearly labelled in the UI). |
-| `LLM_MODEL` | `claude-opus-5-5` | Any current Claude model id. `claude-sonnet-5-5` is about half the cost. |
-| `LLM_EFFORT` | `high` | `low`, `medium`, `high`, `xhigh`, `max`. |
-| `LLM_MAX_OUTPUT_TOKENS` | `16000` | Per category call; longer outputs trigger a page split. |
-| `LLM_CATEGORY_CONCURRENCY` | `3` | Parallel category calls after the first (cache-writing) one. |
-| `DAILY_USD_CAP` | `25` | New uploads are refused above this estimated daily spend. `0` disables the cap. |
-| `MAX_UPLOAD_MB` | `200` | Upload size limit (the demo's nginx allows 256 MB). |
-| `MAX_DOC_TOKENS` | `400000` | Documents whose text exceeds this are rejected, not truncated. |
-| `UPLOADS_PER_HOUR_PER_IP` | `10` | Rate limit on the upload routes. |
-| `JOB_CONCURRENCY` | `1` | Documents processed at once. |
-| `JOB_TIMEOUT_MIN` | `20` | Hard stop per document. |
-| `PORT` | `3000` | Inside the container; compose publishes it on `HOST_PORT` (3120). |
-| `DATA_DIR` | `/data` | Uploads, caches, job records, budget ledger. |
-| `NODE_ENV` | `production` | `development` enables CORS and pretty logs. |
-| `APP_VERSION` | `dev` | Set by the image build; shown in `/api/health` and the UI footer. |
+| Variable                   | Default           | Meaning                                                                                       |
+| -------------------------- | ----------------- | --------------------------------------------------------------------------------------------- |
+| `ANTHROPIC_API_KEY`        |                   | Required unless `LLM_PROVIDER=mock`. Never commit it.                                         |
+| `LLM_PROVIDER`             | `anthropic`       | `mock` returns canned items so the whole app runs without a key (clearly labelled in the UI). |
+| `LLM_MODEL`                | `claude-opus-5-5` | Any current Claude model id. `claude-sonnet-5-5` is about half the cost.                      |
+| `LLM_EFFORT`               | `high`            | `low`, `medium`, `high`, `xhigh`, `max`.                                                      |
+| `LLM_MAX_OUTPUT_TOKENS`    | `16000`           | Per category call; longer outputs trigger a page split.                                       |
+| `LLM_CATEGORY_CONCURRENCY` | `3`               | Parallel category calls after the first (cache-writing) one.                                  |
+| `DAILY_USD_CAP`            | `25`              | New uploads are refused above this estimated daily spend. `0` disables the cap.               |
+| `MAX_UPLOAD_MB`            | `200`             | Upload size limit (the demo's nginx allows 256 MB).                                           |
+| `MAX_DOC_TOKENS`           | `400000`          | Documents whose text exceeds this are rejected, not truncated.                                |
+| `UPLOADS_PER_HOUR_PER_IP`  | `10`              | Rate limit on the upload routes.                                                              |
+| `JOB_CONCURRENCY`          | `1`               | Documents processed at once.                                                                  |
+| `JOB_TIMEOUT_MIN`          | `20`              | Hard stop per document.                                                                       |
+| `PORT`                     | `3000`            | Inside the container; compose publishes it on `HOST_PORT` (3120).                             |
+| `DATA_DIR`                 | `/data`           | Uploads, caches, job records, budget ledger.                                                  |
+| `NODE_ENV`                 | `production`      | `development` enables CORS and pretty logs.                                                   |
+| `APP_VERSION`              | `dev`             | Set by the image build; shown in `/api/health` and the UI footer.                             |
 
 `OPENAI_API_KEY` is accepted but unused: the extraction runs on Claude.
 

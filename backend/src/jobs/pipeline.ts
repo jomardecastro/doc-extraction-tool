@@ -18,7 +18,13 @@ import { runCategory } from "../llm/extract-category.js";
 import { estimateUsd } from "../llm/pricing.js";
 import { extractMetadata } from "../llm/prompts/metadata.js";
 import { buildSystemBlocks, PROMPT_VERSION } from "../llm/prompts/system.js";
-import { addUsage, EMPTY_USAGE, estimateTokens, type LlmProvider, type LlmUsage } from "../llm/provider.js";
+import {
+  addUsage,
+  EMPTY_USAGE,
+  estimateTokens,
+  type LlmProvider,
+  type LlmUsage,
+} from "../llm/provider.js";
 import { extractDocument, serializeDocument, type ExtractedDocument } from "../pdf/index.js";
 import { dedupeItems } from "../postprocess/dedupe.js";
 import { buildSummary } from "../postprocess/summary.js";
@@ -74,13 +80,21 @@ const FOCUSED_THRESHOLD_TOKENS = 180_000;
  * stepper shows them. The whole run is deterministic given the model's answers, and every
  * expensive step is cached by content hash so reprocessing the same file is free.
  */
-export async function runPipeline(input: PipelineInput, deps: PipelineDeps, options: PipelineOptions = {}): Promise<PipelineOutput> {
+export async function runPipeline(
+  input: PipelineInput,
+  deps: PipelineDeps,
+  options: PipelineOptions = {},
+): Promise<PipelineOutput> {
   const { provider, config } = deps;
   const log = deps.log ?? (() => {});
   const progress = options.onProgress ?? (() => {});
   const started = Date.now();
 
-  const resultFile = path.join(config.DATA_DIR, "results", `${input.sha256}-${safe(provider.model)}-${safe(PROMPT_VERSION)}.json`);
+  const resultFile = path.join(
+    config.DATA_DIR,
+    "results",
+    `${input.sha256}-${safe(provider.model)}-${safe(PROMPT_VERSION)}.json`,
+  );
   if (options.useResultCache !== false) {
     const cached = await readJson<ExtractedReport>(resultFile);
     if (cached) {
@@ -97,7 +111,9 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps, opti
   const textFile = path.join(config.DATA_DIR, "cache", `${input.sha256}.doc.json`);
   let doc = options.useTextCache !== false ? await readJson<ExtractedDocument>(textFile) : null;
   if (!doc) {
-    doc = await extractDocument(input.data, { onPage: (done, total) => progress({ stage: "extracting_text", pages: total }) });
+    doc = await extractDocument(input.data, {
+      onPage: (done, total) => progress({ stage: "extracting_text", pages: total }),
+    });
     await writeJson(textFile, doc);
   }
   progress({ stage: "cleaning", pages: doc.stats.pageCount });
@@ -107,11 +123,19 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps, opti
   const serialized = serializeDocument(doc);
   const approxTokens = estimateTokens(serialized);
   if (approxTokens > config.MAX_DOC_TOKENS) {
-    throw new AppError("document_too_long", `The document text is about ${approxTokens.toLocaleString()} tokens; the limit is ${config.MAX_DOC_TOKENS.toLocaleString()}.`);
+    throw new AppError(
+      "document_too_long",
+      `The document text is about ${approxTokens.toLocaleString()} tokens; the limit is ${config.MAX_DOC_TOKENS.toLocaleString()}.`,
+    );
   }
   const focused = approxTokens > FOCUSED_THRESHOLD_TOKENS;
   const systemBlocks = focused ? undefined : buildSystemBlocks(serialized);
-  log("document ready", { pages: doc.stats.pageCount, approxTokens, focused, sections: doc.sections.length });
+  log("document ready", {
+    pages: doc.stats.pageCount,
+    approxTokens,
+    focused,
+    sections: doc.sections.length,
+  });
 
   // 3. Category calls: the first one alone (it writes the prompt cache), the rest in parallel.
   const pages = pageTexts(doc);
@@ -133,7 +157,10 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps, opti
       const verified = verifyItems(run.items, pages, NUMERIC_FIELDS[category]);
       const deduped = dedupeItems(verified.items);
       droppedUnverified += verified.stats.dropped;
-      results[category] = deduped.items.map((item) => ({ ...item, id: itemId(category, item.name) }));
+      results[category] = deduped.items.map((item) => ({
+        ...item,
+        id: itemId(category, item.name),
+      }));
       log(`category ${category}`, {
         returned: run.items.length,
         kept: verified.stats.kept,
@@ -146,8 +173,14 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps, opti
         cacheWrite: run.usage.cacheWriteTokens,
       });
     } catch (err) {
-      if (err instanceof AppError && (err.code === "llm_auth" || err.code === "document_too_long" || err.code === "llm_refused")) throw err;
-      log(`category ${category} failed`, { error: err instanceof Error ? err.message : String(err) });
+      if (
+        err instanceof AppError &&
+        (err.code === "llm_auth" || err.code === "document_too_long" || err.code === "llm_refused")
+      )
+        throw err;
+      log(`category ${category} failed`, {
+        error: err instanceof Error ? err.message : String(err),
+      });
       partial.push(category);
       results[category] = [];
     } finally {
@@ -164,7 +197,14 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps, opti
 
   // 4. Identify the document (small call; sees the cover pages)
   progress({ stage: "llm_metadata", completedCategories: [...completed] });
-  let meta: LlmDocumentMeta = { title: input.filename.replace(/\.pdf$/i, ""), planYear: null, planFamily: "other", watershedName: null, hucCodes: [], organizations: [] };
+  let meta: LlmDocumentMeta = {
+    title: input.filename.replace(/\.pdf$/i, ""),
+    planYear: null,
+    planFamily: "other",
+    watershedName: null,
+    hucCodes: [],
+    organizations: [],
+  };
   try {
     const metaResult = await extractMetadata(provider, doc);
     usage = addUsage(usage, metaResult.usage);
@@ -187,7 +227,11 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps, opti
   const report: ExtractedReport = {
     summary: buildSummary(parts, droppedUnverified),
     ...parts,
-    document: { ...meta, pages: doc.stats.pageCount, administrativePages: doc.stats.administrativePages },
+    document: {
+      ...meta,
+      pages: doc.stats.pageCount,
+      administrativePages: doc.stats.administrativePages,
+    },
     run: {
       provider: provider.name,
       model: provider.model,
@@ -208,7 +252,8 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps, opti
   if (deps.budget) await deps.budget.add(estimatedUsd);
   // A report with failed categories is served once but never stored: the next upload of the same
   // file should get a complete run, not the partial one.
-  if (options.useResultCache !== false && partial.length === 0) await writeJson(resultFile, checked);
+  if (options.useResultCache !== false && partial.length === 0)
+    await writeJson(resultFile, checked);
   progress({ stage: "done", pages: doc.stats.pageCount, completedCategories: [...completed] });
   log("pipeline done", { estimatedUsd, durationMs: checked.run.durationMs, partial });
   return { report: checked, cached: false };
@@ -222,7 +267,10 @@ interface ItemLike {
 }
 
 export function itemId(category: Category, name: string): string {
-  return createHash("sha1").update(`${category}:${name.toLowerCase().trim()}`).digest("hex").slice(0, 12);
+  return createHash("sha1")
+    .update(`${category}:${name.toLowerCase().trim()}`)
+    .digest("hex")
+    .slice(0, 12);
 }
 
 export function sha256(data: Uint8Array): string {

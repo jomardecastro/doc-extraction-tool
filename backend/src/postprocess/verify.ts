@@ -41,7 +41,9 @@ interface ProvenanceLike {
 /** Text of every page, including administrative ones: a quote from a cover page is still a real quote. */
 export function pageTexts(doc: ExtractedDocument): PageText[] {
   return doc.pages.map((page) => {
-    const raw = page.blocks.map((b) => (b.rows ? b.rows.map((r) => r.join(" ")).join(" ") : b.text)).join(" ");
+    const raw = page.blocks
+      .map((b) => (b.rows ? b.rows.map((r) => r.join(" ")).join(" ") : b.text))
+      .join(" ");
     return { pageNumber: page.pageNumber, norm: normalizeText(raw), squashed: squash(raw) };
   });
 }
@@ -51,7 +53,13 @@ export function verifyItems<T extends ProvenanceLike>(
   pages: PageText[],
   numericFields: string[],
 ): { items: Array<T & { verified: true }>; stats: VerifyStats } {
-  const stats: VerifyStats = { kept: 0, dropped: 0, pageCorrected: 0, numbersNulled: 0, downgraded: 0 };
+  const stats: VerifyStats = {
+    kept: 0,
+    dropped: 0,
+    pageCorrected: 0,
+    numbersNulled: 0,
+    downgraded: 0,
+  };
   const byNumber = new Map(pages.map((p) => [p.pageNumber, p]));
   const kept: Array<T & { verified: true }> = [];
 
@@ -98,13 +106,22 @@ function cleanQuote(quote: string): string {
     .trim();
 }
 
-function locateQuote(quote: string, claimedPage: number, pages: PageText[], byNumber: Map<number, PageText>): PageText | null {
+function locateQuote(
+  quote: string,
+  claimedPage: number,
+  pages: PageText[],
+  byNumber: Map<number, PageText>,
+): PageText | null {
   const squashed = squash(quote);
-  const nearby = [claimedPage, claimedPage - 1, claimedPage + 1].map((n) => byNumber.get(n)).filter((p): p is PageText => p !== undefined);
+  const nearby = [claimedPage, claimedPage - 1, claimedPage + 1]
+    .map((n) => byNumber.get(n))
+    .filter((p): p is PageText => p !== undefined);
   for (const page of nearby) if (page.norm.includes(quote)) return page;
-  for (const page of nearby) if (squashed.length >= 12 && page.squashed.includes(squashed)) return page;
+  for (const page of nearby)
+    if (squashed.length >= 12 && page.squashed.includes(squashed)) return page;
   for (const page of pages) if (page.norm.includes(quote)) return page;
-  for (const page of pages) if (squashed.length >= 12 && page.squashed.includes(squashed)) return page;
+  for (const page of pages)
+    if (squashed.length >= 12 && page.squashed.includes(squashed)) return page;
   return null;
 }
 
@@ -112,7 +129,8 @@ function locateQuote(quote: string, claimedPage: number, pages: PageText[], byNu
 function nameSupport(name: string, quote: string, page: PageText): number {
   const norm = normalizeText(name);
   if (norm.length === 0) return 0;
-  if (quote.includes(norm) || page.norm.includes(norm) || page.squashed.includes(squash(name))) return 1;
+  if (quote.includes(norm) || page.norm.includes(norm) || page.squashed.includes(squash(name)))
+    return 1;
   const words = norm.split(" ").filter((w) => w.length >= 3);
   if (words.length === 0) return 0;
   const found = words.filter((w) => page.norm.includes(w)).length;
@@ -124,12 +142,20 @@ function downgrade(confidence: Confidence): Confidence {
 }
 
 function getPath(obj: unknown, path: string): unknown {
-  return path.split(".").reduce<unknown>((o, key) => (o && typeof o === "object" ? (o as Record<string, unknown>)[key] : undefined), obj);
+  return path
+    .split(".")
+    .reduce<unknown>(
+      (o, key) => (o && typeof o === "object" ? (o as Record<string, unknown>)[key] : undefined),
+      obj,
+    );
 }
 
 function setPath(obj: unknown, path: string, value: unknown): void {
   const keys = path.split(".");
   const last = keys.pop()!;
-  const target = keys.reduce<unknown>((o, key) => (o && typeof o === "object" ? (o as Record<string, unknown>)[key] : undefined), obj);
+  const target = keys.reduce<unknown>(
+    (o, key) => (o && typeof o === "object" ? (o as Record<string, unknown>)[key] : undefined),
+    obj,
+  );
   if (target && typeof target === "object") (target as Record<string, unknown>)[last] = value;
 }

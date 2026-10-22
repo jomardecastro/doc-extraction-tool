@@ -10,43 +10,72 @@ interface Column {
   render: (item: Record<string, unknown>) => string | null;
 }
 
-const text = (k: string) => (i: Record<string, unknown>) => (typeof i[k] === "string" && (i[k] as string).length ? (i[k] as string) : null);
-const list = (k: string) => (i: Record<string, unknown>) => (Array.isArray(i[k]) && (i[k] as string[]).length ? (i[k] as string[]).join(", ") : null);
+const text = (k: string) => (i: Record<string, unknown>) =>
+  typeof i[k] === "string" && (i[k] as string).length ? (i[k] as string) : null;
+const list = (k: string) => (i: Record<string, unknown>) =>
+  Array.isArray(i[k]) && (i[k] as string[]).length ? (i[k] as string[]).join(", ") : null;
 const num = (k: string, unitKey?: string) => (i: Record<string, unknown>) => {
   const v = i[k];
   if (typeof v !== "number") return null;
   const unit = unitKey && typeof i[unitKey] === "string" ? ` ${i[unitKey] as string}` : "";
   return `${formatNumber(v)}${unit}`;
 };
-const money = (k: string) => (i: Record<string, unknown>) => (typeof i[k] === "number" ? formatMoney(i[k] as number) : null);
-const title = (s: string | null) => (s ? s.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase()) : null);
+const money = (k: string) => (i: Record<string, unknown>) =>
+  typeof i[k] === "number" ? formatMoney(i[k] as number) : null;
+const title = (s: string | null) =>
+  s ? s.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase()) : null;
 
 /** Five useful columns per category, chosen for the person reading a plan, not for the schema. */
 const COLUMNS: Record<Category, Column[]> = {
   goals: [
     { key: "kind", label: "Kind", render: (i) => title(text("kind")(i)) },
     { key: "pollutants", label: "Pollutants", render: list("pollutants") },
-    { key: "target", label: "Target", numeric: true, render: (i) => num("targetValue", "targetUnit")(i) ?? text("targetText")(i) },
+    {
+      key: "target",
+      label: "Target",
+      numeric: true,
+      render: (i) => num("targetValue", "targetUnit")(i) ?? text("targetText")(i),
+    },
     { key: "timeframe", label: "Timeframe", render: text("timeframe") },
   ],
   bmps: [
     { key: "category", label: "Type", render: (i) => title(text("category")(i)) },
     { key: "quantity", label: "Quantity", numeric: true, render: num("quantity", "unit") },
     { key: "estimatedCost", label: "Est. cost", numeric: true, render: money("estimatedCost") },
-    { key: "status", label: "Status", render: (i) => (text("status")(i) === "unknown" ? null : title(text("status")(i))) },
+    {
+      key: "status",
+      label: "Status",
+      render: (i) => (text("status")(i) === "unknown" ? null : title(text("status")(i))),
+    },
     { key: "targetPollutants", label: "Pollutants", render: list("targetPollutants") },
   ],
   implementation: [
     { key: "responsibleParty", label: "Responsible", render: text("responsibleParty") },
     { key: "timeframe", label: "Timeframe", render: text("timeframe") },
     { key: "isMilestone", label: "Milestone", render: (i) => (i.isMilestone ? "Yes" : null) },
-    { key: "status", label: "Status", render: (i) => (text("status")(i) === "unknown" ? null : title(text("status")(i))) },
+    {
+      key: "status",
+      label: "Status",
+      render: (i) => (text("status")(i) === "unknown" ? null : title(text("status")(i))),
+    },
     { key: "cost", label: "Cost", numeric: true, render: money("cost") },
   ],
   monitoring: [
     { key: "parameter", label: "Parameter", render: text("parameter") },
-    { key: "value", label: "Value", numeric: true, render: (i) => (typeof i.value === "number" ? `${i.comparator ? `${i.comparator as string} ` : ""}${formatNumber(i.value as number)}${i.unit ? ` ${i.unit as string}` : ""}` : null) },
-    { key: "valueKind", label: "Kind", render: (i) => (text("valueKind")(i) === "unspecified" ? null : title(text("valueKind")(i))) },
+    {
+      key: "value",
+      label: "Value",
+      numeric: true,
+      render: (i) =>
+        typeof i.value === "number"
+          ? `${i.comparator ? `${i.comparator as string} ` : ""}${formatNumber(i.value as number)}${i.unit ? ` ${i.unit as string}` : ""}`
+          : null,
+    },
+    {
+      key: "valueKind",
+      label: "Kind",
+      render: (i) => (text("valueKind")(i) === "unspecified" ? null : title(text("valueKind")(i))),
+    },
     { key: "frequency", label: "Frequency", render: text("frequency") },
     { key: "location", label: "Location", render: text("location") },
   ],
@@ -84,7 +113,12 @@ export function ItemTable({ category, items }: { category: Category; items: Repo
     if (q) list = list.filter((i) => JSON.stringify(i).toLowerCase().includes(q));
     if (sortNum) {
       const col = columns.find((c) => c.key === sortNum);
-      if (col) list = [...list].sort((a, b) => (parseFloat((col.render(b) ?? "").replace(/[^0-9.-]/g, "")) || -Infinity) - (parseFloat((col.render(a) ?? "").replace(/[^0-9.-]/g, "")) || -Infinity));
+      if (col)
+        list = [...list].sort(
+          (a, b) =>
+            (parseFloat((col.render(b) ?? "").replace(/[^0-9.-]/g, "")) || -Infinity) -
+            (parseFloat((col.render(a) ?? "").replace(/[^0-9.-]/g, "")) || -Infinity),
+        );
     }
     return list;
   }, [items, filter, sortNum, columns]);
@@ -93,7 +127,10 @@ export function ItemTable({ category, items }: { category: Category; items: Repo
     return (
       <div className="rounded-lg border border-dashed border-line-strong px-6 py-10 text-center">
         <p className="font-semibold">Nothing in this category</p>
-        <p className="mt-1 text-sm text-ink-2">The model found no {labelOf(category)} it could quote from this plan. Other categories may still have content.</p>
+        <p className="mt-1 text-sm text-ink-2">
+          The model found no {labelOf(category)} it could quote from this plan. Other categories may
+          still have content.
+        </p>
       </div>
     );
   }
@@ -103,9 +140,17 @@ export function ItemTable({ category, items }: { category: Category; items: Repo
       <div className="mb-3 flex flex-wrap items-center gap-3">
         <label className="flex min-w-0 flex-1 items-center gap-2 rounded-md border border-line-strong bg-surface px-3 py-1.5 focus-within:border-accent">
           <span className="sr-only">Filter {labelOf(category)}</span>
-          <input type="search" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder={`Filter ${items.length} ${labelOf(category)}`} className="min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-ink-3" />
+          <input
+            type="search"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder={`Filter ${items.length} ${labelOf(category)}`}
+            className="min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-ink-3"
+          />
         </label>
-        <p className="num text-sm text-ink-2">{filter ? `${rows.length} of ${items.length}` : `${items.length} items`}</p>
+        <p className="num text-sm text-ink-2">
+          {filter ? `${rows.length} of ${items.length}` : `${items.length} items`}
+        </p>
       </div>
 
       {rows.length === 0 ? (
@@ -125,9 +170,17 @@ export function ItemTable({ category, items }: { category: Category; items: Repo
                   <th className="w-8 px-2 py-2" />
                   <th className="px-3 py-2 font-semibold">Name</th>
                   {columns.map((c) => (
-                    <th key={c.key} className={`px-3 py-2 font-semibold ${c.numeric ? "text-right" : ""}`}>
+                    <th
+                      key={c.key}
+                      className={`px-3 py-2 font-semibold ${c.numeric ? "text-right" : ""}`}
+                    >
                       {c.numeric ? (
-                        <button type="button" className="hover:text-ink" onClick={() => setSortNum(sortNum === c.key ? null : c.key)} aria-label={`Sort by ${c.label}`}>
+                        <button
+                          type="button"
+                          className="hover:text-ink"
+                          onClick={() => setSortNum(sortNum === c.key ? null : c.key)}
+                          aria-label={`Sort by ${c.label}`}
+                        >
                           {c.label}
                           {sortNum === c.key ? " ↓" : ""}
                         </button>
@@ -145,9 +198,17 @@ export function ItemTable({ category, items }: { category: Category; items: Repo
                   const isOpen = open === item.id;
                   return (
                     <Fragment key={item.id}>
-                      <tr className={`cursor-pointer border-t border-line hover:bg-surface-2 ${isOpen ? "bg-surface-2" : ""}`} onClick={() => setOpen(isOpen ? null : item.id)}>
+                      <tr
+                        className={`cursor-pointer border-t border-line hover:bg-surface-2 ${isOpen ? "bg-surface-2" : ""}`}
+                        onClick={() => setOpen(isOpen ? null : item.id)}
+                      >
                         <td className="px-2 py-2 text-ink-3">
-                          <button type="button" className="row-action flex items-center" aria-expanded={isOpen} aria-label={isOpen ? "Hide source" : "Show source"}>
+                          <button
+                            type="button"
+                            className="row-action flex items-center"
+                            aria-expanded={isOpen}
+                            aria-label={isOpen ? "Hide source" : "Show source"}
+                          >
                             <Icon.Chevron open={isOpen} />
                           </button>
                         </td>
@@ -155,7 +216,10 @@ export function ItemTable({ category, items }: { category: Category; items: Repo
                         {columns.map((c) => {
                           const v = c.render(item);
                           return (
-                            <td key={c.key} className={`px-3 py-2 ${c.numeric ? "num text-right whitespace-nowrap" : "max-w-xs"} ${v === null ? "text-ink-3" : "text-ink-2"}`}>
+                            <td
+                              key={c.key}
+                              className={`px-3 py-2 ${c.numeric ? "num text-right whitespace-nowrap" : "max-w-xs"} ${v === null ? "text-ink-3" : "text-ink-2"}`}
+                            >
                               {v ?? "–"}
                             </td>
                           );
@@ -185,10 +249,19 @@ export function ItemTable({ category, items }: { category: Category; items: Repo
               const primaryNum = columns.find((c) => c.numeric && c.render(item) !== null);
               return (
                 <li key={item.id}>
-                  <button type="button" className="row-action w-full px-4 py-3 text-left" onClick={() => setOpen(isOpen ? null : item.id)} aria-expanded={isOpen}>
+                  <button
+                    type="button"
+                    className="row-action w-full px-4 py-3 text-left"
+                    onClick={() => setOpen(isOpen ? null : item.id)}
+                    aria-expanded={isOpen}
+                  >
                     <div className="flex items-start justify-between gap-3">
                       <span className="min-w-0 flex-1 font-semibold">{item.name}</span>
-                      {primaryNum && <span className="num shrink-0 font-semibold">{primaryNum.render(item)}</span>}
+                      {primaryNum && (
+                        <span className="num shrink-0 font-semibold">
+                          {primaryNum.render(item)}
+                        </span>
+                      )}
                     </div>
                     <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-sm text-ink-2">
                       {columns
@@ -243,5 +316,12 @@ function SourceDetail({ item }: { item: ReportItem }) {
 }
 
 function labelOf(category: Category): string {
-  return { goals: "goals", bmps: "BMPs", implementation: "activities", monitoring: "metrics", outreach: "activities", geographic: "areas" }[category];
+  return {
+    goals: "goals",
+    bmps: "BMPs",
+    implementation: "activities",
+    monitoring: "metrics",
+    outreach: "activities",
+    geographic: "areas",
+  }[category];
 }

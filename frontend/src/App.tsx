@@ -5,7 +5,12 @@ import { DocumentPage } from "./routes/DocumentPage.js";
 import { UploadPage } from "./routes/UploadPage.js";
 
 function Shell() {
-  const health = useQuery({ queryKey: ["health"], queryFn: getHealth, staleTime: 60_000, retry: 1 });
+  const health = useQuery({
+    queryKey: ["health"],
+    queryFn: getHealth,
+    staleTime: 60_000,
+    retry: 1,
+  });
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="border-b border-line bg-surface">
@@ -22,10 +27,14 @@ function Shell() {
       </main>
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm text-ink-3">
-          <span>Text-based PDFs only. Items that cannot be quoted verbatim from the document are discarded.</span>
+          <span>
+            Text-based PDFs only. Items that cannot be quoted verbatim from the document are
+            discarded.
+          </span>
           {health.data && (
             <span className="num">
-              {health.data.provider === "mock" ? "mock provider" : health.data.model} · v{health.data.version}
+              {health.data.provider === "mock" ? "mock provider" : health.data.model} · v
+              {health.data.version}
             </span>
           )}
         </div>

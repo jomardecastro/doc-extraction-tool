@@ -8,7 +8,10 @@ import { Button, Icon } from "../ui.js";
 
 const MAX_MB = 200;
 
-type Phase = { kind: "idle" } | { kind: "uploading"; file: File; progress: UploadProgress | null } | { kind: "error"; file: File | null; title: string; detail: string; retryable: boolean };
+type Phase =
+  | { kind: "idle" }
+  | { kind: "uploading"; file: File; progress: UploadProgress | null }
+  | { kind: "error"; file: File | null; title: string; detail: string; retryable: boolean };
 
 /**
  * The one primary action of the app. The zone answers back while a file hovers over it, the
@@ -29,7 +32,8 @@ export function UploadDropzone() {
       try {
         const accepted = await uploadDocument(file, {
           signal: abort.current.signal,
-          onProgress: (progress) => setPhase((p) => (p.kind === "uploading" ? { ...p, progress } : p)),
+          onProgress: (progress) =>
+            setPhase((p) => (p.kind === "uploading" ? { ...p, progress } : p)),
         });
         rememberRecent({ id: accepted.id, filename: file.name, at: new Date().toISOString() });
         navigate(`/documents/${accepted.id}`);
@@ -38,7 +42,12 @@ export function UploadDropzone() {
         setPhase({
           kind: "error",
           file,
-          title: e?.code === "file_too_large" ? "That file is too large" : e?.code === "invalid_file_type" ? "That file is not a PDF" : "Upload failed",
+          title:
+            e?.code === "file_too_large"
+              ? "That file is too large"
+              : e?.code === "invalid_file_type"
+                ? "That file is not a PDF"
+                : "Upload failed",
           detail: e?.message ?? "Something went wrong while uploading.",
           retryable: e?.retryable ?? true,
         });
@@ -56,7 +65,9 @@ export function UploadDropzone() {
           kind: "error",
           file: null,
           title: tooBig ? "That file is too large" : "That file is not a PDF",
-          detail: tooBig ? `${truncateMiddle(rejected.file.name)} is ${formatBytes(rejected.file.size)}. The limit is ${MAX_MB} MB.` : `${truncateMiddle(rejected.file.name)} does not look like a PDF. Choose a .pdf file.`,
+          detail: tooBig
+            ? `${truncateMiddle(rejected.file.name)} is ${formatBytes(rejected.file.size)}. The limit is ${MAX_MB} MB.`
+            : `${truncateMiddle(rejected.file.name)} does not look like a PDF. Choose a .pdf file.`,
           retryable: false,
         });
         return;
@@ -92,13 +103,24 @@ export function UploadDropzone() {
             Cancel
           </Button>
         </div>
-        <div className="mt-4 h-2 overflow-hidden rounded-full bg-surface-2" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(fraction * 100)} aria-label="Upload progress">
-          <div className="h-full bg-accent transition-[width] duration-150" style={{ width: `${Math.max(2, fraction * 100)}%` }} />
+        <div
+          className="mt-4 h-2 overflow-hidden rounded-full bg-surface-2"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(fraction * 100)}
+          aria-label="Upload progress"
+        >
+          <div
+            className="h-full bg-accent transition-[width] duration-150"
+            style={{ width: `${Math.max(2, fraction * 100)}%` }}
+          />
         </div>
         <p className="num mt-2 text-sm text-ink-2">
           {p ? (
             <>
-              Uploading {Math.round(fraction * 100)}% · {formatBytes(p.rate)}/s{remaining !== null ? ` · about ${Math.ceil(remaining)}s left` : ""}
+              Uploading {Math.round(fraction * 100)}% · {formatBytes(p.rate)}/s
+              {remaining !== null ? ` · about ${Math.ceil(remaining)}s left` : ""}
             </>
           ) : (
             "Starting upload"
@@ -116,11 +138,17 @@ export function UploadDropzone() {
         })}
       >
         <input {...getInputProps({ "aria-label": "Choose a PDF" })} />
-        <div className={`mx-auto flex size-14 items-center justify-center rounded-full ${isDragActive ? "bg-accent text-white" : "bg-surface-2 text-ink-2"}`}>
+        <div
+          className={`mx-auto flex size-14 items-center justify-center rounded-full ${isDragActive ? "bg-accent text-white" : "bg-surface-2 text-ink-2"}`}
+        >
           <Icon.Upload />
         </div>
-        <p className="mt-4 text-lg font-semibold">{isDragActive ? "Release to upload" : "Drop a watershed plan PDF here"}</p>
-        <p className="mt-1 text-sm text-ink-2">PDF up to {MAX_MB} MB. Text-based documents only; scanned PDFs are detected and refused.</p>
+        <p className="mt-4 text-lg font-semibold">
+          {isDragActive ? "Release to upload" : "Drop a watershed plan PDF here"}
+        </p>
+        <p className="mt-1 text-sm text-ink-2">
+          PDF up to {MAX_MB} MB. Text-based documents only; scanned PDFs are detected and refused.
+        </p>
         <div className="mt-5">
           <Button onClick={open}>Choose a PDF</Button>
         </div>
@@ -137,7 +165,11 @@ export function UploadDropzone() {
               <p className="text-ink-2">{phase.detail}</p>
             </div>
             {phase.file && phase.retryable ? (
-              <Button variant="secondary" className="shrink-0 !py-1 !text-sm" onClick={() => void start(phase.file!)}>
+              <Button
+                variant="secondary"
+                className="shrink-0 !py-1 !text-sm"
+                onClick={() => void start(phase.file!)}
+              >
                 Retry
               </Button>
             ) : (

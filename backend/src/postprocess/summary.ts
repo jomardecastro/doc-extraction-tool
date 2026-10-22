@@ -1,6 +1,9 @@
 import type { ExtractedReport, ReportSummary, Status } from "@det/shared";
 
-type Parts = Pick<ExtractedReport, "goals" | "bmps" | "implementation" | "monitoring" | "outreach" | "geographicAreas">;
+type Parts = Pick<
+  ExtractedReport,
+  "goals" | "bmps" | "implementation" | "monitoring" | "outreach" | "geographicAreas"
+>;
 
 /**
  * The dashboard numbers. `completionRate` only counts items that carry a status; when nothing
@@ -8,14 +11,21 @@ type Parts = Pick<ExtractedReport, "goals" | "bmps" | "implementation" | "monito
  * says so instead of showing a misleading 0%.
  */
 export function buildSummary(parts: Parts, droppedUnverified: number): ReportSummary {
-  const statused: Status[] = [...parts.bmps.map((b) => b.status), ...parts.implementation.map((a) => a.status)].filter((s) => s !== "unknown");
+  const statused: Status[] = [
+    ...parts.bmps.map((b) => b.status),
+    ...parts.implementation.map((a) => a.status),
+  ].filter((s) => s !== "unknown");
   const completed = statused.filter((s) => s === "completed").length;
   const total = Object.values(parts).reduce((n, list) => n + list.length, 0);
 
   const byBmpCategory: Record<string, number> = {};
-  for (const bmp of parts.bmps) byBmpCategory[bmp.category] = (byBmpCategory[bmp.category] ?? 0) + 1;
+  for (const bmp of parts.bmps)
+    byBmpCategory[bmp.category] = (byBmpCategory[bmp.category] ?? 0) + 1;
   const byStatus: Record<string, number> = {};
-  for (const status of [...parts.bmps.map((b) => b.status), ...parts.implementation.map((a) => a.status)]) {
+  for (const status of [
+    ...parts.bmps.map((b) => b.status),
+    ...parts.implementation.map((a) => a.status),
+  ]) {
     byStatus[status] = (byStatus[status] ?? 0) + 1;
   }
 

@@ -42,17 +42,32 @@ export function extractJsonObject(text: string): unknown | null {
 export function normalizeForSchema(value: unknown, schema: z.ZodType): unknown {
   if (schema instanceof z.ZodNullable) {
     if (value === null || value === undefined) return null;
-    if (typeof value === "string" && value.trim() === "" && !(schema.unwrap() instanceof z.ZodString)) return null;
+    if (
+      typeof value === "string" &&
+      value.trim() === "" &&
+      !(schema.unwrap() instanceof z.ZodString)
+    )
+      return null;
     if (typeof value === "string" && value.trim() === "") return null;
-    if (typeof value === "string" && /^(null|none|n\/a|not stated|unknown)$/i.test(value.trim()) && !(schema.unwrap() instanceof z.ZodEnum)) return null;
+    if (
+      typeof value === "string" &&
+      /^(null|none|n\/a|not stated|unknown)$/i.test(value.trim()) &&
+      !(schema.unwrap() instanceof z.ZodEnum)
+    )
+      return null;
     const inner = normalizeForSchema(value, schema.unwrap());
     return inner === undefined ? null : inner;
   }
   if (schema instanceof z.ZodOptional) {
-    return value === undefined || value === null ? undefined : normalizeForSchema(value, schema.unwrap());
+    return value === undefined || value === null
+      ? undefined
+      : normalizeForSchema(value, schema.unwrap());
   }
   if (schema instanceof z.ZodObject) {
-    const source = value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
+    const source =
+      value && typeof value === "object" && !Array.isArray(value)
+        ? (value as Record<string, unknown>)
+        : {};
     const out: Record<string, unknown> = {};
     for (const [key, field] of Object.entries(schema.shape as Record<string, z.ZodType>)) {
       out[key] = normalizeForSchema(source[key], field);
@@ -60,17 +75,27 @@ export function normalizeForSchema(value: unknown, schema: z.ZodType): unknown {
     return out;
   }
   if (schema instanceof z.ZodArray) {
-    if (!Array.isArray(value)) return value === null || value === undefined || value === "" ? [] : [normalizeForSchema(value, schema.element as z.ZodType)];
-    return value.map((v) => normalizeForSchema(v, schema.element as z.ZodType)).filter((v) => v !== undefined);
+    if (!Array.isArray(value))
+      return value === null || value === undefined || value === ""
+        ? []
+        : [normalizeForSchema(value, schema.element as unknown as z.ZodType)];
+    return value
+      .map((v) => normalizeForSchema(v, schema.element as unknown as z.ZodType))
+      .filter((v) => v !== undefined);
   }
   if (schema instanceof z.ZodEnum) {
     const options = schema.options as string[];
     if (typeof value !== "string") return fallbackEnum(options);
-    const key = value.trim().toLowerCase().replace(/[\s/-]+/g, "_");
+    const key = value
+      .trim()
+      .toLowerCase()
+      .replace(/[\s/-]+/g, "_");
     if (options.includes(value)) return value;
     const hit = options.find((o) => o.toLowerCase() === key);
     if (hit) return hit;
-    const partial = options.find((o) => key.includes(o.toLowerCase()) || o.toLowerCase().includes(key));
+    const partial = options.find(
+      (o) => key.includes(o.toLowerCase()) || o.toLowerCase().includes(key),
+    );
     return partial ?? fallbackEnum(options);
   }
   if (schema instanceof z.ZodNumber) {
@@ -94,7 +119,8 @@ export function normalizeForSchema(value: unknown, schema: z.ZodType): unknown {
 }
 
 function fallbackEnum(options: string[]): string {
-  for (const candidate of ["other", "unknown", "unspecified", "low"]) if (options.includes(candidate)) return candidate;
+  for (const candidate of ["other", "unknown", "unspecified", "low"])
+    if (options.includes(candidate)) return candidate;
   return options[0] ?? "";
 }
 

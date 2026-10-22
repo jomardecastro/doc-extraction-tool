@@ -63,7 +63,13 @@ export function nameKey(name: string): string {
 function singular(word: string): string {
   if (word.length <= 3) return word;
   if (word.endsWith("ies")) return `${word.slice(0, -3)}y`;
-  if (word.endsWith("ses") || word.endsWith("xes") || word.endsWith("ches") || word.endsWith("shes")) return word.slice(0, -2);
+  if (
+    word.endsWith("ses") ||
+    word.endsWith("xes") ||
+    word.endsWith("ches") ||
+    word.endsWith("shes")
+  )
+    return word.slice(0, -2);
   if (word.endsWith("s") && !word.endsWith("ss")) return word.slice(0, -1);
   return word;
 }

@@ -1,12 +1,28 @@
 import { useState } from "react";
-import { CATEGORIES, CATEGORY_KEYS, CATEGORY_LABELS, type Category, type ExtractedReport, type JobView } from "@det/shared";
+import {
+  CATEGORIES,
+  CATEGORY_KEYS,
+  CATEGORY_LABELS,
+  type Category,
+  type ExtractedReport,
+  type JobView,
+} from "@det/shared";
 import { exportUrl } from "../../api/client.js";
 import { formatDuration, formatNumber, pct } from "../../lib/format.js";
 import { Badge, Icon } from "../ui.js";
-import { BmpCategoryChart, ItemsByPageChart, ItemsPerCategoryChart, StatusChart } from "./Charts.js";
+import {
+  BmpCategoryChart,
+  ItemsByPageChart,
+  ItemsPerCategoryChart,
+  StatusChart,
+} from "./Charts.js";
 import { ItemTable } from "./ItemTable.js";
 
-const FAMILY: Record<ExtractedReport["document"]["planFamily"], string> = { watershed_plan: "Watershed plan", nine_element: "9 Key Element plan", other: "Plan" };
+const FAMILY: Record<ExtractedReport["document"]["planFamily"], string> = {
+  watershed_plan: "Watershed plan",
+  nine_element: "9 Key Element plan",
+  other: "Plan",
+};
 
 /**
  * The dashboard. One primary number (items extracted, all quote-verified), six secondary
@@ -33,7 +49,9 @@ export function ReportView({ job, report }: { job: JobView; report: ExtractedRep
           <p className="mt-1 text-sm text-ink-2">
             {d.watershedName ? `${d.watershedName} · ` : ""}
             <span className="num">{d.pages} pages</span>
-            {d.administrativePages > 0 && <span className="num"> ({d.administrativePages} front-matter pages skipped)</span>}
+            {d.administrativePages > 0 && (
+              <span className="num"> ({d.administrativePages} front-matter pages skipped)</span>
+            )}
             {d.hucCodes.length > 0 && <span className="num"> · HUC {d.hucCodes.join(", ")}</span>}
           </p>
         </div>
@@ -41,12 +59,17 @@ export function ReportView({ job, report }: { job: JobView; report: ExtractedRep
       </header>
 
       {partial.length > 0 && (
-        <div className="mt-4 flex items-start gap-3 rounded-md border border-danger/30 bg-danger-soft px-4 py-3 text-sm" role="status">
+        <div
+          className="mt-4 flex items-start gap-3 rounded-md border border-danger/30 bg-danger-soft px-4 py-3 text-sm"
+          role="status"
+        >
           <span className="mt-0.5 text-danger">
             <Icon.Alert />
           </span>
           <p>
-            The model call for {partial.map((c) => CATEGORY_LABELS[c].toLowerCase()).join(", ")} failed, so {partial.length === 1 ? "that category is" : "those categories are"} empty. The rest of the report is complete; re-run live to try again.
+            The model call for {partial.map((c) => CATEGORY_LABELS[c].toLowerCase()).join(", ")}{" "}
+            failed, so {partial.length === 1 ? "that category is" : "those categories are"} empty.
+            The rest of the report is complete; re-run live to try again.
           </p>
         </div>
       )}
@@ -54,10 +77,14 @@ export function ReportView({ job, report }: { job: JobView; report: ExtractedRep
       <section className="mt-6 grid gap-4 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
         <div className="rounded-lg border border-line bg-surface p-5">
           <p className="text-sm text-ink-2">Items extracted</p>
-          <p className="num mt-1 text-2xl font-semibold tracking-tight whitespace-nowrap">{formatNumber(total)}</p>
+          <p className="num mt-1 text-2xl font-semibold tracking-tight whitespace-nowrap">
+            {formatNumber(total)}
+          </p>
           <p className="num mt-1 text-sm text-ink-2">
             {pct(s.verifiedRate)} quote-verified
-            {s.droppedUnverified > 0 ? ` · ${s.droppedUnverified} dropped (quote not found in the PDF)` : " · nothing dropped"}
+            {s.droppedUnverified > 0
+              ? ` · ${s.droppedUnverified} dropped (quote not found in the PDF)`
+              : " · nothing dropped"}
           </p>
         </div>
         <dl className="grid grid-cols-3 gap-x-4 gap-y-3 rounded-lg border border-line bg-surface p-5 sm:grid-cols-4">
@@ -69,7 +96,13 @@ export function ReportView({ job, report }: { job: JobView; report: ExtractedRep
           ))}
           <div>
             <dt className="text-sm text-ink-2">Completion</dt>
-            <dd className="num text-lg font-semibold">{s.completionRateBasis === "status" ? pct(s.completionRate) : <span className="text-base font-normal text-ink-3">no status data</span>}</dd>
+            <dd className="num text-lg font-semibold">
+              {s.completionRateBasis === "status" ? (
+                pct(s.completionRate)
+              ) : (
+                <span className="text-base font-normal text-ink-3">no status data</span>
+              )}
+            </dd>
           </div>
           <div>
             <dt className="text-sm text-ink-2">Numbers captured</dt>
@@ -82,12 +115,19 @@ export function ReportView({ job, report }: { job: JobView; report: ExtractedRep
         <ItemsPerCategoryChart report={report} />
         <BmpCategoryChart report={report} />
         <StatusChart report={report} />
-        <ItemsByPageChart report={report} className={s.completionRateBasis === "status" ? "" : "md:col-span-2"} />
+        <ItemsByPageChart
+          report={report}
+          className={s.completionRateBasis === "status" ? "" : "md:col-span-2"}
+        />
       </section>
 
       <section className="mt-8">
         <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-          <div role="tablist" aria-label="Categories" className="flex min-w-max gap-1 border-b border-line">
+          <div
+            role="tablist"
+            aria-label="Categories"
+            className="flex min-w-max gap-1 border-b border-line"
+          >
             {CATEGORIES.map((c) => {
               const active = tab === c;
               return (
@@ -99,7 +139,10 @@ export function ReportView({ job, report }: { job: JobView; report: ExtractedRep
                   onClick={() => setTab(c)}
                   className={`btn -mb-px rounded-none border-b-2 px-3 py-2 text-base ${active ? "border-accent font-semibold text-ink" : "border-transparent text-ink-2 hover:text-ink"}`}
                 >
-                  {CATEGORY_LABELS[c]} <span className="num ml-1 text-sm text-ink-3">{report[CATEGORY_KEYS[c]].length}</span>
+                  {CATEGORY_LABELS[c]}{" "}
+                  <span className="num ml-1 text-sm text-ink-3">
+                    {report[CATEGORY_KEYS[c]].length}
+                  </span>
                 </button>
               );
             })}
@@ -111,7 +154,12 @@ export function ReportView({ job, report }: { job: JobView; report: ExtractedRep
       </section>
 
       <p className="num mt-8 text-sm text-ink-3">
-        Extracted with {report.run.model} in {formatDuration(report.run.durationMs)} · {formatNumber(report.run.inputTokens + report.run.cacheReadTokens + report.run.cacheWriteTokens)} input tokens ({formatNumber(report.run.cacheReadTokens)} from cache) · est. ${report.run.estimatedUsd.toFixed(2)}
+        Extracted with {report.run.model} in {formatDuration(report.run.durationMs)} ·{" "}
+        {formatNumber(
+          report.run.inputTokens + report.run.cacheReadTokens + report.run.cacheWriteTokens,
+        )}{" "}
+        input tokens ({formatNumber(report.run.cacheReadTokens)} from cache) · est. $
+        {report.run.estimatedUsd.toFixed(2)}
       </p>
     </div>
   );
@@ -147,7 +195,11 @@ function ExportMenu({ jobId }: { jobId: string }) {
           ] as const
         ).map(([format, label]) => (
           <li key={format}>
-            <a href={exportUrl(jobId, format)} download className="row-action block px-3 py-2 text-sm hover:bg-surface-2">
+            <a
+              href={exportUrl(jobId, format)}
+              download
+              className="row-action block px-3 py-2 text-sm hover:bg-surface-2"
+            >
               {label}
             </a>
           </li>

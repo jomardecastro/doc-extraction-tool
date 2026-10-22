@@ -28,7 +28,12 @@ export async function reportToXlsx(report: ExtractedReport): Promise<Buffer> {
     ["Monitoring metrics", s.totalMonitoring],
     ["Outreach activities", s.totalOutreach],
     ["Geographic areas", s.totalGeographicAreas],
-    ["Completion rate", s.completionRateBasis === "status" ? `${Math.round(s.completionRate * 100)}%` : "no status data"],
+    [
+      "Completion rate",
+      s.completionRateBasis === "status"
+        ? `${Math.round(s.completionRate * 100)}%`
+        : "no status data",
+    ],
     ["Verified rate", `${Math.round(s.verifiedRate * 100)}%`],
     ["Dropped (quote not found)", s.droppedUnverified],
     ["Model", report.run.model],
@@ -41,14 +46,21 @@ export async function reportToXlsx(report: ExtractedReport): Promise<Buffer> {
   const rows = flattenReport(report);
   for (const category of CATEGORIES) {
     const items = rows.filter((r) => r.category === category);
-    const used = EXTRA_COLUMNS.filter((c) => items.some((r) => r[c] !== undefined && r[c] !== null && r[c] !== ""));
+    const used = EXTRA_COLUMNS.filter((c) =>
+      items.some((r) => r[c] !== undefined && r[c] !== null && r[c] !== ""),
+    );
     const columns = COMMON_COLUMNS.filter((c) => c !== "category").concat(used);
     const sheet = wb.addWorksheet(CATEGORY_LABELS[category].slice(0, 31));
-    sheet.columns = columns.map((c) => ({ header: c, key: c, width: c === "sourceQuote" || c === "description" ? 60 : 18 }));
+    sheet.columns = columns.map((c) => ({
+      header: c,
+      key: c,
+      width: c === "sourceQuote" || c === "description" ? 60 : 18,
+    }));
     for (const row of items) sheet.addRow(row);
     sheet.getRow(1).font = { bold: true };
     sheet.views = [{ state: "frozen", ySplit: 1 }];
-    if (items.length === 0) sheet.addRow({ name: `No ${CATEGORY_LABELS[category].toLowerCase()} extracted` });
+    if (items.length === 0)
+      sheet.addRow({ name: `No ${CATEGORY_LABELS[category].toLowerCase()} extracted` });
     void report[CATEGORY_KEYS[category]];
   }
 

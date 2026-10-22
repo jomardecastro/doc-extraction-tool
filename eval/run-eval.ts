@@ -23,7 +23,8 @@ import { renderMarkdown, type DocResult } from "./report.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
-const flagValues = (name: string) => args.flatMap((a, i) => (a === name && args[i + 1] ? [args[i + 1]!] : []));
+const flagValues = (name: string) =>
+  args.flatMap((a, i) => (a === name && args[i + 1] ? [args[i + 1]!] : []));
 const flag = (name: string) => flagValues(name)[0];
 
 loadDotEnv();
@@ -35,7 +36,11 @@ const config = loadConfig(env);
 const provider = createProvider(config);
 
 const draftSlug = flag("--draft");
-const slugs = draftSlug ? [draftSlug] : flagValues("--doc").length ? flagValues("--doc") : await goldSlugs();
+const slugs = draftSlug
+  ? [draftSlug]
+  : flagValues("--doc").length
+    ? flagValues("--doc")
+    : await goldSlugs();
 if (slugs.length === 0) {
   console.error("no gold files in eval/gold; label one first (see eval/gold/README.md)");
   process.exit(2);
@@ -56,7 +61,9 @@ for (const slug of slugs) {
     { provider, config, log: (m, d) => console.error(`   ${m} ${d ? JSON.stringify(d) : ""}`) },
     { useResultCache: !args.includes("--no-llm-cache") },
   );
-  console.error(`   ${cached ? "cached" : "fresh"} in ${((Date.now() - t0) / 1000).toFixed(1)}s, $${report.run.estimatedUsd.toFixed(3)}`);
+  console.error(
+    `   ${cached ? "cached" : "fresh"} in ${((Date.now() - t0) / 1000).toFixed(1)}s, $${report.run.estimatedUsd.toFixed(3)}`,
+  );
 
   if (draftSlug) {
     const draft = toDraft(slug, report);
@@ -66,10 +73,16 @@ for (const slug of slugs) {
     continue;
   }
 
-  const gold = JSON.parse(await readFile(path.join(here, "gold", `${slug}.json`), "utf8")) as GoldDocument;
-  const scores = CATEGORIES.map((c) => scoreCategory(c, gold[c] ?? [], report, gold.negatives ?? []));
+  const gold = JSON.parse(
+    await readFile(path.join(here, "gold", `${slug}.json`), "utf8"),
+  ) as GoldDocument;
+  const scores = CATEGORIES.map((c) =>
+    scoreCategory(c, gold[c] ?? [], report, gold.negatives ?? []),
+  );
   for (const s of scores) {
-    console.error(`   ${s.category.padEnd(15)} gold ${String(s.gold).padStart(3)} pred ${String(s.predicted).padStart(3)}  P ${pct(s.precision)} R ${pct(s.recall)} F1 ${pct(s.f1)}${s.quantGold ? `  numbers ${s.quantCorrect}/${s.quantGold}` : ""}`);
+    console.error(
+      `   ${s.category.padEnd(15)} gold ${String(s.gold).padStart(3)} pred ${String(s.predicted).padStart(3)}  P ${pct(s.precision)} R ${pct(s.recall)} F1 ${pct(s.f1)}${s.quantGold ? `  numbers ${s.quantCorrect}/${s.quantGold}` : ""}`,
+    );
   }
   results.push({
     doc: slug,
@@ -89,7 +102,10 @@ if (!draftSlug) {
   const resultsDir = path.join(here, "results");
   await mkdir(resultsDir, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  await writeFile(path.join(resultsDir, `${stamp}.json`), JSON.stringify({ promptVersion: PROMPT_VERSION, model: provider.model, results }, null, 2));
+  await writeFile(
+    path.join(resultsDir, `${stamp}.json`),
+    JSON.stringify({ promptVersion: PROMPT_VERSION, model: provider.model, results }, null, 2),
+  );
   await writeFile(path.join(resultsDir, "latest.md"), markdown);
   console.error(`\nwrote eval/results/latest.md`);
   process.stdout.write(markdown);
@@ -99,19 +115,39 @@ async function goldSlugs(): Promise<string[]> {
   const { readdir } = await import("node:fs/promises");
   const dir = path.join(here, "gold");
   if (!existsSync(dir)) return [];
-  return (await readdir(dir)).filter((f) => f.endsWith(".json") && !f.endsWith(".draft.json")).map((f) => f.replace(/\.json$/, ""));
+  return (await readdir(dir))
+    .filter((f) => f.endsWith(".json") && !f.endsWith(".draft.json"))
+    .map((f) => f.replace(/\.json$/, ""));
 }
 
 function toDraft(slug: string, report: ExtractedReport): GoldDocument {
   const pick = (category: Category): GoldItem[] =>
     (report[CATEGORY_KEYS[category]] as Array<Record<string, unknown>>).map((item) => {
       const g: GoldItem = { name: String(item.name), page: Number(item.page) };
-      const value = item.targetValue ?? item.quantity ?? item.value ?? item.count ?? item.areaValue ?? item.cost;
+      const value =
+        item.targetValue ??
+        item.quantity ??
+        item.value ??
+        item.count ??
+        item.areaValue ??
+        item.cost;
       const unit = item.targetUnit ?? item.unit ?? item.areaUnit;
       if (typeof value === "number") g.value = value;
       if (typeof unit === "string") g.unit = unit;
-      if (category === "bmps" && typeof item.estimatedCost === "number") g.cost = item.estimatedCost;
-      const type = category === "bmps" ? item.category : category === "monitoring" ? item.valueKind : category === "outreach" ? item.activityType : category === "geographic" ? item.areaType : category === "goals" ? item.kind : null;
+      if (category === "bmps" && typeof item.estimatedCost === "number")
+        g.cost = item.estimatedCost;
+      const type =
+        category === "bmps"
+          ? item.category
+          : category === "monitoring"
+            ? item.valueKind
+            : category === "outreach"
+              ? item.activityType
+              : category === "geographic"
+                ? item.areaType
+                : category === "goals"
+                  ? item.kind
+                  : null;
       if (typeof type === "string") g.type = type;
       return g;
     });

@@ -22,7 +22,10 @@ export interface ExtractOptions {
  * immediately, so memory stays bounded by the PDF buffer itself plus one page of text items;
  * images are never decoded because nothing is rendered.
  */
-export async function extractRawPages(data: Uint8Array, options: ExtractOptions = {}): Promise<RawPage[]> {
+export async function extractRawPages(
+  data: Uint8Array,
+  options: ExtractOptions = {},
+): Promise<RawPage[]> {
   const task = getDocument({
     data,
     disableFontFace: true,
@@ -93,7 +96,11 @@ function mapPdfError(err: unknown): AppError {
   const message = err instanceof Error ? err.message : String(err);
   if (name === "PasswordException") return new AppError("encrypted_pdf", undefined, { cause: err });
   if (name === "InvalidPDFException" || name === "FormatError" || name === "MissingPDFException") {
-    return new AppError("pdf_parse_failed", `The file could not be read as a PDF (${message}).`, { cause: err });
+    return new AppError("pdf_parse_failed", `The file could not be read as a PDF (${message}).`, {
+      cause: err,
+    });
   }
-  return new AppError("pdf_parse_failed", `The PDF could not be processed (${message}).`, { cause: err });
+  return new AppError("pdf_parse_failed", `The PDF could not be processed (${message}).`, {
+    cause: err,
+  });
 }

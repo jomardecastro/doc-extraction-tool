@@ -32,15 +32,23 @@ export class JobService {
     private readonly budget: Budget,
     private readonly log: FastifyBaseLogger,
   ) {
-    this.store = new JobStore(config.DATA_DIR, (err) => this.log.error({ err }, "could not persist job"));
-    this.queue = new JobQueue(config.JOB_CONCURRENCY, config.JOB_TIMEOUT_MIN * 60_000, 20, (id, err) => {
-      void this.fail(id, err);
-    });
+    this.store = new JobStore(config.DATA_DIR, (err) =>
+      this.log.error({ err }, "could not persist job"),
+    );
+    this.queue = new JobQueue(
+      config.JOB_CONCURRENCY,
+      config.JOB_TIMEOUT_MIN * 60_000,
+      20,
+      (id, err) => {
+        void this.fail(id, err);
+      },
+    );
   }
 
   async init(): Promise<void> {
     const restarted = await this.store.load();
-    if (restarted > 0) this.log.warn({ restarted }, "jobs interrupted by the last restart were marked failed");
+    if (restarted > 0)
+      this.log.warn({ restarted }, "jobs interrupted by the last restart were marked failed");
   }
 
   async submit(input: SubmitInput): Promise<JobRecord> {
@@ -74,13 +82,22 @@ export class JobService {
   private async process(id: string): Promise<void> {
     const job = this.store.get(id);
     if (!job || !job.tmpFile) throw new AppError("job_not_found");
-    this.store.update(id, { status: "processing", stage: "extracting_text", pct: stagePct("extracting_text", 0) });
+    this.store.update(id, {
+      status: "processing",
+      stage: "extracting_text",
+      pct: stagePct("extracting_text", 0),
+    });
     const data = new Uint8Array(await readFile(job.tmpFile));
     const jobLog = this.log.child({ job: id, filename: job.filename });
 
     const { report, cached } = await runPipeline(
       { data, filename: job.filename, sha256: job.sha256 },
-      { provider: this.provider, config: this.config, budget: this.budget, log: (message, extra) => jobLog.info(extra ?? {}, message) },
+      {
+        provider: this.provider,
+        config: this.config,
+        budget: this.budget,
+        log: (message, extra) => jobLog.info(extra ?? {}, message),
+      },
       {
         useResultCache: !job.noCache,
         onProgress: (p) => {
@@ -111,7 +128,13 @@ export class JobService {
     const job = this.store.get(id);
     if (error.code === "internal") this.log.error({ err, job: id }, "job failed");
     else this.log.warn({ job: id, code: error.code, message: error.message }, "job failed");
-    this.store.update(id, { status: "failed", stage: "failed", pct: 100, error: error.toJSON(), tmpFile: null });
+    this.store.update(id, {
+      status: "failed",
+      stage: "failed",
+      pct: 100,
+      error: error.toJSON(),
+      tmpFile: null,
+    });
     if (job?.tmpFile) await this.removeTmp(job.tmpFile);
   }
 

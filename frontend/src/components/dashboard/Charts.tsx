@@ -1,4 +1,15 @@
-import { Bar, BarChart, Cell, LabelList, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  Cell,
+  LabelList,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { CATEGORIES, CATEGORY_KEYS, CATEGORY_LABELS, type ExtractedReport } from "@det/shared";
 
 const ACCENT = "oklch(0.5 0.11 200)";
@@ -15,7 +26,12 @@ const BMP_LABELS: Record<string, string> = {
   education: "Education",
   other: "Other",
 };
-const STATUS_LABELS: Record<string, string> = { completed: "Completed", in_progress: "In progress", planned: "Planned", unknown: "No status" };
+const STATUS_LABELS: Record<string, string> = {
+  completed: "Completed",
+  in_progress: "In progress",
+  planned: "Planned",
+  unknown: "No status",
+};
 
 /**
  * Three honest charts: bars start at zero, one accent on the largest value with gray for the
@@ -23,7 +39,10 @@ const STATUS_LABELS: Record<string, string> = { completed: "Completed", in_progr
  * at least some items carry a status, because a ring of "unknown" says nothing.
  */
 export function ItemsPerCategoryChart({ report }: { report: ExtractedReport }) {
-  const data = CATEGORIES.map((c) => ({ name: CATEGORY_LABELS[c], value: report[CATEGORY_KEYS[c]].length }));
+  const data = CATEGORIES.map((c) => ({
+    name: CATEGORY_LABELS[c],
+    value: report[CATEGORY_KEYS[c]].length,
+  }));
   return <HorizontalBars data={data} title="Items per category" />;
 }
 
@@ -31,25 +50,64 @@ export function BmpCategoryChart({ report }: { report: ExtractedReport }) {
   const data = Object.entries(report.summary.byBmpCategory)
     .map(([k, v]) => ({ name: BMP_LABELS[k] ?? k, value: v }))
     .sort((a, b) => b.value - a.value);
-  if (data.length === 0) return <EmptyChart title="BMPs by category" note="No BMPs were extracted from this plan." />;
+  if (data.length === 0)
+    return <EmptyChart title="BMPs by category" note="No BMPs were extracted from this plan." />;
   return <HorizontalBars data={data} title="BMPs by category" />;
 }
 
-export function ItemsByPageChart({ report, className = "" }: { report: ExtractedReport; className?: string }) {
+export function ItemsByPageChart({
+  report,
+  className = "",
+}: {
+  report: ExtractedReport;
+  className?: string;
+}) {
   const counts = new Map<number, number>();
-  for (const c of CATEGORIES) for (const item of report[CATEGORY_KEYS[c]]) counts.set(item.page, (counts.get(item.page) ?? 0) + 1);
+  for (const c of CATEGORIES)
+    for (const item of report[CATEGORY_KEYS[c]])
+      counts.set(item.page, (counts.get(item.page) ?? 0) + 1);
   const pages = report.document.pages;
-  const data = Array.from({ length: pages }, (_, i) => ({ page: i + 1, value: counts.get(i + 1) ?? 0 }));
+  const data = Array.from({ length: pages }, (_, i) => ({
+    page: i + 1,
+    value: counts.get(i + 1) ?? 0,
+  }));
   const peak = highlightIndex(data.map((d) => d.value));
   return (
     <figure className={`rounded-lg border border-line bg-surface p-4 ${className}`}>
-      <figcaption className="text-sm font-semibold text-ink-2">Where the content sits, by page</figcaption>
+      <figcaption className="text-sm font-semibold text-ink-2">
+        Where the content sits, by page
+      </figcaption>
       <div className="mt-2 h-36">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 8, right: 4, left: -24, bottom: 0 }} barCategoryGap={1}>
-            <XAxis dataKey="page" tick={{ fontSize: 11, fill: INK2 }} tickLine={false} axisLine={{ stroke: GRAY }} interval={pages > 40 ? Math.ceil(pages / 12) : pages > 15 ? 2 : 0} />
-            <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: INK2 }} tickLine={false} axisLine={false} width={40} />
-            <Tooltip cursor={{ fill: "oklch(0.96 0.004 260)" }} formatter={(v) => [`${v} items`, ""]} labelFormatter={(l) => `Page ${l}`} contentStyle={{ fontSize: 13, borderRadius: 8, border: "1px solid oklch(0.9 0.008 260)" }} />
+          <BarChart
+            data={data}
+            margin={{ top: 8, right: 4, left: -24, bottom: 0 }}
+            barCategoryGap={1}
+          >
+            <XAxis
+              dataKey="page"
+              tick={{ fontSize: 11, fill: INK2 }}
+              tickLine={false}
+              axisLine={{ stroke: GRAY }}
+              interval={pages > 40 ? Math.ceil(pages / 12) : pages > 15 ? 2 : 0}
+            />
+            <YAxis
+              allowDecimals={false}
+              tick={{ fontSize: 11, fill: INK2 }}
+              tickLine={false}
+              axisLine={false}
+              width={40}
+            />
+            <Tooltip
+              cursor={{ fill: "oklch(0.96 0.004 260)" }}
+              formatter={(v) => [`${v} items`, ""]}
+              labelFormatter={(l) => `Page ${l}`}
+              contentStyle={{
+                fontSize: 13,
+                borderRadius: 8,
+                border: "1px solid oklch(0.9 0.008 260)",
+              }}
+            />
             <Bar dataKey="value" isAnimationActive={false}>
               {data.map((d, i) => (
                 <Cell key={d.page} fill={i === peak ? ACCENT : GRAY} />
@@ -70,14 +128,33 @@ export function StatusChart({ report }: { report: ExtractedReport }) {
   const total = data.reduce((n, d) => n + d.value, 0);
   return (
     <figure className="rounded-lg border border-line bg-surface p-4">
-      <figcaption className="text-sm font-semibold text-ink-2">Status of BMPs and activities</figcaption>
+      <figcaption className="text-sm font-semibold text-ink-2">
+        Status of BMPs and activities
+      </figcaption>
       <div className="mt-2 flex items-center gap-4">
         <div className="h-32 w-32 shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={data} dataKey="value" nameKey="name" innerRadius={38} outerRadius={60} stroke="none" isAnimationActive={false}>
+              <Pie
+                data={data}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={38}
+                outerRadius={60}
+                stroke="none"
+                isAnimationActive={false}
+              >
                 {data.map((d) => (
-                  <Cell key={d.key} fill={d.key === "completed" ? ACCENT : d.key === "in_progress" ? "oklch(0.7 0.07 200)" : GRAY} />
+                  <Cell
+                    key={d.key}
+                    fill={
+                      d.key === "completed"
+                        ? ACCENT
+                        : d.key === "in_progress"
+                          ? "oklch(0.7 0.07 200)"
+                          : GRAY
+                    }
+                  />
                 ))}
               </Pie>
             </PieChart>
@@ -86,10 +163,22 @@ export function StatusChart({ report }: { report: ExtractedReport }) {
         <ul className="space-y-1 text-sm">
           {data.map((d) => (
             <li key={d.key} className="flex items-center gap-2">
-              <span className="inline-block size-2.5 rounded-sm" style={{ background: d.key === "completed" ? ACCENT : d.key === "in_progress" ? "oklch(0.7 0.07 200)" : GRAY }} />
+              <span
+                className="inline-block size-2.5 rounded-sm"
+                style={{
+                  background:
+                    d.key === "completed"
+                      ? ACCENT
+                      : d.key === "in_progress"
+                        ? "oklch(0.7 0.07 200)"
+                        : GRAY,
+                }}
+              />
               <span className="text-ink-2">{d.name}</span>
               <span className="num font-semibold">{d.value}</span>
-              <span className="num text-ink-3">{total ? `${Math.round((d.value / total) * 100)}%` : ""}</span>
+              <span className="num text-ink-3">
+                {total ? `${Math.round((d.value / total) * 100)}%` : ""}
+              </span>
             </li>
           ))}
         </ul>
@@ -106,7 +195,13 @@ function highlightIndex(values: number[]): number {
   return winners.length === 1 ? winners[0]! : -1;
 }
 
-function HorizontalBars({ data, title }: { data: Array<{ name: string; value: number }>; title: string }) {
+function HorizontalBars({
+  data,
+  title,
+}: {
+  data: Array<{ name: string; value: number }>;
+  title: string;
+}) {
   const peak = highlightIndex(data.map((d) => d.value));
   const height = 28 * data.length + 16;
   return (
@@ -114,14 +209,30 @@ function HorizontalBars({ data, title }: { data: Array<{ name: string; value: nu
       <figcaption className="text-sm font-semibold text-ink-2">{title}</figcaption>
       <div style={{ height }} className="mt-2">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} layout="vertical" margin={{ top: 4, right: 36, left: 8, bottom: 4 }} barCategoryGap={6}>
+          <BarChart
+            data={data}
+            layout="vertical"
+            margin={{ top: 4, right: 36, left: 8, bottom: 4 }}
+            barCategoryGap={6}
+          >
             <XAxis type="number" hide domain={[0, Math.max(1, ...data.map((d) => d.value))]} />
-            <YAxis type="category" dataKey="name" width={140} tick={{ fontSize: 13, fill: INK2 }} tickLine={false} axisLine={false} />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={140}
+              tick={{ fontSize: 13, fill: INK2 }}
+              tickLine={false}
+              axisLine={false}
+            />
             <Bar dataKey="value" isAnimationActive={false} radius={[0, 4, 4, 0]}>
               {data.map((d, i) => (
                 <Cell key={d.name} fill={i === peak ? ACCENT : GRAY} />
               ))}
-              <LabelList dataKey="value" position="right" style={{ fontSize: 13, fill: INK2, fontVariantNumeric: "tabular-nums" }} />
+              <LabelList
+                dataKey="value"
+                position="right"
+                style={{ fontSize: 13, fill: INK2, fontVariantNumeric: "tabular-nums" }}
+              />
             </Bar>
           </BarChart>
         </ResponsiveContainer>

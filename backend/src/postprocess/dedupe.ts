@@ -8,7 +8,9 @@ const RANK: Record<Confidence, number> = { high: 3, medium: 2, low: 1 };
  * The higher-confidence item wins; null fields are filled from the duplicate and list fields are
  * unioned, so a practice mentioned once with a quantity and once with a cost ends up with both.
  */
-export function dedupeItems<T extends { name: string; confidence: Confidence }>(items: T[]): { items: T[]; merged: number } {
+export function dedupeItems<T extends { name: string; confidence: Confidence }>(
+  items: T[],
+): { items: T[]; merged: number } {
   const byKey = new Map<string, T>();
   let merged = 0;
   for (const item of items) {
@@ -20,7 +22,10 @@ export function dedupeItems<T extends { name: string; confidence: Confidence }>(
       continue;
     }
     merged++;
-    const [winner, loser] = RANK[item.confidence] > RANK[existing.confidence] ? [{ ...item }, existing] : [existing, item];
+    const [winner, loser] =
+      RANK[item.confidence] > RANK[existing.confidence]
+        ? [{ ...item }, existing]
+        : [existing, item];
     fillFrom(winner as Record<string, unknown>, loser as Record<string, unknown>);
     byKey.set(key, winner);
   }
@@ -32,7 +37,11 @@ function fillFrom(target: Record<string, unknown>, source: Record<string, unknow
     const current = target[key];
     if (Array.isArray(current) && Array.isArray(value)) {
       target[key] = [...new Set([...current, ...value])];
-    } else if ((current === null || current === undefined || current === "") && value !== null && value !== undefined) {
+    } else if (
+      (current === null || current === undefined || current === "") &&
+      value !== null &&
+      value !== undefined
+    ) {
       target[key] = value;
     }
   }

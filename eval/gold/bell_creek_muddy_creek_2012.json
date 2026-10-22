@@ -2,50 +2,185 @@
   "doc": "bell_creek_muddy_creek_2012",
   "labelled": "corrected",
   "goals": [
-    { "name": "Reduce nutrients and sediment entering streams and meet TMDL load allocations", "page": 6, "type": "goal" },
-    { "name": "Improve and/or protect the quality of water in streams and creeks", "page": 8, "type": "goal" },
-    { "name": "Reduce nutrient and sediment loading from agricultural lands and bring creeks to stable stream levels", "page": 18, "type": "goal" },
-    { "name": "Reduce nutrient loading to acceptable levels and remove impaired Muddy Creek segments from the 303(d) list", "page": 20, "type": "goal" },
-    { "name": "45 to 70% reduction of nutrient loads entering Muddy Creek from nonpoint sources", "page": 17 },
+    {
+      "name": "Reduce nutrients and sediment entering streams and meet TMDL load allocations",
+      "page": 6,
+      "type": "goal"
+    },
+    {
+      "name": "Improve and/or protect the quality of water in streams and creeks",
+      "page": 8,
+      "type": "goal"
+    },
+    {
+      "name": "Reduce nutrient and sediment loading from agricultural lands and bring creeks to stable stream levels",
+      "page": 18,
+      "type": "goal"
+    },
+    {
+      "name": "Reduce nutrient loading to acceptable levels and remove impaired Muddy Creek segments from the 303(d) list",
+      "page": 20,
+      "type": "goal"
+    },
+    {
+      "name": "45 to 70% reduction of nutrient loads entering Muddy Creek from nonpoint sources",
+      "page": 17
+    },
     { "name": "Reduce soil loss on pasture land", "page": 38, "type": "objective" },
-    { "name": "Improve water quality and protect high quality waters through selected BMPs", "page": 37, "type": "objective" },
-    { "name": "Reduced nutrient loads entering streams through BMPs on agricultural lands", "page": 37, "type": "objective" },
-    { "name": "Promote sustained long-term protection and improvement of aquatic resources (education objective)", "page": 22 },
-    { "name": "Increase public awareness of the value of clean water", "page": 22, "type": "objective" },
-    { "name": "Increase public awareness of agricultural runoff and encourage behaviors that reduce nutrients and sediments", "page": 22, "type": "objective" },
-    { "name": "Increase public awareness of how BMPs reduce negative water quality and habitat effects", "page": 22, "type": "objective" },
-    { "name": "Increase public awareness of the long-term advantages of protecting water quality and habitat", "page": 22, "type": "objective" },
-    { "name": "Inform and educate the public about BMPs that benefit water quality", "page": 37, "type": "objective" }
+    {
+      "name": "Improve water quality and protect high quality waters through selected BMPs",
+      "page": 37,
+      "type": "objective"
+    },
+    {
+      "name": "Reduced nutrient loads entering streams through BMPs on agricultural lands",
+      "page": 37,
+      "type": "objective"
+    },
+    {
+      "name": "Promote sustained long-term protection and improvement of aquatic resources (education objective)",
+      "page": 22
+    },
+    {
+      "name": "Increase public awareness of the value of clean water",
+      "page": 22,
+      "type": "objective"
+    },
+    {
+      "name": "Increase public awareness of agricultural runoff and encourage behaviors that reduce nutrients and sediments",
+      "page": 22,
+      "type": "objective"
+    },
+    {
+      "name": "Increase public awareness of how BMPs reduce negative water quality and habitat effects",
+      "page": 22,
+      "type": "objective"
+    },
+    {
+      "name": "Increase public awareness of the long-term advantages of protecting water quality and habitat",
+      "page": 22,
+      "type": "objective"
+    },
+    {
+      "name": "Inform and educate the public about BMPs that benefit water quality",
+      "page": 37,
+      "type": "objective"
+    }
   ],
   "bmps": [
-    { "name": "Streambank and Shoreline Protection", "page": 21, "value": 2500, "unit": "feet", "cost": 172904, "type": "streambank_riparian" },
-    { "name": "Grade Stabilization Structure", "page": 21, "value": 12, "unit": "structures", "cost": 78000, "type": "structural" },
-    { "name": "Pasture and Hay Land Planting", "page": 21, "value": 100, "unit": "acres", "cost": 20000, "type": "agricultural" },
-    { "name": "Water and Sediment Control Basin", "page": 21, "value": 4, "unit": "structures", "cost": 40000, "type": "structural" },
-    { "name": "Nutrient Management", "page": 21, "value": 700, "unit": "acres", "cost": 72156, "type": "agricultural" },
-    { "name": "Tank/Trough", "page": 21, "value": 5, "unit": "each", "cost": 12500, "type": "agricultural" },
-    { "name": "Diversions", "page": 21, "value": 1200, "unit": "feet", "cost": 1440, "type": "structural" },
-    { "name": "Heavy Use Area Protection", "page": 21, "value": 4, "unit": "each", "cost": 10000, "type": "agricultural" },
-    { "name": "Fencing", "page": 21, "value": 10000, "unit": "feet", "cost": 13000, "type": "streambank_riparian" },
-    { "name": "Critical Area Planting", "page": 21, "value": 100, "unit": "acres", "cost": 30000, "type": "agricultural" },
+    {
+      "name": "Streambank and Shoreline Protection",
+      "page": 21,
+      "value": 2500,
+      "unit": "feet",
+      "cost": 172904,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Grade Stabilization Structure",
+      "page": 21,
+      "value": 12,
+      "unit": "structures",
+      "cost": 78000,
+      "type": "structural"
+    },
+    {
+      "name": "Pasture and Hay Land Planting",
+      "page": 21,
+      "value": 100,
+      "unit": "acres",
+      "cost": 20000,
+      "type": "agricultural"
+    },
+    {
+      "name": "Water and Sediment Control Basin",
+      "page": 21,
+      "value": 4,
+      "unit": "structures",
+      "cost": 40000,
+      "type": "structural"
+    },
+    {
+      "name": "Nutrient Management",
+      "page": 21,
+      "value": 700,
+      "unit": "acres",
+      "cost": 72156,
+      "type": "agricultural"
+    },
+    {
+      "name": "Tank/Trough",
+      "page": 21,
+      "value": 5,
+      "unit": "each",
+      "cost": 12500,
+      "type": "agricultural"
+    },
+    {
+      "name": "Diversions",
+      "page": 21,
+      "value": 1200,
+      "unit": "feet",
+      "cost": 1440,
+      "type": "structural"
+    },
+    {
+      "name": "Heavy Use Area Protection",
+      "page": 21,
+      "value": 4,
+      "unit": "each",
+      "cost": 10000,
+      "type": "agricultural"
+    },
+    {
+      "name": "Fencing",
+      "page": 21,
+      "value": 10000,
+      "unit": "feet",
+      "cost": 13000,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Critical Area Planting",
+      "page": 21,
+      "value": 100,
+      "unit": "acres",
+      "cost": 30000,
+      "type": "agricultural"
+    },
     { "name": "Stream Crossings", "page": 7, "type": "streambank_riparian" }
   ],
   "implementation": [
-    { "name": "Implement a 319 water quality project on agricultural lands in the watershed", "page": 6 },
-    { "name": "Local landowners and operators install BMPs across the entire watershed 2012-2014", "page": 7 },
+    {
+      "name": "Implement a 319 water quality project on agricultural lands in the watershed",
+      "page": 6
+    },
+    {
+      "name": "Local landowners and operators install BMPs across the entire watershed 2012-2014",
+      "page": 7
+    },
     { "name": "Install BMPs under the MSWCC cost-share program", "page": 19 },
     { "name": "NRCS provides technical and planning assistance", "page": 19 },
     { "name": "Landowners maintain BMPs for a period of 10 years", "page": 19 },
     { "name": "Identify landowners with agricultural land using MDEQ maps", "page": 19 },
     { "name": "Develop a Watershed Implementation Team", "page": 19 },
     { "name": "Develop a Watershed Implementation Plan", "page": 19 },
-    { "name": "Assist in development and implementation of a watershed monitoring plan", "page": 19 },
+    {
+      "name": "Assist in development and implementation of a watershed monitoring plan",
+      "page": 19
+    },
     { "name": "Present a draft WIP to MDEQ and the WIT for review", "page": 19 },
     { "name": "Determine priority areas through intensive surveys", "page": 19 },
     { "name": "Inform stakeholders and secure commitments from priority landowners", "page": 19 },
-    { "name": "Notify MDEQ project officer of project visits, inspections, field days and meetings", "page": 19 },
+    {
+      "name": "Notify MDEQ project officer of project visits, inspections, field days and meetings",
+      "page": 19
+    },
     { "name": "Develop plans for BMPs in accordance with the approved WIP", "page": 19 },
-    { "name": "Assist landowners in installing BMPs and collect soil loss and GPS data in GIS", "page": 20 },
+    {
+      "name": "Assist landowners in installing BMPs and collect soil loss and GPS data in GIS",
+      "page": 20
+    },
     { "name": "Establish at least two demonstration farms", "page": 20 },
     { "name": "Provide at least two informational field days or tours", "page": 20 },
     { "name": "Develop and distribute no fewer than 1,000 fact sheets", "page": 20 },
@@ -68,14 +203,23 @@
     { "name": "Submit the draft revised plan to the Implementation Team for approval", "page": 32 },
     { "name": "Notify stakeholders of the completion and availability of the plan", "page": 32 },
     { "name": "Phase 1: analyse existing assessment data and determine target areas", "page": 39 },
-    { "name": "Phase 2: apply BMPs on targeted areas through the water quality cost share program", "page": 39 },
+    {
+      "name": "Phase 2: apply BMPs on targeted areas through the water quality cost share program",
+      "page": 39
+    },
     { "name": "Phase 3: post-BMP monitoring coordinated with MDEQ", "page": 40 },
     { "name": "Sign grant contract with MDEQ", "page": 41 },
-    { "name": "Issue policies and procedures for implementing the project to the SWCD office", "page": 41 },
+    {
+      "name": "Issue policies and procedures for implementing the project to the SWCD office",
+      "page": 41
+    },
     { "name": "Meet with the board of SWCD commissioners", "page": 41 },
     { "name": "Provide training to district staff", "page": 41 },
     { "name": "Establish an evaluation system with MDEQ", "page": 41 },
-    { "name": "Assist participants in developing a conservation plan and applying BMPs", "page": 41 },
+    {
+      "name": "Assist participants in developing a conservation plan and applying BMPs",
+      "page": 41
+    },
     { "name": "Accelerate conservation planning and application assistance", "page": 41 },
     { "name": "Assist DEQ with evaluations as requested", "page": 41 },
     { "name": "Provide continued conservation planning and application assistance", "page": 41 },
@@ -83,17 +227,64 @@
     { "name": "Redirect or accelerate planning and application assistance", "page": 41 }
   ],
   "monitoring": [
-    { "name": "Fecal coliform May to October geometric mean", "page": 16, "value": 200, "unit": "per 100ml", "type": "threshold" },
-    { "name": "Fecal coliform May to October 30-day sample maximum", "page": 16, "value": 400, "unit": "per 100 ml", "type": "threshold" },
-    { "name": "Fecal coliform November to April geometric mean", "page": 16, "value": 2000, "unit": "per 100ml", "type": "threshold" },
-    { "name": "Fecal coliform November to April 30-day sample maximum", "page": 16, "value": 4000, "unit": "per 100 ml", "type": "threshold" },
-    { "name": "Dissolved Oxygen daily average", "page": 16, "value": 5.0, "unit": "mg/l", "type": "threshold" },
-    { "name": "Dissolved Oxygen instantaneous minimum", "page": 16, "value": 4.0, "unit": "mg/l", "type": "threshold" },
+    {
+      "name": "Fecal coliform May to October geometric mean",
+      "page": 16,
+      "value": 200,
+      "unit": "per 100ml",
+      "type": "threshold"
+    },
+    {
+      "name": "Fecal coliform May to October 30-day sample maximum",
+      "page": 16,
+      "value": 400,
+      "unit": "per 100 ml",
+      "type": "threshold"
+    },
+    {
+      "name": "Fecal coliform November to April geometric mean",
+      "page": 16,
+      "value": 2000,
+      "unit": "per 100ml",
+      "type": "threshold"
+    },
+    {
+      "name": "Fecal coliform November to April 30-day sample maximum",
+      "page": 16,
+      "value": 4000,
+      "unit": "per 100 ml",
+      "type": "threshold"
+    },
+    {
+      "name": "Dissolved Oxygen daily average",
+      "page": 16,
+      "value": 5.0,
+      "unit": "mg/l",
+      "type": "threshold"
+    },
+    {
+      "name": "Dissolved Oxygen instantaneous minimum",
+      "page": 16,
+      "value": 4.0,
+      "unit": "mg/l",
+      "type": "threshold"
+    },
     { "name": "Nutrients narrative water quality standard", "page": 16, "type": "threshold" },
-    { "name": "Preliminary in-stream nutrient target range 0.6 to 0.11 mg/l", "page": 38, "type": "target" },
-    { "name": "Baseline erosion rate of 8-10 tons per acre per year on pasture and hay land", "page": 38, "type": "baseline" },
+    {
+      "name": "Preliminary in-stream nutrient target range 0.6 to 0.11 mg/l",
+      "page": 38,
+      "type": "target"
+    },
+    {
+      "name": "Baseline erosion rate of 8-10 tons per acre per year on pasture and hay land",
+      "page": 38,
+      "type": "baseline"
+    },
     { "name": "Before and after water sampling on the main tributaries", "page": 42 },
-    { "name": "MDEQ monitoring at the conclusion of the project to determine pollutant reductions", "page": 32 },
+    {
+      "name": "MDEQ monitoring at the conclusion of the project to determine pollutant reductions",
+      "page": 32
+    },
     { "name": "Before and after soil loss collection on each BMP installed", "page": 31 },
     { "name": "Before and after photo documentation on a sample of BMPs", "page": 31 },
     { "name": "R5 Load estimation Model field data sheet on each BMP", "page": 31 },
@@ -115,9 +306,23 @@
     { "name": "Adopt-A-Stream participants and continuing adopters", "page": 28 }
   ],
   "outreach": [
-    { "name": "Project roadside signs identifying installed BMPs", "page": 22, "value": 20, "type": "signage" },
-    { "name": "Landowner meeting about the project and available BMPs", "page": 23, "type": "meeting" },
-    { "name": "Field days highlighting installed BMPs", "page": 23, "value": 2, "type": "field_day" },
+    {
+      "name": "Project roadside signs identifying installed BMPs",
+      "page": 22,
+      "value": 20,
+      "type": "signage"
+    },
+    {
+      "name": "Landowner meeting about the project and available BMPs",
+      "page": 23,
+      "type": "meeting"
+    },
+    {
+      "name": "Field days highlighting installed BMPs",
+      "page": 23,
+      "value": 2,
+      "type": "field_day"
+    },
     { "name": "Demonstration farms", "page": 20, "value": 2, "type": "demonstration" },
     { "name": "Informational fact sheets", "page": 20, "value": 1000, "type": "publication" },
     { "name": "Articles in newsletters and local newspapers", "page": 20, "value": 4 },
@@ -129,10 +334,27 @@
     { "name": "Adopt-A-Stream workshop", "page": 28, "type": "workshop" }
   ],
   "geographic": [
-    { "name": "Bell Creek-West Prong Muddy Creek Watershed", "page": 10, "value": 19277, "unit": "acres", "type": "watershed" },
-    { "name": "Muddy Creek Watershed", "page": 10, "value": 63682, "unit": "acres", "type": "watershed" },
+    {
+      "name": "Bell Creek-West Prong Muddy Creek Watershed",
+      "page": 10,
+      "value": 19277,
+      "unit": "acres",
+      "type": "watershed"
+    },
+    {
+      "name": "Muddy Creek Watershed",
+      "page": 10,
+      "value": 63682,
+      "unit": "acres",
+      "type": "watershed"
+    },
     { "name": "HUC 08010207 (watershed ID 0601)", "page": 17, "type": "huc" },
-    { "name": "Targeted project area in the Bell Creek-West Prong Muddy Creek Subwatershed", "page": 39, "value": 3940, "unit": "acres" },
+    {
+      "name": "Targeted project area in the Bell Creek-West Prong Muddy Creek Subwatershed",
+      "page": 39,
+      "value": 3940,
+      "unit": "acres"
+    },
     { "name": "Muddy Creek", "page": 17, "type": "stream" },
     { "name": "Muddy Creek segment MS206E", "page": 17, "type": "stream" },
     { "name": "West Prong Muddy Creek", "page": 6, "type": "stream" },
@@ -143,13 +365,28 @@
     { "name": "Holly Springs National Forest", "page": 10 },
     { "name": "Tippah County", "page": 10, "type": "county" },
     { "name": "Falkner", "page": 10, "type": "city" },
-    { "name": "Northern Hilly Gulf Coastal Plains and Flatwoods/Blackland Prairie Margins ecoregions", "page": 10 },
+    {
+      "name": "Northern Hilly Gulf Coastal Plains and Flatwoods/Blackland Prairie Margins ecoregions",
+      "page": 10
+    },
     { "name": "Hatchie River", "page": 17, "type": "river" }
   ],
   "negatives": [
-    { "category": "bmps", "page": 15, "text": "Environmental Quality Incentive Program (EQIP), Conservation Reserve Program (CRP)" },
-    { "category": "monitoring", "page": 17, "text": "a source assessment was conducted for the Muddy Creek Watershed" },
-    { "category": "goals", "page": 8, "text": "educate landowners on new and innovative best management practices" },
+    {
+      "category": "bmps",
+      "page": 15,
+      "text": "Environmental Quality Incentive Program (EQIP), Conservation Reserve Program (CRP)"
+    },
+    {
+      "category": "monitoring",
+      "page": 17,
+      "text": "a source assessment was conducted for the Muddy Creek Watershed"
+    },
+    {
+      "category": "goals",
+      "page": 8,
+      "text": "educate landowners on new and innovative best management practices"
+    },
     { "category": "outreach", "page": 15, "text": "promoting conservation education" }
   ]
 }

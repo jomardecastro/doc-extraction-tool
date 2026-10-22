@@ -41,7 +41,11 @@ export class AnthropicProvider implements LlmProvider {
         max_tokens: request.maxTokens,
         system: request.system.map((block) =>
           block.cache
-            ? { type: "text" as const, text: block.text, cache_control: { type: "ephemeral" as const } }
+            ? {
+                type: "text" as const,
+                text: block.text,
+                cache_control: { type: "ephemeral" as const },
+              }
             : { type: "text" as const, text: block.text },
         ),
         messages: [{ role: "user", content: request.user }],
@@ -57,7 +61,8 @@ export class AnthropicProvider implements LlmProvider {
         .join("\n");
       const truncated = response.stop_reason === "max_tokens";
       const raw = truncated ? null : extractJsonObject(text);
-      const parsed = raw === null ? null : request.schema.safeParse(normalizeForSchema(raw, request.schema));
+      const parsed =
+        raw === null ? null : request.schema.safeParse(normalizeForSchema(raw, request.schema));
 
       return {
         data: parsed?.success ? parsed.data : null,
@@ -91,25 +96,41 @@ export class AnthropicProvider implements LlmProvider {
 /** Most specific first: the distinction between retryable and permanent failures drives the UI copy. */
 function mapAnthropicError(err: unknown): AppError {
   if (err instanceof AppError) return err;
-  if (err instanceof Anthropic.AuthenticationError || err instanceof Anthropic.PermissionDeniedError) {
+  if (
+    err instanceof Anthropic.AuthenticationError ||
+    err instanceof Anthropic.PermissionDeniedError
+  ) {
     return new AppError("llm_auth", undefined, { cause: err });
   }
-  if (err instanceof Anthropic.RateLimitError) return new AppError("llm_rate_limited", undefined, { cause: err });
+  if (err instanceof Anthropic.RateLimitError)
+    return new AppError("llm_rate_limited", undefined, { cause: err });
   if (err instanceof Anthropic.BadRequestError) {
     if (/prompt is too long|too many tokens|context window/i.test(err.message)) {
       return new AppError("document_too_long", undefined, { cause: err });
     }
     if (/credit balance|billing|plans & billing/i.test(err.message)) {
-      return new AppError("llm_auth", "The language model account has no remaining credit. Add credit to the Anthropic account behind ANTHROPIC_API_KEY.", { cause: err });
+      return new AppError(
+        "llm_auth",
+        "The language model account has no remaining credit. Add credit to the Anthropic account behind ANTHROPIC_API_KEY.",
+        { cause: err },
+      );
     }
-    return new AppError("internal", `The language model rejected the request: ${err.message}`, { cause: err, retryable: false });
+    return new AppError("internal", `The language model rejected the request: ${err.message}`, {
+      cause: err,
+      retryable: false,
+    });
   }
-  if (err instanceof Anthropic.InternalServerError) return new AppError("llm_overloaded", undefined, { cause: err });
+  if (err instanceof Anthropic.InternalServerError)
+    return new AppError("llm_overloaded", undefined, { cause: err });
   if (err instanceof Anthropic.APIConnectionError) {
-    return new AppError("llm_overloaded", "Could not reach the language model service.", { cause: err });
+    return new AppError("llm_overloaded", "Could not reach the language model service.", {
+      cause: err,
+    });
   }
   if (err instanceof Anthropic.APIError) {
-    return new AppError("internal", `Language model error ${err.status ?? ""}: ${err.message}`, { cause: err });
+    return new AppError("internal", `Language model error ${err.status ?? ""}: ${err.message}`, {
+      cause: err,
+    });
   }
   return new AppError("internal", undefined, { cause: err });
 }

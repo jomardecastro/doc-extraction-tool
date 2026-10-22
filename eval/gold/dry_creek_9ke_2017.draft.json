@@ -1,0 +1,400 @@
+{
+  "doc": "dry_creek_9ke_2017",
+  "labelled": "corrected",
+  "goals": [
+    {
+      "name": "Reduce sediment yields by 55%-66%",
+      "page": 3,
+      "type": "goal"
+    },
+    {
+      "name": "Attainment of the Aquatic Life Designated Use",
+      "page": 11,
+      "type": "goal"
+    },
+    {
+      "name": "Mitigate increased sedimentation from newly converted pastures",
+      "page": 3,
+      "type": "objective"
+    },
+    {
+      "name": "Behavior change and BMP adoption through education",
+      "page": 8,
+      "type": "objective"
+    }
+  ],
+  "bmps": [
+    {
+      "name": "Fencing",
+      "page": 7,
+      "value": 9420,
+      "unit": "ft",
+      "cost": 25905,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Water Facilities",
+      "page": 7,
+      "value": 12,
+      "unit": "ea",
+      "cost": 15658,
+      "type": "agricultural"
+    },
+    {
+      "name": "Heavy Use Areas",
+      "page": 7,
+      "value": 12,
+      "unit": "ea",
+      "cost": 18855,
+      "type": "agricultural"
+    },
+    {
+      "name": "Stream Crossings",
+      "page": 7,
+      "value": 7,
+      "unit": "ea",
+      "cost": 29382,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Ponds",
+      "page": 7,
+      "value": 7,
+      "unit": "es",
+      "cost": 60100,
+      "type": "structural"
+    },
+    {
+      "name": "Sediment Basins",
+      "page": 7,
+      "value": 6,
+      "unit": "ea",
+      "cost": 35072,
+      "type": "structural"
+    },
+    {
+      "name": "Nutrient Management",
+      "page": 7,
+      "value": 200,
+      "unit": "ac",
+      "cost": 85000,
+      "type": "agricultural"
+    },
+    {
+      "name": "Critical Area Planting",
+      "page": 7,
+      "value": 9,
+      "unit": "ac",
+      "cost": 6964,
+      "type": "agricultural"
+    },
+    {
+      "name": "Establishment of Permanent Vegetation",
+      "page": 7,
+      "value": 200,
+      "unit": "ac",
+      "cost": 85000,
+      "type": "agricultural"
+    },
+    {
+      "name": "Forage and Biomass Planting",
+      "page": 7,
+      "value": 42.5,
+      "unit": "ac",
+      "cost": 17949,
+      "type": "agricultural"
+    }
+  ],
+  "implementation": [
+    {
+      "name": "Project management, implementation, coordination and plan revision",
+      "page": 7,
+      "value": 54660
+    },
+    {
+      "name": "Target implementation on recently converted land, then other pasture",
+      "page": 5
+    },
+    {
+      "name": "Develop, execute and implement Subgrant Agreement",
+      "page": 9
+    },
+    {
+      "name": "Facilitate meetings, media promotion and coordinate plan activities",
+      "page": 9
+    },
+    {
+      "name": "Inform landowners and secure commitments from priority area landowners",
+      "page": 9
+    },
+    {
+      "name": "Determine priority areas via GIS and site surveys; install BMPs to NRCS guidelines",
+      "page": 9
+    },
+    {
+      "name": "Complete and implement watershed monitoring plan",
+      "page": 9
+    },
+    {
+      "name": "Submit blank copies of standard maintenance agreements",
+      "page": 9
+    },
+    {
+      "name": "Conduct inspections of BMPs during construction",
+      "page": 9
+    },
+    {
+      "name": "Collect GPS coordinates of installed BMPs into GIS",
+      "page": 9
+    },
+    {
+      "name": "Photo documentation of BMP installation",
+      "page": 9
+    },
+    {
+      "name": "Report load reductions, acreage affected, site conditions and GIS data",
+      "page": 9
+    },
+    {
+      "name": "Coordinate with partners to target priority areas for BMPs",
+      "page": 9
+    },
+    {
+      "name": "Establish Watershed Implementation Team",
+      "page": 10
+    },
+    {
+      "name": "Initiate watershed monitoring (baseline)",
+      "page": 10
+    },
+    {
+      "name": "Establish routine WIT meeting schedule to support WBP revision",
+      "page": 10
+    },
+    {
+      "name": "Implement BMPs",
+      "page": 10
+    },
+    {
+      "name": "Coordinate with landowners to inspect Section 319-funded BMPs",
+      "page": 10
+    },
+    {
+      "name": "Begin post-BMP water quality monitoring",
+      "page": 10
+    },
+    {
+      "name": "Finalize education and outreach plan",
+      "page": 10
+    },
+    {
+      "name": "Finalize revised WBP",
+      "page": 10
+    },
+    {
+      "name": "Conduct Stressor Analysis if no improvement",
+      "page": 11
+    }
+  ],
+  "monitoring": [
+    {
+      "name": "Sediment yield reduction of 55%-66%",
+      "page": 3,
+      "unit": "%",
+      "type": "target"
+    },
+    {
+      "name": "Dissolved Oxygen daily average threshold",
+      "page": 10,
+      "value": 5,
+      "unit": "mg/L",
+      "type": "threshold"
+    },
+    {
+      "name": "Dissolved Oxygen instantaneous threshold",
+      "page": 10,
+      "value": 4,
+      "unit": "mg/L",
+      "type": "threshold"
+    },
+    {
+      "name": "Temperature not to exceed 90°F",
+      "page": 10,
+      "value": 90,
+      "unit": "°F",
+      "type": "threshold"
+    },
+    {
+      "name": "Specific Conductance less than 1000 micromhos/cm",
+      "page": 10,
+      "value": 1000,
+      "unit": "micromhos/cm",
+      "type": "threshold"
+    },
+    {
+      "name": "Dissolved Solids monthly average less than 750 mg/L",
+      "page": 10,
+      "value": 750,
+      "unit": "mg/L",
+      "type": "threshold"
+    },
+    {
+      "name": "Dissolved Solids instantaneous threshold less than 1500 mg/L",
+      "page": 10,
+      "value": 1500,
+      "unit": "mg/L",
+      "type": "threshold"
+    },
+    {
+      "name": "Total Suspended Solids monitoring (sediment surrogate)",
+      "page": 10,
+      "type": "unspecified"
+    },
+    {
+      "name": "Total Suspended Sediment monitoring (sediment surrogate)",
+      "page": 10,
+      "type": "unspecified"
+    },
+    {
+      "name": "Turbidity monitoring (sediment surrogate)",
+      "page": 10,
+      "type": "unspecified"
+    },
+    {
+      "name": "M-BISQ attainment threshold 71.6 (East bioregion)",
+      "page": 11,
+      "value": 71.6,
+      "type": "threshold"
+    },
+    {
+      "name": "Biological community data and in-stream habitat surveys",
+      "page": 11,
+      "type": "unspecified"
+    },
+    {
+      "name": "Dry Creek biological impairment (baseline listing)",
+      "page": 1,
+      "type": "baseline"
+    },
+    {
+      "name": "Pre-BMP baseline chemical and biological monitoring",
+      "page": 11,
+      "type": "baseline"
+    },
+    {
+      "name": "Post-BMP monitoring downstream of BMP activity",
+      "page": 11,
+      "type": "unspecified"
+    },
+    {
+      "name": "Reporting of load reductions, acreage affected and site conditions",
+      "page": 9,
+      "type": "unspecified"
+    },
+    {
+      "name": "GPS coordinates of installed BMPs",
+      "page": 9,
+      "type": "unspecified"
+    },
+    {
+      "name": "Education program evaluation and attendance counts",
+      "page": 8,
+      "type": "unspecified"
+    }
+  ],
+  "outreach": [
+    {
+      "name": "Dry Creek Watershed Implementation Team (WIT) meetings",
+      "page": 8,
+      "value": 5,
+      "type": "meeting"
+    },
+    {
+      "name": "Field days to showcase implemented BMPs",
+      "page": 8,
+      "type": "field_day"
+    },
+    {
+      "name": "Media and social media promotion of the project",
+      "page": 9,
+      "type": "media"
+    },
+    {
+      "name": "Inform landowners and operators about the project",
+      "page": 9,
+      "type": "meeting"
+    },
+    {
+      "name": "Adopt A Stream",
+      "page": 8,
+      "type": "workshop"
+    },
+    {
+      "name": "Teacher Workshops",
+      "page": 8,
+      "type": "workshop"
+    },
+    {
+      "name": "Water Model Presentations",
+      "page": 8,
+      "type": "demonstration"
+    },
+    {
+      "name": "Watershed Harmony Mobile Classroom",
+      "page": 8,
+      "type": "school_program"
+    },
+    {
+      "name": "Storm Drain Marking",
+      "page": 8,
+      "type": "signage"
+    },
+    {
+      "name": "\"Train the Trainer\" workshops",
+      "page": 8,
+      "type": "workshop"
+    }
+  ],
+  "geographic": [
+    {
+      "name": "Dry Creek Watershed",
+      "page": 1,
+      "value": 13224,
+      "unit": "acres",
+      "type": "watershed"
+    },
+    {
+      "name": "HUC 03170040603",
+      "page": 1,
+      "type": "huc"
+    },
+    {
+      "name": "Dry Creek (segment ID MS082E)",
+      "page": 1,
+      "type": "stream"
+    },
+    {
+      "name": "Covington County",
+      "page": 1,
+      "type": "county"
+    },
+    {
+      "name": "Newly converted pasture areas",
+      "page": 3,
+      "value": 1400,
+      "unit": "acres",
+      "type": "other"
+    },
+    {
+      "name": "Dry Creek Watershed Priority Areas for BMP Implementation",
+      "page": 6,
+      "type": "other"
+    },
+    {
+      "name": "GY16 Proposed Project Area",
+      "page": 1,
+      "type": "other"
+    }
+  ],
+  "negatives": []
+}

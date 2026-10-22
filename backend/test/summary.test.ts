@@ -41,7 +41,14 @@ const empty = { goals: [], monitoring: [], outreach: [], geographicAreas: [] };
 
 describe("buildSummary", () => {
   it("computes the completion rate from items that have a status", () => {
-    const s = buildSummary({ ...empty, bmps: [bmp("completed"), bmp("planned", "agricultural"), bmp("unknown")], implementation: [activity("completed")] }, 2);
+    const s = buildSummary(
+      {
+        ...empty,
+        bmps: [bmp("completed"), bmp("planned", "agricultural"), bmp("unknown")],
+        implementation: [activity("completed")],
+      },
+      2,
+    );
     expect(s.totalBMPs).toBe(3);
     expect(s.completionRate).toBeCloseTo(2 / 3);
     expect(s.completionRateBasis).toBe("status");

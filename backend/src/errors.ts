@@ -15,7 +15,10 @@ export class AppError extends Error {
     options: { cause?: unknown; retryable?: boolean; status?: number } = {},
   ) {
     const defaults = ERROR_DEFAULTS[code];
-    super(message ?? defaults.message, options.cause === undefined ? undefined : { cause: options.cause });
+    super(
+      message ?? defaults.message,
+      options.cause === undefined ? undefined : { cause: options.cause },
+    );
     this.name = "AppError";
     this.code = code;
     this.status = options.status ?? defaults.status;

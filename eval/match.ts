@@ -91,7 +91,12 @@ const TYPE_FIELD: Record<Category, string | null> = {
 
 type Predicted = Record<string, unknown> & { name: string; page: number; sourceQuote: string };
 
-export function scoreCategory(category: Category, gold: GoldItem[], report: ExtractedReport, negatives: GoldNegative[] = []): CategoryScore {
+export function scoreCategory(
+  category: Category,
+  gold: GoldItem[],
+  report: ExtractedReport,
+  negatives: GoldNegative[] = [],
+): CategoryScore {
   const predicted = report[CATEGORY_KEYS[category]] as unknown as Predicted[];
   const used = new Set<number>();
   let tp = 0;
@@ -133,10 +138,17 @@ export function scoreCategory(category: Category, gold: GoldItem[], report: Extr
       const unitField = UNIT_FIELD[category];
       const unitOk = !unitField || !g.unit || sameUnit(g.unit, p[unitField] as string | null);
       if (typeof value === "number" && closeEnough(value, g.value) && unitOk) quantCorrect++;
-      else if (category === "bmps" && typeof g.cost === "number" && typeof p.estimatedCost === "number" && closeEnough(p.estimatedCost, g.cost)) quantCorrect++;
+      else if (
+        category === "bmps" &&
+        typeof g.cost === "number" &&
+        typeof p.estimatedCost === "number" &&
+        closeEnough(p.estimatedCost, g.cost)
+      )
+        quantCorrect++;
     } else if (category === "bmps" && typeof g.cost === "number") {
       quantGold++;
-      if (typeof p.estimatedCost === "number" && closeEnough(p.estimatedCost, g.cost)) quantCorrect++;
+      if (typeof p.estimatedCost === "number" && closeEnough(p.estimatedCost, g.cost))
+        quantCorrect++;
     }
     if (g.type) {
       const typeField = TYPE_FIELD[category];
@@ -156,9 +168,32 @@ export function scoreCategory(category: Category, gold: GoldItem[], report: Extr
 
   const negativesLeaked = negatives
     .filter((n) => n.category === category)
-    .filter((n) => predicted.some((p) => normalizeText(p.sourceQuote).includes(normalizeText(n.text)) || normalizeText(p.name).includes(normalizeText(n.text)))).length;
+    .filter((n) =>
+      predicted.some(
+        (p) =>
+          normalizeText(p.sourceQuote).includes(normalizeText(n.text)) ||
+          normalizeText(p.name).includes(normalizeText(n.text)),
+      ),
+    ).length;
 
-  return { category, gold: gold.length, predicted: predicted.length, tp, fp, fn, precision, recall, f1, quantGold, quantCorrect, typeGold, typeCorrect, negativesLeaked, misses, extras };
+  return {
+    category,
+    gold: gold.length,
+    predicted: predicted.length,
+    tp,
+    fp,
+    fn,
+    precision,
+    recall,
+    f1,
+    quantGold,
+    quantCorrect,
+    typeGold,
+    typeCorrect,
+    negativesLeaked,
+    misses,
+    extras,
+  };
 }
 
 /** Name-vs-name similarity, boosted by how much of the gold name is present in the predicted quote. */
@@ -166,7 +201,10 @@ export function matchScore(goldName: string, p: Predicted): number {
   const byName = similarity(goldName, p.name);
   const goldTokens = stemmedTokens(goldName);
   const quoteTokens = new Set(stemmedTokens(`${p.sourceQuote} ${p.name}`));
-  const inQuote = goldTokens.length > 0 ? goldTokens.filter((t) => quoteTokens.has(t)).length / goldTokens.length : 0;
+  const inQuote =
+    goldTokens.length > 0
+      ? goldTokens.filter((t) => quoteTokens.has(t)).length / goldTokens.length
+      : 0;
   // A name match is the primary signal; a quote that contains most of the gold name's words is
   // nearly as good (the model chose a different label for the same statement) but is capped
   // below a strong name match so it can never outrank one.
@@ -196,7 +234,19 @@ export function stemmedTokens(text: string): string[] {
 
 function stem(word: string): string {
   if (word.length <= 4) return word;
-  for (const suffix of ["ations", "ation", "ments", "ment", "ings", "ing", "ies", "ed", "es", "ly", "s"]) {
+  for (const suffix of [
+    "ations",
+    "ation",
+    "ments",
+    "ment",
+    "ings",
+    "ing",
+    "ies",
+    "ed",
+    "es",
+    "ly",
+    "s",
+  ]) {
     if (word.endsWith(suffix) && word.length - suffix.length >= 3) {
       const base = word.slice(0, -suffix.length);
       return suffix === "ies" ? `${base}y` : base;
@@ -217,7 +267,15 @@ const UNIT_SYNONYMS: string[][] = [
   ["mg/l", "milligrams per liter"],
   ["miles", "mi"],
   ["$", "usd", "dollars"],
-  ["per 100 ml", "/100 ml", "per 100ml", "cfu/100 ml", "colonies per 100 ml", "colonies/100 ml", "#/100 ml"],
+  [
+    "per 100 ml",
+    "/100 ml",
+    "per 100ml",
+    "cfu/100 ml",
+    "colonies per 100 ml",
+    "colonies/100 ml",
+    "#/100 ml",
+  ],
   ["°f", "deg f", "degrees f", "f"],
   ["micromhos/cm", "umhos/cm", "µmhos/cm", "uohms/cm"],
 ];

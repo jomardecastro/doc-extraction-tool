@@ -9,7 +9,10 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const status = execFileSync("git", ["status", "--porcelain"], { cwd: root }).toString().trim();
 if (status) {
-  console.error("Working tree has uncommitted changes; commit them first so the archive matches the repository:\n" + status);
+  console.error(
+    "Working tree has uncommitted changes; commit them first so the archive matches the repository:\n" +
+      status,
+  );
   process.exit(1);
 }
 const sha = execFileSync("git", ["rev-parse", "--short", "HEAD"], { cwd: root }).toString().trim();
@@ -17,5 +20,11 @@ const outDir = path.join(root, "dist");
 mkdirSync(outDir, { recursive: true });
 const out = path.join(outDir, `doc-extraction-tool-${sha}.zip`);
 
-execFileSync("git", ["archive", "--format=zip", "--prefix=doc-extraction-tool/", "-o", out, "HEAD"], { cwd: root, stdio: "inherit" });
-console.log(`wrote ${out} (${(statSync(out).size / 1024 / 1024).toFixed(1)} MB) from commit ${sha}`);
+execFileSync(
+  "git",
+  ["archive", "--format=zip", "--prefix=doc-extraction-tool/", "-o", out, "HEAD"],
+  { cwd: root, stdio: "inherit" },
+);
+console.log(
+  `wrote ${out} (${(statSync(out).size / 1024 / 1024).toFixed(1)} MB) from commit ${sha}`,
+);

@@ -12,7 +12,10 @@ export { serializeDocument, type SerializeOptions } from "./sections.js";
  * PDF bytes -> structured, cleaned, sectioned document. Throws `AppError` with a user-facing code
  * for encrypted, unreadable, scanned or malformed files.
  */
-export async function extractDocument(data: Uint8Array, options: ExtractOptions = {}): Promise<ExtractedDocument> {
+export async function extractDocument(
+  data: Uint8Array,
+  options: ExtractOptions = {},
+): Promise<ExtractedDocument> {
   const raw = await extractRawPages(data, options);
   const body = estimateBodyFont(raw);
 

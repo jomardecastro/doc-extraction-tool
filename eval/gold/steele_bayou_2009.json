@@ -3,39 +3,160 @@
   "labelled": "corrected",
   "goals": [
     { "name": "Achieve compliance with TMDLs issued for Steele Bayou", "page": 15, "type": "goal" },
-    { "name": "Reach and maintain designated use for Fish and Wildlife Support", "page": 15, "type": "goal" },
+    {
+      "name": "Reach and maintain designated use for Fish and Wildlife Support",
+      "page": 15,
+      "type": "goal"
+    },
     { "name": "Reduce sedimentation by 35% to 67%", "page": 16, "type": "goal" },
-    { "name": "Reduce nutrients by approximately 70%", "page": 18, "value": 70, "unit": "%", "type": "goal" },
-    { "name": "Remove fish consumption advisories for DDT and Toxaphene", "page": 18, "type": "goal" },
-    { "name": "Promote sustained long-term protection and improvement of aquatic resources (education strategy objective)", "page": 21 },
-    { "name": "Increase farmer and landowner awareness of the value of clean water", "page": 21, "type": "objective" },
-    { "name": "Increase farmer and landowner knowledge of financial and technical assistance programs", "page": 21, "type": "objective" },
-    { "name": "Increase public awareness of the value of clean water", "page": 21, "type": "objective" },
-    { "name": "Increase public awareness of how common activities affect water quality and critical flora and fauna", "page": 21, "type": "objective" },
-    { "name": "Increase public awareness of how BMPs reduce negative water quality and habitat effects", "page": 21, "type": "objective" },
-    { "name": "Increase public awareness of the long-term advantages of protecting water quality and habitat", "page": 21, "type": "objective" },
-    { "name": "Increase public awareness of aquatic invasive species and how to prevent their spread", "page": 21, "type": "objective" },
-    { "name": "Reduction of sediment load by at least 2 tons/year", "page": 23, "value": 2, "unit": "tons/year" },
+    {
+      "name": "Reduce nutrients by approximately 70%",
+      "page": 18,
+      "value": 70,
+      "unit": "%",
+      "type": "goal"
+    },
+    {
+      "name": "Remove fish consumption advisories for DDT and Toxaphene",
+      "page": 18,
+      "type": "goal"
+    },
+    {
+      "name": "Promote sustained long-term protection and improvement of aquatic resources (education strategy objective)",
+      "page": 21
+    },
+    {
+      "name": "Increase farmer and landowner awareness of the value of clean water",
+      "page": 21,
+      "type": "objective"
+    },
+    {
+      "name": "Increase farmer and landowner knowledge of financial and technical assistance programs",
+      "page": 21,
+      "type": "objective"
+    },
+    {
+      "name": "Increase public awareness of the value of clean water",
+      "page": 21,
+      "type": "objective"
+    },
+    {
+      "name": "Increase public awareness of how common activities affect water quality and critical flora and fauna",
+      "page": 21,
+      "type": "objective"
+    },
+    {
+      "name": "Increase public awareness of how BMPs reduce negative water quality and habitat effects",
+      "page": 21,
+      "type": "objective"
+    },
+    {
+      "name": "Increase public awareness of the long-term advantages of protecting water quality and habitat",
+      "page": 21,
+      "type": "objective"
+    },
+    {
+      "name": "Increase public awareness of aquatic invasive species and how to prevent their spread",
+      "page": 21,
+      "type": "objective"
+    },
+    {
+      "name": "Reduction of sediment load by at least 2 tons/year",
+      "page": 23,
+      "value": 2,
+      "unit": "tons/year"
+    },
     { "name": "Achievement of all Mississippi water quality criteria", "page": 23 }
   ],
   "bmps": [
-    { "name": "Water Control Structures", "page": 17, "value": 25, "unit": "units", "cost": 37500, "type": "structural" },
-    { "name": "Large Overfall Pipes", "page": 17, "value": 36, "unit": "units", "cost": 3661956, "type": "structural" },
-    { "name": "Water Diversion Pads", "page": 17, "value": 1000, "unit": "feet", "cost": 3000, "type": "structural" },
-    { "name": "Bank Stabilization", "page": 17, "value": 6, "unit": "units", "cost": 24000, "type": "streambank_riparian" },
-    { "name": "Rip-Rap Weirs", "page": 17, "value": 5, "unit": "units", "cost": 77000, "type": "structural" },
-    { "name": "Herbicide (2-4D) for water hyacinth control", "page": 19, "value": 200, "unit": "gallons", "cost": 5400, "type": "other" },
-    { "name": "Herbicide Treatments", "page": 19, "value": 90, "unit": "hours", "cost": 38250, "type": "other" },
-    { "name": "Mechanical Removal of water hyacinth", "page": 20, "value": 25, "unit": "hours", "cost": 12500, "type": "other" },
+    {
+      "name": "Water Control Structures",
+      "page": 17,
+      "value": 25,
+      "unit": "units",
+      "cost": 37500,
+      "type": "structural"
+    },
+    {
+      "name": "Large Overfall Pipes",
+      "page": 17,
+      "value": 36,
+      "unit": "units",
+      "cost": 3661956,
+      "type": "structural"
+    },
+    {
+      "name": "Water Diversion Pads",
+      "page": 17,
+      "value": 1000,
+      "unit": "feet",
+      "cost": 3000,
+      "type": "structural"
+    },
+    {
+      "name": "Bank Stabilization",
+      "page": 17,
+      "value": 6,
+      "unit": "units",
+      "cost": 24000,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Rip-Rap Weirs",
+      "page": 17,
+      "value": 5,
+      "unit": "units",
+      "cost": 77000,
+      "type": "structural"
+    },
+    {
+      "name": "Herbicide (2-4D) for water hyacinth control",
+      "page": 19,
+      "value": 200,
+      "unit": "gallons",
+      "cost": 5400,
+      "type": "other"
+    },
+    {
+      "name": "Herbicide Treatments",
+      "page": 19,
+      "value": 90,
+      "unit": "hours",
+      "cost": 38250,
+      "type": "other"
+    },
+    {
+      "name": "Mechanical Removal of water hyacinth",
+      "page": 20,
+      "value": 25,
+      "unit": "hours",
+      "cost": 12500,
+      "type": "other"
+    },
     { "name": "Riparian forest buffers", "page": 17, "type": "streambank_riparian" },
     { "name": "Low water weirs", "page": 17, "type": "structural" }
   ],
   "implementation": [
-    { "name": "Technical assistance for sedimentation BMPs from Delta F.A.R.M., USACE, USEPA and MDEQ", "page": 15 },
-    { "name": "Implement sediment BMPs first to address low DO and organic enrichment", "page": 17 },
-    { "name": "Mechanical removal of water hyacinth coordinated by MDOT and Washington County Drainage District", "page": 19 },
-    { "name": "Herbicide treatment of water hyacinth by the Mississippi Levee Board with Delta F.A.R.M. assistance", "page": 19 },
-    { "name": "Form a work group on detection, monitoring and control of aquatic weeds", "page": 19 },
+    {
+      "name": "Technical assistance for sedimentation BMPs from Delta F.A.R.M., USACE, USEPA and MDEQ",
+      "page": 15
+    },
+    {
+      "name": "Implement sediment BMPs first to address low DO and organic enrichment",
+      "page": 17
+    },
+    {
+      "name": "Mechanical removal of water hyacinth coordinated by MDOT and Washington County Drainage District",
+      "page": 19
+    },
+    {
+      "name": "Herbicide treatment of water hyacinth by the Mississippi Levee Board with Delta F.A.R.M. assistance",
+      "page": 19
+    },
+    {
+      "name": "Form a work group on detection, monitoring and control of aquatic weeds",
+      "page": 19
+    },
     { "name": "Sea Grant funding request for the silver carp movement project", "page": 20 },
     { "name": "Fisheries management plan development", "page": 20, "value": 1862 },
     { "name": "Five-year assessment of progress in 2013", "page": 23 },
@@ -49,25 +170,111 @@
     { "name": "Notify stakeholders of the final plan's availability", "page": 24 }
   ],
   "monitoring": [
-    { "name": "Dissolved Oxygen daily average criterion", "page": 12, "value": 5.0, "unit": "mg/L", "type": "threshold" },
-    { "name": "Dissolved Oxygen instantaneous criterion", "page": 12, "value": 4.0, "unit": "mg/L", "type": "threshold" },
+    {
+      "name": "Dissolved Oxygen daily average criterion",
+      "page": 12,
+      "value": 5.0,
+      "unit": "mg/L",
+      "type": "threshold"
+    },
+    {
+      "name": "Dissolved Oxygen instantaneous criterion",
+      "page": 12,
+      "value": 4.0,
+      "unit": "mg/L",
+      "type": "threshold"
+    },
     { "name": "pH criterion", "page": 12, "type": "threshold" },
-    { "name": "Temperature criterion", "page": 12, "value": 32.2, "unit": "deg C", "type": "threshold" },
-    { "name": "Fecal coliform criterion May to October geometric mean", "page": 12, "value": 200, "unit": "per 100 mL", "type": "threshold" },
-    { "name": "Fecal coliform criterion November to April geometric mean", "page": 12, "value": 2000, "unit": "per 100 mL", "type": "threshold" },
-    { "name": "Specific conductance criterion", "page": 12, "value": 1000, "unit": "uohms/cm", "type": "threshold" },
-    { "name": "Dissolved Solids monthly average criterion", "page": 12, "value": 750, "unit": "mg/L", "type": "threshold" },
-    { "name": "Dissolved Solids instantaneous criterion", "page": 12, "value": 1500, "unit": "mg/L", "type": "threshold" },
+    {
+      "name": "Temperature criterion",
+      "page": 12,
+      "value": 32.2,
+      "unit": "deg C",
+      "type": "threshold"
+    },
+    {
+      "name": "Fecal coliform criterion May to October geometric mean",
+      "page": 12,
+      "value": 200,
+      "unit": "per 100 mL",
+      "type": "threshold"
+    },
+    {
+      "name": "Fecal coliform criterion November to April geometric mean",
+      "page": 12,
+      "value": 2000,
+      "unit": "per 100 mL",
+      "type": "threshold"
+    },
+    {
+      "name": "Specific conductance criterion",
+      "page": 12,
+      "value": 1000,
+      "unit": "uohms/cm",
+      "type": "threshold"
+    },
+    {
+      "name": "Dissolved Solids monthly average criterion",
+      "page": 12,
+      "value": 750,
+      "unit": "mg/L",
+      "type": "threshold"
+    },
+    {
+      "name": "Dissolved Solids instantaneous criterion",
+      "page": 12,
+      "value": 1500,
+      "unit": "mg/L",
+      "type": "threshold"
+    },
     { "name": "Narrative sediment standard", "page": 12, "type": "threshold" },
-    { "name": "Total nitrogen target", "page": 13, "value": 1.05, "unit": "mg/l", "type": "target" },
-    { "name": "Total phosphorus target", "page": 13, "value": 0.16, "unit": "mg/l", "type": "target" },
+    {
+      "name": "Total nitrogen target",
+      "page": 13,
+      "value": 1.05,
+      "unit": "mg/l",
+      "type": "target"
+    },
+    {
+      "name": "Total phosphorus target",
+      "page": 13,
+      "value": 0.16,
+      "unit": "mg/l",
+      "type": "target"
+    },
     { "name": "DDT and Toxaphene water column standards", "page": 18 },
-    { "name": "USGS suspended sediment sampling at four bridge crossings and five field edge sites", "page": 23 },
-    { "name": "Main channel storm runoff sampling trips per year", "page": 23, "value": 4, "unit": "trips per year" },
-    { "name": "Edge-of-field automatic sampling", "page": 23, "value": 24, "unit": "discrete samples" },
-    { "name": "Water stage recorders, discharge measurements and annual cross-section survey", "page": 23 },
-    { "name": "Sediment load reduction progress criterion", "page": 23, "value": 2, "unit": "tons/year", "type": "target" },
-    { "name": "Achievement of all water quality criteria as a progress criterion", "page": 23, "type": "target" },
+    {
+      "name": "USGS suspended sediment sampling at four bridge crossings and five field edge sites",
+      "page": 23
+    },
+    {
+      "name": "Main channel storm runoff sampling trips per year",
+      "page": 23,
+      "value": 4,
+      "unit": "trips per year"
+    },
+    {
+      "name": "Edge-of-field automatic sampling",
+      "page": 23,
+      "value": 24,
+      "unit": "discrete samples"
+    },
+    {
+      "name": "Water stage recorders, discharge measurements and annual cross-section survey",
+      "page": 23
+    },
+    {
+      "name": "Sediment load reduction progress criterion",
+      "page": 23,
+      "value": 2,
+      "unit": "tons/year",
+      "type": "target"
+    },
+    {
+      "name": "Achievement of all water quality criteria as a progress criterion",
+      "page": 23,
+      "type": "target"
+    },
     { "name": "Silver carp movement monitoring", "page": 20 },
     { "name": "MDWFP fishery monitoring", "page": 20 }
   ],
@@ -78,13 +285,31 @@
     { "name": "Press releases and website outreach", "page": 22, "type": "media" },
     { "name": "Implementation plan posted on both organizations' websites", "page": 22 },
     { "name": "Free bumper stickers", "page": 22 },
-    { "name": "Signs at Steele Bayou boat ramps about invasive aquatic plants", "page": 22, "type": "signage" },
-    { "name": "Field day for 4-H high school students on aquatic invasive species", "page": 22, "type": "field_day" },
-    { "name": "Articles in partnering agencies' magazines and newsletters", "page": 22, "type": "publication" },
+    {
+      "name": "Signs at Steele Bayou boat ramps about invasive aquatic plants",
+      "page": 22,
+      "type": "signage"
+    },
+    {
+      "name": "Field day for 4-H high school students on aquatic invasive species",
+      "page": 22,
+      "type": "field_day"
+    },
+    {
+      "name": "Articles in partnering agencies' magazines and newsletters",
+      "page": 22,
+      "type": "publication"
+    },
     { "name": "MDWFP assistance with fish advisory education", "page": 18 }
   ],
   "geographic": [
-    { "name": "Steele Bayou Watershed", "page": 6, "value": 202617, "unit": "acres", "type": "watershed" },
+    {
+      "name": "Steele Bayou Watershed",
+      "page": 6,
+      "value": 202617,
+      "unit": "acres",
+      "type": "watershed"
+    },
     { "name": "Yazoo River basin", "page": 6, "type": "basin" },
     { "name": "Washington County", "page": 6, "type": "county" },
     { "name": "Issaquena County", "page": 6, "type": "county" },
@@ -106,9 +331,25 @@
     { "name": "Yazoo National Wildlife Refuge", "page": 19 }
   ],
   "negatives": [
-    { "category": "bmps", "page": 15, "text": "Programs such as the Environmental Quality Incentives Program (EQIP)" },
-    { "category": "monitoring", "page": 12, "text": "Vicksburg District Corps of Engineers began collecting" },
-    { "category": "goals", "page": 6, "text": "develop a more sustainable future for the resources, residences, and businesses" },
-    { "category": "outreach", "page": 21, "text": "Education and outreach are part of Delta Wildlife and Delta F.A.R.M." }
+    {
+      "category": "bmps",
+      "page": 15,
+      "text": "Programs such as the Environmental Quality Incentives Program (EQIP)"
+    },
+    {
+      "category": "monitoring",
+      "page": 12,
+      "text": "Vicksburg District Corps of Engineers began collecting"
+    },
+    {
+      "category": "goals",
+      "page": 6,
+      "text": "develop a more sustainable future for the resources, residences, and businesses"
+    },
+    {
+      "category": "outreach",
+      "page": 21,
+      "text": "Education and outreach are part of Delta Wildlife and Delta F.A.R.M."
+    }
   ]
 }

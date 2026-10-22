@@ -11,7 +11,10 @@ import type { LlmProvider, LlmRequest } from "../provider.js";
  */
 export function buildMetadataRequest(doc: ExtractedDocument): LlmRequest<LlmDocumentMeta> {
   const firstPages = new Set(doc.pages.slice(0, 4).map((p) => p.pageNumber));
-  const front = serializeDocument(doc, { roles: ["main", "administrative", "supporting"], pages: firstPages });
+  const front = serializeDocument(doc, {
+    roles: ["main", "administrative", "supporting"],
+    pages: firstPages,
+  });
   const headings = doc.sections
     .filter((s) => s.role !== "administrative")
     .slice(0, 40)

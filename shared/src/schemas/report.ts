@@ -25,7 +25,9 @@ export type Status = z.infer<typeof StatusSchema>;
 /** Where an item came from. `sourceQuote` must be copied verbatim from one page of the PDF. */
 const provenanceFields = {
   page: z.number().int().describe("The n attribute of the <page> element containing the quote"),
-  sourceQuote: z.string().describe("Exact verbatim copy of contiguous text from that page, under 300 characters"),
+  sourceQuote: z
+    .string()
+    .describe("Exact verbatim copy of contiguous text from that page, under 300 characters"),
   sectionTitle: z.string().nullable().describe("The heading the quote sits under, or null"),
   confidence: ConfidenceSchema,
 };
@@ -42,10 +44,15 @@ export const LlmGoalSchema = z.object({
   name: z.string().describe("Short label in the document's own words, under 80 characters"),
   description: z.string().describe("One or two sentences in your own words"),
   kind: z.enum(["goal", "objective"]),
-  pollutants: z.array(z.string()).describe("Pollutants named in the goal, e.g. sediment, nutrients, fecal coliform"),
+  pollutants: z
+    .array(z.string())
+    .describe("Pollutants named in the goal, e.g. sediment, nutrients, fecal coliform"),
   targetValue: z.number().nullable().describe("A single number stated for the target, else null"),
   targetUnit: z.string().nullable().describe("Unit of targetValue as written, e.g. %, mg/L"),
-  targetText: z.string().nullable().describe("The target as written when it is a range or qualitative"),
+  targetText: z
+    .string()
+    .nullable()
+    .describe("The target as written when it is a range or qualitative"),
   timeframe: z.string().nullable(),
   ...provenanceFields,
 });
@@ -81,7 +88,9 @@ export const LlmBmpSchema = z.object({
   unit: z.string().nullable().describe("Unit of quantity as written, e.g. #, acres, feet"),
   estimatedCost: z.number().nullable().describe("Dollars, digits only"),
   targetPollutants: z.array(z.string()),
-  expectedLoadReduction: LoadReductionSchema.nullable().describe("Only when the document gives a number for this practice"),
+  expectedLoadReduction: LoadReductionSchema.nullable().describe(
+    "Only when the document gives a number for this practice",
+  ),
   status: StatusSchema,
   location: z.string().nullable().describe("Priority area, sub-watershed or site when named"),
   ...provenanceFields,
@@ -109,15 +118,29 @@ export type ImplementationActivity = z.infer<typeof ImplementationActivitySchema
 
 // ---- Monitoring metrics ---------------------------------------------------------------------
 
-export const MetricTypeSchema = z.enum(["water_quality", "biological", "implementation", "social", "other"]);
-export const ValueKindSchema = z.enum(["target", "baseline", "achieved", "threshold", "unspecified"]);
+export const MetricTypeSchema = z.enum([
+  "water_quality",
+  "biological",
+  "implementation",
+  "social",
+  "other",
+]);
+export const ValueKindSchema = z.enum([
+  "target",
+  "baseline",
+  "achieved",
+  "threshold",
+  "unspecified",
+]);
 export const ComparatorSchema = z.enum(["<", "<=", "=", ">=", ">"]);
 
 export const LlmMonitoringMetricSchema = z.object({
   name: z.string(),
   description: z.string(),
   metricType: MetricTypeSchema,
-  parameter: z.string().describe("The measured parameter, e.g. Dissolved Oxygen, Total Suspended Solids"),
+  parameter: z
+    .string()
+    .describe("The measured parameter, e.g. Dissolved Oxygen, Total Suspended Solids"),
   value: z.number().nullable(),
   unit: z.string().nullable(),
   valueKind: ValueKindSchema,
@@ -273,7 +296,8 @@ export const ExtractedReportSchema = z.object({
 export type ExtractedReport = z.infer<typeof ExtractedReportSchema>;
 
 /** Any extracted item, for code that treats the six categories uniformly. */
-export type ReportItem = Goal | BMP | ImplementationActivity | MonitoringMetric | OutreachActivity | GeographicArea;
+export type ReportItem =
+  Goal | BMP | ImplementationActivity | MonitoringMetric | OutreachActivity | GeographicArea;
 
 /** Report array key per category. */
 export const CATEGORY_KEYS = {

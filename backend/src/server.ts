@@ -17,7 +17,15 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
 
 try {
   await app.listen({ port: config.PORT, host: "0.0.0.0" });
-  app.log.info({ provider: config.LLM_PROVIDER, model: config.LLM_MODEL, version: config.APP_VERSION, dataDir: config.DATA_DIR }, "DocExtract API ready");
+  app.log.info(
+    {
+      provider: config.LLM_PROVIDER,
+      model: config.LLM_MODEL,
+      version: config.APP_VERSION,
+      dataDir: config.DATA_DIR,
+    },
+    "DocExtract API ready",
+  );
 } catch (err) {
   app.log.error(err);
   process.exit(1);

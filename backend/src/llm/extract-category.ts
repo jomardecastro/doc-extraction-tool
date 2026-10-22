@@ -38,12 +38,25 @@ export async function runCategory<T>(
   doc: ExtractedDocument,
   options: CategoryRunOptions,
 ): Promise<CategoryRun<T>> {
-  const relevant = doc.sections.filter((s) => s.role !== "administrative" && s.tags.includes(category)).map((s) => s.title);
+  const relevant = doc.sections
+    .filter((s) => s.role !== "administrative" && s.tags.includes(category))
+    .map((s) => s.title);
   const user = buildUserMessage(category, relevant);
-  const system = options.systemBlocks ?? buildSystemBlocks(serializeDocument(doc, options.focused ? { categories: [category] } : {}));
+  const system =
+    options.systemBlocks ??
+    buildSystemBlocks(serializeDocument(doc, options.focused ? { categories: [category] } : {}));
 
   const pageNumbers = doc.pages.filter((p) => p.role !== "administrative").map((p) => p.pageNumber);
-  const result = await extractPages<T>(provider, category, user, system, doc, pageNumbers, options, 0);
+  const result = await extractPages<T>(
+    provider,
+    category,
+    user,
+    system,
+    doc,
+    pageNumbers,
+    options,
+    0,
+  );
   return { category, items: result.items, usage: result.usage, calls: result.calls };
 }
 
@@ -69,7 +82,12 @@ async function extractPages<T>(
     const halves = [pageNumbers.slice(0, mid), pageNumbers.slice(mid)];
     const parts = await Promise.all(
       halves.map((pages) => {
-        const sys = buildSystemBlocks(serializeDocument(doc, { pages: new Set(pages), ...(options.focused ? { categories: [category] } : {}) }));
+        const sys = buildSystemBlocks(
+          serializeDocument(doc, {
+            pages: new Set(pages),
+            ...(options.focused ? { categories: [category] } : {}),
+          }),
+        );
         return extractPages<T>(provider, category, user, sys, doc, pages, options, depth + 1);
       }),
     );

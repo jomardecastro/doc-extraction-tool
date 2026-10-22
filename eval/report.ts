@@ -16,21 +16,32 @@ const pct = (n: number) => `${Math.round(n * 100)}%`;
 
 export function renderMarkdown(results: DocResult[], promptVersion: string): string {
   const lines: string[] = [];
-  lines.push(`# Accuracy results`, ``, `Prompt version ${promptVersion}. Generated ${new Date().toISOString()}.`, ``);
+  lines.push(
+    `# Accuracy results`,
+    ``,
+    `Prompt version ${promptVersion}. Generated ${new Date().toISOString()}.`,
+    ``,
+  );
 
   lines.push(`## Per document and category`, ``);
-  lines.push(`| Document | Category | Gold | Pred | TP | Precision | Recall | F1 | Numbers | Types | Neg. leaked |`);
+  lines.push(
+    `| Document | Category | Gold | Pred | TP | Precision | Recall | F1 | Numbers | Types | Neg. leaked |`,
+  );
   lines.push(`|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|`);
   for (const r of results) {
     for (const s of r.scores) {
       const numbers = s.quantGold ? `${s.quantCorrect}/${s.quantGold}` : "-";
       const types = s.typeGold ? `${s.typeCorrect}/${s.typeGold}` : "-";
-      lines.push(`| ${r.doc} | ${s.category} | ${s.gold} | ${s.predicted} | ${s.tp} | ${pct(s.precision)} | ${pct(s.recall)} | ${pct(s.f1)} | ${numbers} | ${types} | ${s.negativesLeaked} |`);
+      lines.push(
+        `| ${r.doc} | ${s.category} | ${s.gold} | ${s.predicted} | ${s.tp} | ${pct(s.precision)} | ${pct(s.recall)} | ${pct(s.f1)} | ${numbers} | ${types} | ${s.negativesLeaked} |`,
+      );
     }
   }
 
   lines.push(``, `## Aggregate by category (micro-averaged over documents)`, ``);
-  lines.push(`| Category | Gold | Pred | Precision | Recall | F1 | Quantitative accuracy | Type accuracy |`);
+  lines.push(
+    `| Category | Gold | Pred | Precision | Recall | F1 | Quantitative accuracy | Type accuracy |`,
+  );
   lines.push(`|---|---:|---:|---:|---:|---:|---:|---:|`);
   const categories = [...new Set(results.flatMap((r) => r.scores.map((s) => s.category)))];
   let allGold = 0;
@@ -55,18 +66,26 @@ export function renderMarkdown(results: DocResult[], promptVersion: string): str
     allTp += tp;
     allQuantGold += qg;
     allQuantCorrect += qc;
-    lines.push(`| ${category} | ${gold} | ${pred} | ${pct(p)} | ${pct(rcl)} | ${pct(f1)} | ${qg ? `${pct(qc / qg)} (${qc}/${qg})` : "-"} | ${tg ? `${pct(tc / tg)} (${tc}/${tg})` : "-"} |`);
+    lines.push(
+      `| ${category} | ${gold} | ${pred} | ${pct(p)} | ${pct(rcl)} | ${pct(f1)} | ${qg ? `${pct(qc / qg)} (${qc}/${qg})` : "-"} | ${tg ? `${pct(tc / tg)} (${tc}/${tg})` : "-"} |`,
+    );
   }
   const P = allPred ? allTp / allPred : 0;
   const R = allGold ? allTp / allGold : 0;
   const F = P + R ? (2 * P * R) / (P + R) : 0;
-  lines.push(`| **all** | ${allGold} | ${allPred} | ${pct(P)} | ${pct(R)} | ${pct(F)} | ${allQuantGold ? `${pct(allQuantCorrect / allQuantGold)} (${allQuantCorrect}/${allQuantGold})` : "-"} | |`);
+  lines.push(
+    `| **all** | ${allGold} | ${allPred} | ${pct(P)} | ${pct(R)} | ${pct(F)} | ${allQuantGold ? `${pct(allQuantCorrect / allQuantGold)} (${allQuantCorrect}/${allQuantGold})` : "-"} | |`,
+  );
 
   lines.push(``, `## Verification and cost`, ``);
-  lines.push(`| Document | Labelled | Items dropped by verifier | Verified rate (post) | Model | Cost (USD) | Time |`);
+  lines.push(
+    `| Document | Labelled | Items dropped by verifier | Verified rate (post) | Model | Cost (USD) | Time |`,
+  );
   lines.push(`|---|---|---:|---:|---|---:|---:|`);
   for (const r of results) {
-    lines.push(`| ${r.doc} | ${r.labelled} | ${r.droppedUnverified} | ${pct(r.verifiedRate)} | ${r.model}${r.cached ? " (cached)" : ""} | ${r.estimatedUsd.toFixed(2)} | ${(r.durationMs / 1000).toFixed(0)}s |`);
+    lines.push(
+      `| ${r.doc} | ${r.labelled} | ${r.droppedUnverified} | ${pct(r.verifiedRate)} | ${r.model}${r.cached ? " (cached)" : ""} | ${r.estimatedUsd.toFixed(2)} | ${(r.durationMs / 1000).toFixed(0)}s |`,
+    );
   }
 
   lines.push(``, `## Misses and extras`, ``);
@@ -74,8 +93,13 @@ export function renderMarkdown(results: DocResult[], promptVersion: string): str
     for (const s of r.scores) {
       if (s.misses.length === 0 && s.extras.length === 0) continue;
       lines.push(`### ${r.doc} / ${s.category}`, ``);
-      if (s.misses.length) lines.push(`Missed (gold not found): ${s.misses.map((m) => `\`${m}\``).join(", ")}`, ``);
-      if (s.extras.length) lines.push(`Extra (predicted, not in gold): ${s.extras.map((m) => `\`${m}\``).join(", ")}`, ``);
+      if (s.misses.length)
+        lines.push(`Missed (gold not found): ${s.misses.map((m) => `\`${m}\``).join(", ")}`, ``);
+      if (s.extras.length)
+        lines.push(
+          `Extra (predicted, not in gold): ${s.extras.map((m) => `\`${m}\``).join(", ")}`,
+          ``,
+        );
     }
   }
   return `${lines.join("\n")}\n`;

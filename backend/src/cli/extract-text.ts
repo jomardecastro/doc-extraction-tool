@@ -31,21 +31,34 @@ if (args.includes("--json")) {
   process.stdout.write(JSON.stringify(doc, null, 2));
 } else if (args.includes("--pages")) {
   for (const page of doc.pages) {
-    const headings = page.blocks.filter((b) => b.type === "heading").map((b) => b.text.slice(0, 40));
+    const headings = page.blocks
+      .filter((b) => b.type === "heading")
+      .map((b) => b.text.slice(0, 40));
     const role = `${page.role}${page.roleReason ? `: ${page.roleReason}` : ""}`;
-    console.log(`p${String(page.pageNumber).padStart(3)} ${role.padEnd(32)} ${String(page.chars).padStart(5)}ch ${String(page.blocks.length).padStart(3)}bl | ${headings.slice(0, 3).join(" / ")}`);
+    console.log(
+      `p${String(page.pageNumber).padStart(3)} ${role.padEnd(32)} ${String(page.chars).padStart(5)}ch ${String(page.blocks.length).padStart(3)}bl | ${headings.slice(0, 3).join(" / ")}`,
+    );
   }
 } else if (args.includes("--blocks")) {
   for (const page of doc.pages) {
-    console.log(`\n=== page ${page.pageNumber} [${page.role}${page.roleReason ? `: ${page.roleReason}` : ""}]`);
+    console.log(
+      `\n=== page ${page.pageNumber} [${page.role}${page.roleReason ? `: ${page.roleReason}` : ""}]`,
+    );
     for (const b of page.blocks) {
       const role = b.role ? ` {${b.role}}` : "";
       const level = b.type === "heading" || b.type === "bullet" ? `${b.level}` : "";
-      console.log(`${b.type.padEnd(9)}${level.padEnd(2)} x=${b.x0.toFixed(0).padStart(3)} fs=${b.fontSize.toFixed(1)}${b.bold ? " B" : "  "}${role} | ${b.text.slice(0, 110).replace(/\n/g, " ⏎ ")}`);
+      console.log(
+        `${b.type.padEnd(9)}${level.padEnd(2)} x=${b.x0.toFixed(0).padStart(3)} fs=${b.fontSize.toFixed(1)}${b.bold ? " B" : "  "}${role} | ${b.text.slice(0, 110).replace(/\n/g, " ⏎ ")}`,
+      );
     }
   }
 } else {
-  process.stdout.write(serializeDocument(doc, args.includes("--all") ? { roles: ["main", "supporting", "administrative"] } : {}));
+  process.stdout.write(
+    serializeDocument(
+      doc,
+      args.includes("--all") ? { roles: ["main", "supporting", "administrative"] } : {},
+    ),
+  );
   process.stdout.write("\n");
 }
 

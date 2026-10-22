@@ -29,7 +29,11 @@ const TITLES: Partial<Record<ErrorCode, string>> = {
 };
 
 export function presentError(error: ApiError): ErrorPresentation {
-  return { title: TITLES[error.code] ?? "Something went wrong", detail: error.message, action: actionFor(error.code) };
+  return {
+    title: TITLES[error.code] ?? "Something went wrong",
+    detail: error.message,
+    action: actionFor(error.code),
+  };
 }
 
 function actionFor(code: ErrorCode): ErrorPresentation["action"] {
