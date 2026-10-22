@@ -99,6 +99,9 @@ function mapAnthropicError(err: unknown): AppError {
     if (/prompt is too long|too many tokens|context window/i.test(err.message)) {
       return new AppError("document_too_long", undefined, { cause: err });
     }
+    if (/credit balance|billing|plans & billing/i.test(err.message)) {
+      return new AppError("llm_auth", "The language model account has no remaining credit. Add credit to the Anthropic account behind ANTHROPIC_API_KEY.", { cause: err });
+    }
     return new AppError("internal", `The language model rejected the request: ${err.message}`, { cause: err, retryable: false });
   }
   if (err instanceof Anthropic.InternalServerError) return new AppError("llm_overloaded", undefined, { cause: err });

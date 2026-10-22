@@ -206,7 +206,9 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps, opti
   const checked = ExtractedReportSchema.parse(report);
 
   if (deps.budget) await deps.budget.add(estimatedUsd);
-  if (options.useResultCache !== false) await writeJson(resultFile, checked);
+  // A report with failed categories is served once but never stored: the next upload of the same
+  // file should get a complete run, not the partial one.
+  if (options.useResultCache !== false && partial.length === 0) await writeJson(resultFile, checked);
   progress({ stage: "done", pages: doc.stats.pageCount, completedCategories: [...completed] });
   log("pipeline done", { estimatedUsd, durationMs: checked.run.durationMs, partial });
   return { report: checked, cached: false };
