@@ -66,6 +66,8 @@ Include:
 
 Exclude:
 - Generic statements that monitoring is important, and descriptions of state-wide monitoring programs not applied to this watershed.
+- Work-plan tasks and milestones that are not measurements (collecting GPS coordinates, taking photos, submitting reports, finalizing plans): those are implementation activities.
+- The plan's overall goals restated as numbers ("reduce sediment by 35%"): those are goals, unless the document presents the figure as a measured criterion of progress.
 
 Fields: metricType; parameter (the thing measured); value + unit when stated; valueKind; comparator (<, <=, =, >=, >) for thresholds and targets; location; frequency; responsibleParty.`,
 

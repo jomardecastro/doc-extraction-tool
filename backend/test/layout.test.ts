@@ -42,6 +42,24 @@ describe("buildBlocks", () => {
     expect(blocks[0]!.text).toContain("implementation of practices");
   });
 
+  it("joins double-spaced lines into paragraphs using the page's own line gap", () => {
+    // 24 pt between 12 pt lines (double spacing); a 48 pt gap marks the paragraph break.
+    const blocks = buildBlocks(
+      page([
+        run("Bell Creek-West Prong Muddy Creek Watershed was identified as a priority watershed", 72, 700),
+        run("by the Mississippi Department of Environmental Quality. Muddy Creek has 2 Total Maximum", 72, 676),
+        run("Daily Load (TMDL) documents written to address reductions needed to meet water quality", 72, 652),
+        run("standards, one for biological impairment due to Nutrients and one for Fecal Coliform.", 72, 628),
+        run("The key natural resource problems in this watershed are nutrient loading and", 72, 580),
+        run("sedimentation. The Watershed Implementation Plan has the goals of reducing the nutrients.", 72, 556),
+      ]),
+      body,
+    );
+    expect(blocks.map((b) => b.type)).toEqual(["paragraph", "paragraph"]);
+    expect(blocks[0]!.lineCount).toBe(4);
+    expect(blocks[1]!.text).toMatch(/^The key natural resource problems .* reducing the nutrients\.$/);
+  });
+
   it("recognises bullets and numbered list items, but not numbered headings", () => {
     const blocks = buildBlocks(
       page([

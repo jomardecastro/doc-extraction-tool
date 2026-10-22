@@ -4,7 +4,7 @@ import type { SystemBlock } from "../provider.js";
  * Bump whenever any prompt text or schema changes: it is part of the result-cache key, so old
  * cached extractions are never served for a new prompt.
  */
-export const PROMPT_VERSION = "2026-10-23.4";
+export const PROMPT_VERSION = "2026-10-23.5";
 
 /**
  * Stable prefix shared by every category call for the same document. The primer and rules
@@ -41,4 +41,5 @@ const EXTRACTION_RULES = `Rules:
 6. confidence: "high" when the document states the item explicitly and specifically; "medium" when it is clearly implied or the wording is loose; "low" when you are unsure it belongs in this category.
 7. Use null for any field the document does not state and an empty list when there is nothing to extract; never invent items to fill a list.
 9. Reply with a single JSON object and nothing else: no introduction, no explanation, no code fences.
-8. Appendix pages (part="appendix") often repeat the main plan (a funded proposal, checklists). Use them only for details the main text lacks, and do not duplicate items that the main text already states.`;
+8. Appendix pages (part="appendix") often repeat the main plan (a funded proposal, checklists). When the main text states something, quote the main text, not the appendix; use appendix pages only for details the main text lacks, and never duplicate an item the main text already gives.
+10. The categories are independent: the same statement can legitimately appear in more than one (a milestone that is also an outreach event, an evaluation criterion that is also a goal). Decide each category on its own definition.`;

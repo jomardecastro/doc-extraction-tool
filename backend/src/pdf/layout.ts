@@ -83,11 +83,30 @@ export function buildBlocks(page: RawPage, body: BodyFont): Block[] {
     lines.map((l) => l.x0),
     0.1,
   );
+  // Double-spaced documents are common among the older plans: the typical gap between body
+  // lines decides what "the next line of the same paragraph" looks like, not a fixed multiple
+  // of the font size.
+  const lineGap = typicalLineGap(lines, body);
   // Usable text width comes from the page box, not from the lines on this page: a page holding
   // three short centred lines would otherwise make every line look "full width".
   const textWidth = Math.max(page.width - 2 * leftMargin, 0.5 * page.width);
   const tables = detectTables(lines);
-  return assembleBlocks(lines, tables, body, leftMargin, textWidth);
+  return assembleBlocks(lines, tables, body, leftMargin, textWidth, lineGap);
+}
+
+/** Median baseline distance between consecutive body-size lines on the page, in points. */
+export function typicalLineGap(lines: Line[], body: BodyFont): number {
+  const gaps: number[] = [];
+  for (let i = 1; i < lines.length; i++) {
+    const a = lines[i - 1]!;
+    const b = lines[i]!;
+    if (Math.abs(a.fontSize - body.size) > 1 || Math.abs(b.fontSize - body.size) > 1) continue;
+    const gap = a.y - b.y;
+    if (gap > 0 && gap < 4 * body.size) gaps.push(gap);
+  }
+  if (gaps.length < 3) return 1.25 * body.size;
+  gaps.sort((x, y) => x - y);
+  return gaps[Math.floor(gaps.length / 2)]!;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -348,7 +367,11 @@ function orderRows(rows: string[][], rowCols: number[][], columns: Cell[]): stri
 // ---------------------------------------------------------------------------------------------
 // Blocks
 
-function assembleBlocks(lines: Line[], tables: TableSpan[], body: BodyFont, leftMargin: number, textWidth: number): Block[] {
+function assembleBlocks(lines: Line[], tables: TableSpan[], body: BodyFont, leftMargin: number, textWidth: number, lineGap: number): Block[] {
+  // Lines closer than this continue the current paragraph; the floor keeps single-spaced
+  // documents on the old rule and the ceiling stops a double-spaced page from swallowing the
+  // blank line that separates its paragraphs.
+  const maxParagraphGap = Math.min(Math.max(1.7 * body.size, 1.4 * lineGap), 3.2 * body.size);
   const blocks: Block[] = [];
   let current: Block | null = null;
   let currentLine: Line | null = null;
@@ -403,7 +426,7 @@ function assembleBlocks(lines: Line[], tables: TableSpan[], body: BodyFont, left
           ? line.x0 >= current.x0 - 2 && line.x0 <= current.x0 + 4 * body.size
           : Math.abs(line.x0 - current.x0) <= 3 ||
             (current.lineCount === 1 && line.x0 < current.x0 && current.x0 - line.x0 <= 4 * body.size);
-      if (gap > 0 && gap <= 1.7 * Math.max(line.fontSize, body.size) && sameSize && indentOk) {
+      if (gap > 0 && gap <= Math.max(maxParagraphGap, 1.7 * line.fontSize) && sameSize && indentOk) {
         current.text = joinLines(current.text, line.text);
         current.lineCount++;
         current.yBottom = line.y;
