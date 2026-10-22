@@ -55,13 +55,13 @@ export function normalizeForSchema(value: unknown, schema: z.ZodType): unknown {
       !(schema.unwrap() instanceof z.ZodEnum)
     )
       return null;
-    const inner = normalizeForSchema(value, schema.unwrap());
+    const inner = normalizeForSchema(value, schema.unwrap() as unknown as z.ZodType);
     return inner === undefined ? null : inner;
   }
   if (schema instanceof z.ZodOptional) {
     return value === undefined || value === null
       ? undefined
-      : normalizeForSchema(value, schema.unwrap());
+      : normalizeForSchema(value, schema.unwrap() as unknown as z.ZodType);
   }
   if (schema instanceof z.ZodObject) {
     const source =
