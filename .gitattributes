@@ -1,0 +1,5 @@
+# Personal notes stay in the repository but out of the submission archive (`pnpm package` uses git archive).
+notes/ export-ignore
+.gitattributes export-ignore
+.github/ export-ignore
+eval/gold/*.draft.json export-ignore
