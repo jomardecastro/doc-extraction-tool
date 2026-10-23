@@ -77,12 +77,12 @@ are above 90%, and the numbers are right 62 times out of 65.
 
 Interim per-plan F1 (goals / BMPs / implementation / monitoring / outreach / areas):
 
-| Plan | G | B | I | M | O | A |
-|---|---|---|---|---|---|---|
-| Yazoo Pass 2021 (blind) | 100 | 100 | 90 | 82 | 86 | 100 |
-| Dry Creek 2017 | 100 | 100 | 91 | 85 | 95 | 77 |
-| Steele Bayou 2009 | 100 | 100 | 100 | 91 | 90 | 92 |
-| Bell Creek 2012 | 93 | 100 | 84 | 93 | 88 | 80 |
+| Plan                    | G   | B   | I   | M   | O   | A   |
+| ----------------------- | --- | --- | --- | --- | --- | --- |
+| Yazoo Pass 2021 (blind) | 100 | 100 | 90  | 82  | 86  | 100 |
+| Dry Creek 2017          | 100 | 100 | 91  | 85  | 95  | 77  |
+| Steele Bayou 2009       | 100 | 100 | 100 | 91  | 90  | 92  |
+| Bell Creek 2012         | 93  | 100 | 84  | 93  | 88  | 80  |
 
 ## Questions they're likely to ask
 
