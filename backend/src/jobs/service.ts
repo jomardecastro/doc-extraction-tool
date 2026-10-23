@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { readFile, unlink } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm } from "node:fs/promises";
+import path from "node:path";
 import type { FastifyBaseLogger } from "fastify";
 import type { Category } from "@det/shared";
 import type { Config } from "../config.js";
@@ -49,6 +50,27 @@ export class JobService {
     const restarted = await this.store.load();
     if (restarted > 0)
       this.log.warn({ restarted }, "jobs interrupted by the last restart were marked failed");
+    await this.sweepTmp();
+  }
+
+  /**
+   * Deletes every leftover upload in DATA_DIR/tmp. Nothing is in flight when the server starts
+   * (interrupted jobs were just marked failed), so anything still there is an orphan from a
+   * crash or an older build.
+   */
+  private async sweepTmp(): Promise<void> {
+    const dir = path.join(this.config.DATA_DIR, "tmp");
+    await mkdir(dir, { recursive: true });
+    let removed = 0;
+    for (const name of await readdir(dir)) {
+      try {
+        await rm(path.join(dir, name), { force: true });
+        removed++;
+      } catch (err) {
+        this.log.warn({ err, file: name }, "could not remove orphaned upload");
+      }
+    }
+    if (removed > 0) this.log.info({ removed }, "removed orphaned uploads");
   }
 
   async submit(input: SubmitInput): Promise<JobRecord> {
@@ -82,12 +104,14 @@ export class JobService {
   private async process(id: string): Promise<void> {
     const job = this.store.get(id);
     if (!job || !job.tmpFile) throw new AppError("job_not_found");
+    // store.update() patches this same object, so keep the path before it is nulled below.
+    const tmpFile = job.tmpFile;
     this.store.update(id, {
       status: "processing",
       stage: "extracting_text",
       pct: stagePct("extracting_text", 0),
     });
-    const data = new Uint8Array(await readFile(job.tmpFile));
+    const data = new Uint8Array(await readFile(tmpFile));
     const jobLog = this.log.child({ job: id, filename: job.filename });
 
     const { report, cached } = await runPipeline(
@@ -120,12 +144,12 @@ export class JobService {
       result: report,
       tmpFile: null,
     });
-    await this.removeTmp(job.tmpFile);
+    await this.removeTmp(tmpFile);
   }
 
   private async fail(id: string, err: unknown): Promise<void> {
     const error = toAppError(err);
-    const job = this.store.get(id);
+    const tmpFile = this.store.get(id)?.tmpFile ?? null;
     if (error.code === "internal") this.log.error({ err, job: id }, "job failed");
     else this.log.warn({ job: id, code: error.code, message: error.message }, "job failed");
     this.store.update(id, {
@@ -135,14 +159,15 @@ export class JobService {
       error: error.toJSON(),
       tmpFile: null,
     });
-    if (job?.tmpFile) await this.removeTmp(job.tmpFile);
+    await this.removeTmp(tmpFile);
   }
 
-  private async removeTmp(file: string): Promise<void> {
+  private async removeTmp(file: string | null): Promise<void> {
+    if (!file) return;
     try {
-      await unlink(file);
-    } catch {
-      // already gone
+      await rm(file, { force: true });
+    } catch (err) {
+      this.log.warn({ err, file }, "could not remove upload");
     }
   }
 }

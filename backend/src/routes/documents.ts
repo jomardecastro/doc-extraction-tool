@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { createWriteStream } from "node:fs";
-import { mkdir } from "node:fs/promises";
+import { mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { Transform } from "node:stream";
@@ -66,26 +66,34 @@ export async function documentRoutes(
           cb(null, chunk);
         },
       });
+      // From here on the temp file exists; whatever rejects the upload must also remove it.
+      // Once submit() has the job, the JobService owns the file and deletes it when the job ends.
+      let job;
       try {
-        await pipeline(part.file, inspect, createWriteStream(tmpFile));
-      } catch (err) {
-        throw mapMultipartError(err);
-      }
-      if (part.file.truncated)
-        throw new AppError(
-          "file_too_large",
-          `The upload limit is ${Math.round(options.maxUploadBytes / 1024 / 1024)} MB.`,
-        );
-      if (!head.startsWith(PDF_MAGIC)) throw new AppError("invalid_file_type");
+        try {
+          await pipeline(part.file, inspect, createWriteStream(tmpFile));
+        } catch (err) {
+          throw mapMultipartError(err);
+        }
+        if (part.file.truncated)
+          throw new AppError(
+            "file_too_large",
+            `The upload limit is ${Math.round(options.maxUploadBytes / 1024 / 1024)} MB.`,
+          );
+        if (!head.startsWith(PDF_MAGIC)) throw new AppError("invalid_file_type");
 
-      const noCache = (request.query as { live?: string }).live === "1";
-      const job = await options.jobs.submit({
-        filename: safeName(part.filename),
-        sizeBytes: size,
-        sha256: hash.digest("hex"),
-        tmpFile,
-        noCache,
-      });
+        const noCache = (request.query as { live?: string }).live === "1";
+        job = await options.jobs.submit({
+          filename: safeName(part.filename),
+          sizeBytes: size,
+          sha256: hash.digest("hex"),
+          tmpFile,
+          noCache,
+        });
+      } catch (err) {
+        await rm(tmpFile, { force: true }).catch(() => undefined);
+        throw err;
+      }
       return reply.code(202).send({ id: job.id, status: job.status, cached: job.cached });
     },
   );
