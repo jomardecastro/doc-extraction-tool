@@ -38,10 +38,13 @@ install_nginx() {
   log "Installing nginx site for $DOMAIN on $REMOTE"
   local conf
   if ssh -o BatchMode=yes "$REMOTE" "sudo test -d /etc/letsencrypt/live/$DOMAIN"; then conf=ops/nginx/site.conf; else conf=ops/nginx/site-http.conf; fi
-  sed -e "s/__DOMAIN__/$DOMAIN/g" -e "s/__PORT__/$HOST_PORT/g" "$conf" | remote "$DOMAIN" "$conf" <<'SCRIPT'
+  # The rendered config travels as a base64 argument: stdin already carries the remote script.
+  local rendered
+  rendered="$(sed -e "s/__DOMAIN__/$DOMAIN/g" -e "s/__PORT__/$HOST_PORT/g" "$conf" | base64 -w0)"
+  remote "$DOMAIN" "$conf" "$rendered" <<'SCRIPT'
 set -euo pipefail
 domain="$1"; conf="$2"
-sudo tee /etc/nginx/sites-available/docextract >/dev/null
+printf '%s' "$3" | base64 -d | sudo tee /etc/nginx/sites-available/docextract >/dev/null
 sudo ln -sf /etc/nginx/sites-available/docextract /etc/nginx/sites-enabled/docextract
 sudo nginx -t
 sudo systemctl reload nginx
