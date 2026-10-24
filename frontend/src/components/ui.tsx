@@ -45,6 +45,19 @@ export function LinkButton({
   );
 }
 
+/** The way back from a detail page: a quiet text link above the title, never a primary button. */
+export function BackLink({ to, children }: { to: string; children: ReactNode }) {
+  return (
+    <Link
+      to={to}
+      className="row-action mb-3 inline-flex items-center gap-1 text-sm font-semibold text-ink-2 hover:text-accent"
+    >
+      <Icon.ArrowLeft />
+      {children}
+    </Link>
+  );
+}
+
 export function Badge({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <span
@@ -88,6 +101,28 @@ export function Spinner({ className = "" }: { className?: string }) {
 
 /** Icon-only glyphs used inline with text; each is decorative next to a label. */
 export const Icon = {
+  ArrowLeft: () => (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 16 16"
+      className="size-4 fill-none stroke-current stroke-2"
+    >
+      <path d="M13 8H3m0 0l4-4M3 8l4 4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
+  Download: () => (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 16 16"
+      className="size-4 fill-none stroke-current stroke-2"
+    >
+      <path
+        d="M8 2.5v8m0 0l-3-3m3 3l3-3M3 11.5v1a1 1 0 001 1h8a1 1 0 001-1v-1"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
   Check: () => (
     <svg
       aria-hidden="true"

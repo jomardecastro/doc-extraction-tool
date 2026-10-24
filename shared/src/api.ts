@@ -89,6 +89,8 @@ export interface HealthView {
   uptimeSeconds: number;
   queue: { active: number; waiting: number };
   budget: { usedUsd: number; capUsd: number };
+  /** Download link for the source archive, when the deployment provides one. */
+  sourceZipUrl: string | null;
 }
 
 export type ExportFormat = "json" | "csv" | "xlsx";

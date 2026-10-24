@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { ApiRequestError, getJob } from "../api/client.js";
 import { ProcessingView } from "../components/progress/ProcessingView.js";
 import { ReportView } from "../components/dashboard/ReportView.js";
-import { Icon, LinkButton } from "../components/ui.js";
+import { BackLink, Icon, LinkButton } from "../components/ui.js";
 import { presentError } from "../lib/errors.js";
 
 /**
@@ -78,11 +78,17 @@ export function DocumentPage() {
   }
 
   if (data.status === "done" && data.result) {
-    return <ReportView job={data} report={data.result} />;
+    return (
+      <div>
+        <BackLink to="/">Back to the upload page</BackLink>
+        <ReportView job={data} report={data.result} />
+      </div>
+    );
   }
 
   return (
     <div className="mx-auto max-w-3xl">
+      <BackLink to="/">Back to the upload page</BackLink>
       <ProcessingView job={data} />
     </div>
   );

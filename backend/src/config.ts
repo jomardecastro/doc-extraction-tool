@@ -25,6 +25,9 @@ const EnvSchema = z.object({
   UPLOADS_PER_HOUR_PER_IP: z.coerce.number().int().min(1).default(10),
   JOB_CONCURRENCY: z.coerce.number().int().min(1).max(4).default(1),
   JOB_TIMEOUT_MIN: z.coerce.number().min(1).default(20),
+
+  // Optional: where the source archive can be downloaded; the UI shows a link when set.
+  SOURCE_ZIP_URL: z.string().url().optional(),
 });
 
 export type Config = z.infer<typeof EnvSchema> & { maxUploadBytes: number };

@@ -36,6 +36,10 @@ test("the upload page offers one primary action, the bundled plans and the provi
   await expect(page.locator("button", { hasText: "Choose a PDF" })).toBeVisible();
   await expect(page.getByRole("button", { name: /^Open / })).toHaveCount(5);
   await expect(page.getByRole("contentinfo")).toContainText(/mock provider|claude-/);
+  await expect(page.getByRole("link", { name: "Source code (zip)" })).toHaveAttribute(
+    "href",
+    /\/submission\/doc-extraction-tool\.zip$/,
+  );
 });
 
 test("a bundled plan opens into the report, every category has a tab, a row shows its quote, and the exports download", async ({
@@ -84,6 +88,11 @@ test("a bundled plan opens into the report, every category has a tab, a row show
     expect(res.ok(), label).toBe(true);
     expect(res.headers()["content-type"], label).toContain(type);
   }
+
+  await page.getByRole("link", { name: "Back to the upload page" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Extract the substance of a watershed plan" }),
+  ).toBeVisible();
 });
 
 test("uploading a plan shows progress, lands on the report and is remembered on the upload page", async ({

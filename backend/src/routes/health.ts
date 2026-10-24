@@ -26,5 +26,6 @@ export async function healthRoutes(
     uptimeSeconds: Math.round((Date.now() - started) / 1000),
     queue: options.jobs.queue.stats(),
     budget: options.budget.view(),
+    sourceZipUrl: options.config.SOURCE_ZIP_URL ?? null,
   }));
 }

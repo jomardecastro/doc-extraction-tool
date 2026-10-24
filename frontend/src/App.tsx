@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, Outlet, createBrowserRouter, RouterProvider } from "react-router";
 import { getHealth } from "./api/client.js";
+import { Icon } from "./components/ui.js";
 import { DocumentPage } from "./routes/DocumentPage.js";
 import { UploadPage } from "./routes/UploadPage.js";
 
@@ -19,7 +20,19 @@ function Shell() {
             <span aria-hidden="true" className="inline-block size-2.5 rounded-sm bg-accent" />
             DocExtract
           </Link>
-          <p className="hidden text-sm text-ink-3 sm:block">Watershed plan extraction</p>
+          <div className="flex items-center gap-4">
+            <p className="hidden text-sm text-ink-3 sm:block">Watershed plan extraction</p>
+            {health.data?.sourceZipUrl && (
+              <a
+                href={health.data.sourceZipUrl}
+                download
+                className="btn inline-flex items-center gap-1.5 rounded-md border border-line-strong bg-surface px-3 py-1.5 text-sm font-semibold hover:bg-surface-2"
+              >
+                <Icon.Download />
+                Source code (zip)
+              </a>
+            )}
+          </div>
         </div>
       </header>
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">

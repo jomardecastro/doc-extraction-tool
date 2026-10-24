@@ -46,6 +46,7 @@ export default defineConfig({
           DATA_DIR: path.resolve(".e2e-data/data"),
           UPLOADS_PER_HOUR_PER_IP: "100",
           DAILY_USD_CAP: "25",
+          SOURCE_ZIP_URL: `${baseURL}/submission/doc-extraction-tool.zip`,
         },
       },
 });
