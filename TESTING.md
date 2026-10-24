@@ -63,11 +63,58 @@ than added after the fact, except where noted.
 
 ### Results
 
-<!-- RESULTS: replaced by eval/results/latest.md after the final run -->
+Final run: `claude-opus-5-5`, effort `high`, prompt version `2026-10-23.5`, five plans, 559 gold items and 32 negatives, generated 2026-10-24. Every category clears the 75% bar on the aggregate; four of the five plans clear it in every category individually.
+
+**Aggregate by category** (micro-averaged over the five plans)
+
+| Category       | Gold | Pred | Precision | Recall |  F1 | Quantitative accuracy | Type accuracy |
+| -------------- | ---: | ---: | --------: | -----: | --: | --------------------: | ------------: |
+| goals          |   55 |   53 |       92% |    89% | 91% |            100% (2/2) |   95% (38/40) |
+| bmps           |   90 |   79 |      100% |    88% | 93% |          100% (53/53) |   99% (74/75) |
+| implementation |  142 |  138 |       91% |    89% | 90% |            100% (2/2) |             - |
+| monitoring     |  126 |  110 |       95% |    83% | 89% |           92% (49/53) |   99% (74/75) |
+| outreach       |   75 |   79 |       87% |    92% | 90% |             88% (7/8) |  100% (58/58) |
+| geographic     |   71 |   65 |       92% |    85% | 88% |           91% (10/11) |   92% (49/53) |
+| **all**        |  559 |  524 |       93% |    87% | 90% |         95% (123/129) |               |
+
+**F1 per plan**
+
+| Plan                        | Goals | BMPs | Implementation | Monitoring | Outreach | Geographic |
+| --------------------------- | ----: | ---: | -------------: | ---------: | -------: | ---------: |
+| Steele Bayou 2009           |  100% | 100% |            91% |        95% |      86% |        86% |
+| Bell Creek-Muddy Creek 2012 |   85% | 100% |            84% |        83% |      88% |        87% |
+| Dry Creek 9KE 2017          |   57% | 100% |            90% |        90% |      90% |        86% |
+| Old Fort Bayou 2019         |   95% |  88% |            96% |        88% |      94% |        89% |
+| Yazoo Pass 9KE 2021         |   86% | 100% |            95% |        92% |      82% |        94% |
+
+**Verification, false positives and cost**
+
+| Document                    | Labelled  | Items dropped by verifier | Verified rate (post) | Model                    | Cost (USD) | Time |
+| --------------------------- | --------- | ------------------------: | -------------------: | ------------------------ | ---------: | ---: |
+| bell_creek_muddy_creek_2012 | corrected |                         0 |                 100% | claude-opus-5-5 (cached) |       0.92 | 129s |
+| dry_creek_9ke_2017          | corrected |                         1 |                  99% | claude-opus-5-5 (cached) |       0.62 |  87s |
+| old_fort_bayou_2019         | corrected |                         3 |                  98% | claude-opus-5-5 (cached) |       1.50 | 193s |
+| steele_bayou_2009           | corrected |                         0 |                 100% | claude-opus-5-5 (cached) |       0.68 | 106s |
+| yazoo_pass_9ke_2021         | blind     |                         3 |                  97% | claude-opus-5-5 (cached) |       0.73 |  97s |
+
+"Items dropped by verifier" is the number of returned items whose quote was not found verbatim in the PDF text and were therefore removed before the report was built; the post-validator false-positive rate is 0 by construction, and none of the 32 labelled negatives leaked into any result. Opus 5.5 with the shared cached document prefix costs between $0.62 (12 pages) and $1.50 (66 pages) per plan and takes one and a half to three minutes.
+
+The one cell under 75% is Dry Creek goals (F1 57%): the plan states four goals, the model returned three, and one of its three ("Attain the M-BISQ threshold for the East bioregion") is the gold's "Attainment of the Aquatic Life Designated Use" expressed through its metric, which the fuzzy matcher does not join. With four items a single miss costs 25 points; the aggregate goals F1 across 55 gold items is 91%.
 
 The full per-plan table, misses and extras are in `eval/results/latest.md`.
 
 ### Notes from reading the misses
+
+- **Old Fort Bayou (66 pages) recall.** Its BMP recall (78%) comes from Section 3.1.1, where the plan
+  lists the practices its conservation partners and a golf course already run (prescribed burns,
+  invasive species management, vernal pond management, bird and bat houses). The gold labels every
+  practice the plan calls a BMP; the model returned the water-quality ones and skipped the habitat
+  ones. Monitoring recall (78%) is the student pH readings and three recommended studies the model
+  folded into neighbouring items. Precision on that plan is 95-100% in every category.
+- **Page-choice artefacts.** Two Old Fort misses are the same statement on two pages: the 35% TMDL
+  reduction (gold p.12, the goals section; model p.46, the management section) and the Plastic Free
+  restaurant programme (gold p.60, the outreach plan; model p.41, the assessment). The two-page
+  window counts them as misses; the labels were not moved after seeing the output.
 
 - **Cross-listed statements.** The older plans list milestones ("erect 20 roadside signs",
   "hold two field days") that are both implementation milestones and outreach activities. The

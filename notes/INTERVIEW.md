@@ -1,8 +1,7 @@
 # Explaining DocExtract in the ChowaCo interview
 
 Personal notes. This folder is excluded from the submission archive (see `.gitattributes`).
-Numbers below are from the 2026-10-23 interim evaluation; update them from `TESTING.md` after
-the final run.
+Numbers below are from the final 2026-10-24 evaluation (`TESTING.md`).
 
 ## The 2-minute walkthrough
 
@@ -34,8 +33,9 @@ the exact quote and page, and export to JSON, CSV or Excel.
 
 To know it works, I built an accuracy harness before tuning anything: I hand-labelled five
 plans, one of them blind, and the tool scores precision, recall and F1 per category plus
-whether every number is exactly right. Every category is above the 75% bar on every plan, most
-are above 90%, and the numbers are right 62 times out of 65.
+whether every number is exactly right. Every category is above the 75% bar on the aggregate and on
+four of the five plans individually (the exception is Dry Creek goals, two of four tiny items),
+most are around 90%, and the numbers are right 123 times out of 129.
 
 ## The decisions, and the reason for each
 
@@ -46,8 +46,8 @@ are above 90%, and the numbers are right 62 times out of 65.
   scattered across lines are not.
 - **Why six calls instead of one?** Focused instructions per category recall better, each answer
   stays within output limits, a failure in one category doesn't lose the others, and the
-  document is only billed once because the prefix is cached. Six calls cost about 70 cents per
-  plan.
+  document is only billed once because the prefix is cached. Six calls cost 60 cents to a dollar fifty per
+  plan depending on length.
 - **Why JSON by instruction instead of the API's structured outputs?** I used structured outputs
   first. Two things made them the wrong tool here: the output grammar is part of the cache
   prefix, so six different schemas meant the document was cached six times with zero hits, and
@@ -70,19 +70,22 @@ are above 90%, and the numbers are right 62 times out of 65.
 
 ## Numbers to have ready
 
-- 5 plans labelled, 1 blind. Per-category F1 from 77% to 100%, most above 90%.
-- Numbers exact: 62 of 65 across the four scored plans.
-- Cost: about $0.60 to $1.00 per plan on Opus 5.5. A 62 MB, 647-page plan parses in 5 seconds.
-- 35 unit tests, CI on every push, a smoke test of the built image before every deploy.
+- 5 plans labelled (559 items plus 32 decoys), 1 blind. Aggregate F1 90%; per category 88% to 93%;
+  plan-by-category cells from 57% (Dry Creek goals, 4 items) to 100%; precision 93%.
+- Numbers exact: 123 of 129 across the five plans. Zero decoys leaked.
+- Cost: $0.62 to $1.50 per plan on Opus 5.5 ($4.45 for the final five-plan run). A 62 MB, 647-page
+  plan uploads through nginx and parses in about 10 seconds on the 2 GB demo box.
+- 39 unit tests, CI on every push, a smoke test of the built image before every deploy.
 
-Interim per-plan F1 (goals / BMPs / implementation / monitoring / outreach / areas):
+Final per-plan F1 (goals / BMPs / implementation / monitoring / outreach / areas):
 
 | Plan                    | G   | B   | I   | M   | O   | A   |
 | ----------------------- | --- | --- | --- | --- | --- | --- |
-| Yazoo Pass 2021 (blind) | 100 | 100 | 90  | 82  | 86  | 100 |
-| Dry Creek 2017          | 100 | 100 | 91  | 85  | 95  | 77  |
-| Steele Bayou 2009       | 100 | 100 | 100 | 91  | 90  | 92  |
-| Bell Creek 2012         | 93  | 100 | 84  | 93  | 88  | 80  |
+| Steele Bayou 2009       | 100 | 100 | 91  | 95  | 86  | 86  |
+| Bell Creek 2012         | 85  | 100 | 84  | 83  | 88  | 87  |
+| Dry Creek 2017          | 57  | 100 | 90  | 90  | 90  | 86  |
+| Old Fort Bayou 2019     | 95  | 88  | 96  | 88  | 94  | 89  |
+| Yazoo Pass 2021 (blind) | 86  | 100 | 95  | 92  | 82  | 94  |
 
 ## Questions they're likely to ask
 
@@ -104,7 +107,8 @@ Interim per-plan F1 (goals / BMPs / implementation / monitoring / outreach / are
 
 ## Where things are
 
-- Repo: github.com/jomardecastro/doc-extraction-tool (private). Demo: docextract.jdecastro.dev.
+- Repo: github.com/jomardecastro/doc-extraction-tool (private). Demo: docextract.jdecastro.dev
+  (Vultr 2 GB, `ssh docextract`, deploy with `ops/deploy.sh`).
 - Assessment brief: `/mnt/e/Downloads/Document Extraction Tool - Technical Assessment.docx`.
 - Deadline for the $800 tier: Monday 2026-10-26, 11:19 PM Manila.
 - Pipeline design: `EXTRACTION_LOGIC.md`. Accuracy protocol: `TESTING.md`. Deploy: `DEPLOYMENT.md`.

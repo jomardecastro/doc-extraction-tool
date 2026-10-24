@@ -3,7 +3,7 @@
   "labelled": "corrected",
   "goals": [
     {
-      "name": "Fecal coliform 35% load reduction goal (2002 TMDL)",
+      "name": "35% reduction of fecal coliform loads per 2002 TMDL",
       "page": 46,
       "value": 35,
       "unit": "%",
@@ -25,12 +25,12 @@
       "type": "goal"
     },
     {
-      "name": "Update and continue water quality monitoring, adding TN and TP",
+      "name": "Update and continue water quality monitoring, add TN and TP",
       "page": 12,
       "type": "objective"
     },
     {
-      "name": "Identify and target contributors of pathogens",
+      "name": "Identify contributors of pathogens and reduce harmful bacteria",
       "page": 12,
       "type": "objective"
     },
@@ -40,7 +40,7 @@
       "type": "objective"
     },
     {
-      "name": "Reduce erosion and sedimentation; protect navigability",
+      "name": "Reduce erosion and sedimentation to improve water quality",
       "page": 12,
       "type": "goal"
     },
@@ -100,74 +100,275 @@
       "type": "objective"
     }
   ],
-  "bmps": [],
+  "bmps": [
+    {
+      "name": "Critical Area Planting",
+      "page": 57,
+      "value": 32,
+      "unit": "acres",
+      "cost": 7939.2,
+      "type": "agricultural"
+    },
+    {
+      "name": "Fence",
+      "page": 57,
+      "value": 12499,
+      "unit": "ft",
+      "cost": 23873.09,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Grade Stabilization Structures",
+      "page": 57,
+      "value": 5,
+      "cost": 25000,
+      "type": "structural"
+    },
+    {
+      "name": "Heavy Use Area",
+      "page": 57,
+      "value": 8000,
+      "unit": "acres",
+      "cost": 8320,
+      "type": "agricultural"
+    },
+    {
+      "name": "Pipeline",
+      "page": 57,
+      "value": 3600,
+      "unit": "ft",
+      "cost": 6300,
+      "type": "agricultural"
+    },
+    {
+      "name": "Stream Bank Protection",
+      "page": 57,
+      "value": 1588,
+      "unit": "acres",
+      "cost": 2445.52,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Grassed Waterways",
+      "page": 57,
+      "value": 13,
+      "cost": 21424,
+      "type": "agricultural"
+    },
+    {
+      "name": "Pond (Alternative Water Source)",
+      "page": 57,
+      "value": 2120,
+      "unit": "acres",
+      "cost": 7992.4,
+      "type": "agricultural"
+    },
+    {
+      "name": "Tank/Trough",
+      "page": 57,
+      "value": 10,
+      "cost": 46000,
+      "type": "agricultural"
+    },
+    {
+      "name": "Establishment of Permanent Vegetation (installed)",
+      "page": 44,
+      "value": 3,
+      "unit": "acres",
+      "type": "agricultural"
+    },
+    {
+      "name": "Fencing (installed)",
+      "page": 44,
+      "value": 46000,
+      "unit": "ft",
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Heavy Use Area Protection (installed)",
+      "page": 44,
+      "value": 12,
+      "unit": "practices",
+      "type": "agricultural"
+    },
+    {
+      "name": "Nutrient Management (installed)",
+      "page": 44,
+      "value": 724,
+      "unit": "acres",
+      "type": "agricultural"
+    },
+    {
+      "name": "Pasture & Hayland Planting (installed)",
+      "page": 44,
+      "value": 404,
+      "unit": "acres",
+      "type": "agricultural"
+    },
+    {
+      "name": "Stream Crossing (installed)",
+      "page": 44,
+      "value": 1,
+      "unit": "practices",
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Streambank & Shoreline Protection (installed)",
+      "page": 44,
+      "value": 70,
+      "unit": "acres",
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Water & Sediment Control Basin (installed)",
+      "page": 44,
+      "value": 186,
+      "unit": "acres",
+      "type": "structural"
+    },
+    {
+      "name": "Tank/Trough (installed)",
+      "page": 44,
+      "value": 11,
+      "unit": "practices",
+      "type": "agricultural"
+    },
+    {
+      "name": "Chiseling (installed)",
+      "page": 44,
+      "value": 56,
+      "unit": "acres",
+      "type": "agricultural"
+    },
+    {
+      "name": "Conservation & Restoration at Bayou Talla (land acquisition)",
+      "page": 48,
+      "value": 13.98,
+      "unit": "acres",
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Conservation and Riparian Buffers (property/easement acquisition)",
+      "page": 50,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Living Shorelines and Marsh Restoration",
+      "page": 50,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Trash Catches in Commercial Area",
+      "page": 52,
+      "type": "urban_stormwater"
+    },
+    {
+      "name": "Street sweeping",
+      "page": 52,
+      "type": "urban_stormwater"
+    },
+    {
+      "name": "Stormwater Ordinance Updates",
+      "page": 53,
+      "type": "urban_stormwater"
+    },
+    {
+      "name": "Coastal Technical Manual (coastal stormwater supplement)",
+      "page": 53,
+      "type": "urban_stormwater"
+    },
+    {
+      "name": "Fertilizer Ordinance",
+      "page": 53,
+      "type": "urban_stormwater"
+    },
+    {
+      "name": "Pre and Post Construction SWPPP enforcement",
+      "page": 54,
+      "type": "urban_stormwater"
+    },
+    {
+      "name": "Drainage swale maintenance",
+      "page": 55,
+      "type": "urban_stormwater"
+    },
+    {
+      "name": "Small Scale Urban BMPs (rain barrels and rain gardens)",
+      "page": 55,
+      "type": "urban_stormwater"
+    },
+    {
+      "name": "Logging BMPs incentive/ordinance",
+      "page": 56,
+      "type": "forestry"
+    },
+    {
+      "name": "Nonfunctioning septic system assessment and maintenance program",
+      "page": 51,
+      "type": "wastewater_septic"
+    },
+    {
+      "name": "Pet waste signage and receptacles",
+      "page": 61,
+      "type": "urban_stormwater"
+    },
+    {
+      "name": "Golf course BMPs at Gulf Hills",
+      "page": 49,
+      "type": "other"
+    },
+    {
+      "name": "Vegetative buffer strips (The Preserve Golf Club)",
+      "page": 45,
+      "type": "streambank_riparian"
+    },
+    {
+      "name": "Mitigated wetlands (The Preserve Golf Club)",
+      "page": 45,
+      "value": 32,
+      "unit": "acres",
+      "type": "other"
+    },
+    {
+      "name": "Irrigation system to minimize drift (The Preserve Golf Club)",
+      "page": 45,
+      "type": "other"
+    },
+    {
+      "name": "Special management zones (The Preserve Golf Club)",
+      "page": 45,
+      "type": "other"
+    },
+    {
+      "name": "Proper storage of fertilizers and pesticides (The Preserve Golf Club)",
+      "page": 46,
+      "type": "other"
+    },
+    {
+      "name": "Erosion control of roads and trails (TNC Old Fort Bayou Mitigation Bank)",
+      "page": 45,
+      "type": "other"
+    }
+  ],
   "implementation": [
     {
-      "name": "First assessment and plan revision in 2023",
+      "name": "First watershed assessment and plan revision in 2023",
       "page": 62
     },
     {
-      "name": "Jackson County Stormwater Task Force adopts responsibility for the WIP",
+      "name": "Jackson County Stormwater Task Force to adopt responsibility for the WIP",
       "page": 46
     },
     {
-      "name": "Add Steering Committee members to the Stormwater Task Force",
+      "name": "MDEQ to consider funding a watershed coordinator grant program",
       "page": 47
     },
     {
-      "name": "MDEQ watershed coordinator grant program",
-      "page": 47
+      "name": "MDEQ enlisted LTMCP and GCCDS to facilitate WIP development",
+      "page": 8
     },
     {
-      "name": "Acquire 13.98 acres along Old Fort Bayou and Bayou Talla",
-      "page": 48
-    },
-    {
-      "name": "Restore St. Martin High School trail and outdoor classroom",
-      "page": 48
-    },
-    {
-      "name": "Continue acquiring property or easements to protect critical land",
-      "page": 50
-    },
-    {
-      "name": "New kayak launch at The Inlets",
-      "page": 34
-    },
-    {
-      "name": "Blueway expansion up Bayou Talla and signage updates",
-      "page": 50
-    },
-    {
-      "name": "Complete LA-MS golf course BMP manual",
-      "page": 49
-    },
-    {
-      "name": "Student summer internship with Jackson County Planning Department",
-      "page": 49
-    },
-    {
-      "name": "Coastal supplement to MDEQ stormwater technical manual",
-      "page": 53
-    },
-    {
-      "name": "Increase capacity to enforce SWPPPs",
-      "page": 54
-    },
-    {
-      "name": "Jackson County logging ordinance mechanism",
-      "page": 56
-    },
-    {
-      "name": "Develop Refuge Visitor Services Plan",
-      "page": 51
-    },
-    {
-      "name": "MS4 2017 annual reports submitted",
-      "page": 44
-    },
-    {
-      "name": "LTMCP enlisted to facilitate WIP development",
+      "name": "Assemble Watershed Implementation Team",
       "page": 8
     },
     {
@@ -179,16 +380,505 @@
       "page": 8
     },
     {
-      "name": "Consultant analysis of water quality data against TMDL",
+      "name": "Consultant analysis of water quality data against the TMDL",
       "page": 9
     },
     {
-      "name": "Education Subcommittee work session reviewing 2007 strategies",
+      "name": "Final Watershed Advisory Team Meeting",
+      "page": 9
+    },
+    {
+      "name": "Education Subcommittee review of 2007 Action Plan strategies",
       "page": 58
+    },
+    {
+      "name": "Acquisition of 13.98 acres along Old Fort Bayou and Bayou Talla",
+      "page": 48
+    },
+    {
+      "name": "Restore St. Martin High School trail and outdoor classroom",
+      "page": 48
+    },
+    {
+      "name": "Acquire property or easements to protect critical land",
+      "page": 50
+    },
+    {
+      "name": "New kayak launch at The Inlets on Old Fort Bayou",
+      "page": 34
+    },
+    {
+      "name": "Blueway expansion up Bayou Talla and signage/print updates",
+      "page": 50
+    },
+    {
+      "name": "Student internship on stormwater barriers with Jackson County Planning",
+      "page": 49
+    },
+    {
+      "name": "Complete Mississippi-Louisiana golf course BMP manual",
+      "page": 49
+    },
+    {
+      "name": "Refuge to develop a Visitor Services Plan",
+      "page": 51
+    },
+    {
+      "name": "Updated assessment of nonfunctioning septic systems",
+      "page": 51
+    },
+    {
+      "name": "Jackson County stormwater ordinance assessment",
+      "page": 53
+    },
+    {
+      "name": "MDEQ coastal supplement to stormwater technical manual",
+      "page": 53
+    },
+    {
+      "name": "Increase capacity to monitor and enforce SWPPPs",
+      "page": 54
+    },
+    {
+      "name": "Jackson County to consider logging BMP ordinance",
+      "page": 56
+    },
+    {
+      "name": "Assessment of remaining agricultural BMP opportunities",
+      "page": 56
     }
   ],
-  "monitoring": [],
-  "outreach": [],
-  "geographic": [],
+  "monitoring": [
+    {
+      "name": "E. coli geometric mean criterion for Recreation",
+      "page": 35,
+      "value": 126,
+      "unit": "culturable e. coli bacteria per 100 ml",
+      "type": "threshold"
+    },
+    {
+      "name": "E. coli single-sample criterion (410 per 100 ml)",
+      "page": 35,
+      "value": 410,
+      "unit": "e. coli per 100 ml",
+      "type": "threshold"
+    },
+    {
+      "name": "Minimum bacteria sampling frequency",
+      "page": 35,
+      "unit": "samples",
+      "type": "threshold"
+    },
+    {
+      "name": "MDEQ seasonal ambient monitoring at station #0481299",
+      "page": 35,
+      "type": "unspecified"
+    },
+    {
+      "name": "Proposed Total Nitrogen thresholds for southeast Mississippi streams",
+      "page": 35,
+      "unit": "mg/l",
+      "type": "threshold"
+    },
+    {
+      "name": "Planned nutrient monitoring (TP and TN)",
+      "page": 35,
+      "type": "unspecified"
+    },
+    {
+      "name": "Bacteria compliance status 2009-2017",
+      "page": 35,
+      "type": "baseline"
+    },
+    {
+      "name": "Student water quality testing, spring 2019",
+      "page": 37,
+      "type": "unspecified"
+    },
+    {
+      "name": "Water temperature - upstream (The Preserve Golf Club)",
+      "page": 38,
+      "value": 20.1,
+      "unit": "°C",
+      "type": "baseline"
+    },
+    {
+      "name": "Water temperature - downstream (Twelve Oaks)",
+      "page": 38,
+      "value": 23.2,
+      "unit": "°C",
+      "type": "baseline"
+    },
+    {
+      "name": "Turbidity - upstream (The Preserve Golf Club)",
+      "page": 38,
+      "value": 30.6,
+      "unit": "JTU",
+      "type": "baseline"
+    },
+    {
+      "name": "Turbidity - downstream (Twelve Oaks)",
+      "page": 38,
+      "value": 15.8,
+      "unit": "JTU",
+      "type": "baseline"
+    },
+    {
+      "name": "Dissolved oxygen - upstream (The Preserve Golf Club)",
+      "page": 38,
+      "value": 66,
+      "unit": "% Saturation",
+      "type": "baseline"
+    },
+    {
+      "name": "Dissolved oxygen - downstream (Twelve Oaks)",
+      "page": 38,
+      "value": 67,
+      "unit": "% Saturation",
+      "type": "baseline"
+    },
+    {
+      "name": "Phosphate - upstream (The Preserve Golf Club)",
+      "page": 38,
+      "value": 1.5,
+      "unit": "ppm",
+      "type": "baseline"
+    },
+    {
+      "name": "Phosphate - downstream (Twelve Oaks)",
+      "page": 38,
+      "value": 1.7,
+      "unit": "ppm",
+      "type": "baseline"
+    },
+    {
+      "name": "Nitrate - upstream (The Preserve Golf Club)",
+      "page": 38,
+      "value": 5,
+      "unit": "ppm",
+      "type": "baseline"
+    },
+    {
+      "name": "Nitrate - downstream (Twelve Oaks)",
+      "page": 38,
+      "value": 5.1,
+      "unit": "ppm",
+      "type": "baseline"
+    },
+    {
+      "name": "Student fecal coliform presence test",
+      "page": 38,
+      "type": "baseline"
+    },
+    {
+      "name": "2017 Coastal Cleanup volunteers at Washington Avenue site",
+      "page": 41,
+      "unit": "volunteers",
+      "type": "baseline"
+    },
+    {
+      "name": "2017 litter collected at Washington Avenue site",
+      "page": 41,
+      "unit": "pounds",
+      "type": "baseline"
+    },
+    {
+      "name": "BMPs installed under 2001-2006 demonstration project",
+      "page": 44,
+      "value": 83,
+      "unit": "practices",
+      "type": "achieved"
+    },
+    {
+      "name": "Soil saved by demonstration project BMPs",
+      "page": 44,
+      "value": 7635,
+      "unit": "tons per year",
+      "type": "achieved"
+    },
+    {
+      "name": "Expanded ambient monitoring at multiple sites",
+      "page": 47,
+      "type": "unspecified"
+    },
+    {
+      "name": "Updated septic system survey",
+      "page": 47,
+      "type": "unspecified"
+    },
+    {
+      "name": "MDEQ post-BMP monitoring",
+      "page": 61,
+      "type": "unspecified"
+    },
+    {
+      "name": "Restore Corps periodic monitoring",
+      "page": 61,
+      "type": "unspecified"
+    },
+    {
+      "name": "School water quality monitoring in Old Fort Bayou and Bayou Talla",
+      "page": 62,
+      "type": "unspecified"
+    }
+  ],
+  "outreach": [
+    {
+      "name": "NOAA B-WET Old Fort Bayou Watershed Education program at St. Martin High School",
+      "page": 11,
+      "value": 80,
+      "type": "school_program"
+    },
+    {
+      "name": "Student water quality monitoring field trip on Old Fort Bayou",
+      "page": 37,
+      "type": "field_day"
+    },
+    {
+      "name": "Summer internship for students with Jackson County Planning Department",
+      "page": 49,
+      "type": "school_program"
+    },
+    {
+      "name": "Steering and Technical Advisory Committee first meeting",
+      "page": 8,
+      "type": "meeting"
+    },
+    {
+      "name": "Day-long boat trip to document bayou conditions",
+      "page": 8,
+      "type": "field_day"
+    },
+    {
+      "name": "Education and Outreach Subcommittee work session",
+      "page": 58,
+      "type": "meeting"
+    },
+    {
+      "name": "Third Steering and Technical Advisory Committee meeting at Gulf Hills",
+      "page": 49,
+      "type": "meeting"
+    },
+    {
+      "name": "Final Watershed Advisory Team Meeting with student presentations",
+      "page": 9,
+      "type": "meeting"
+    },
+    {
+      "name": "Expand school programming to St. Martin Middle and Elementary Schools",
+      "page": 59,
+      "type": "school_program"
+    },
+    {
+      "name": "Ocean Springs schools watershed programming",
+      "page": 59,
+      "type": "school_program"
+    },
+    {
+      "name": "Continued student water quality monitoring",
+      "page": 62,
+      "type": "school_program"
+    },
+    {
+      "name": "Restore outdoor classroom and trail at St. Martin High School",
+      "page": 48,
+      "type": "other"
+    },
+    {
+      "name": "Arts organizations outreach partnerships (WAMA, Mary C O'Keefe Cultural Center)",
+      "page": 59,
+      "type": "demonstration"
+    },
+    {
+      "name": "Small-scale urban BMP demonstration projects",
+      "page": 55,
+      "type": "demonstration"
+    },
+    {
+      "name": "Low Impact Development education for jurisdictions and developers",
+      "page": 59,
+      "type": "workshop"
+    },
+    {
+      "name": "Training on stormwater technical manual",
+      "page": 53,
+      "type": "workshop"
+    },
+    {
+      "name": "Old Fort Bayou watershed Facebook page",
+      "page": 59,
+      "type": "media"
+    },
+    {
+      "name": "Plastic Free Gulf Coast restaurant engagement",
+      "page": 41,
+      "type": "other"
+    },
+    {
+      "name": "Projects for Scout Troops",
+      "page": 60,
+      "type": "other"
+    },
+    {
+      "name": "Septic system maintenance educational campaign",
+      "page": 60,
+      "type": "other"
+    },
+    {
+      "name": "Educational signage at public BMPs, access points and trails",
+      "page": 60,
+      "type": "signage"
+    },
+    {
+      "name": "Old Fort Bayou Watershed signs",
+      "page": 60,
+      "type": "signage"
+    },
+    {
+      "name": "Blueway expansion and signage/printed material updates",
+      "page": 50,
+      "type": "signage"
+    },
+    {
+      "name": "Print updated Old Fort Bayou Blueway brochure",
+      "page": 34,
+      "type": "publication"
+    },
+    {
+      "name": "No wake zone education signage",
+      "page": 51,
+      "type": "signage"
+    },
+    {
+      "name": "Pet waste disposal education",
+      "page": 60,
+      "type": "publication"
+    },
+    {
+      "name": "Pet waste signage and receptacles",
+      "page": 61,
+      "type": "signage"
+    },
+    {
+      "name": "Promote use of native plants",
+      "page": 61,
+      "type": "other"
+    },
+    {
+      "name": "Responsible fertilizer use outreach",
+      "page": 53,
+      "type": "other"
+    },
+    {
+      "name": "Mississippi Coastal Cleanup extension",
+      "page": 52,
+      "type": "other"
+    },
+    {
+      "name": "Illegal dumping awareness",
+      "page": 42,
+      "type": "other"
+    },
+    {
+      "name": "Demonstration project education (farms, field days, press releases, fact sheets)",
+      "page": 43,
+      "type": "field_day"
+    }
+  ],
+  "geographic": [
+    {
+      "name": "Old Fort Bayou Watershed",
+      "page": 6,
+      "value": 32082,
+      "unit": "acres",
+      "type": "watershed"
+    },
+    {
+      "name": "Old Fort Bayou (Waterbody ID MS118M1)",
+      "page": 6,
+      "type": "stream"
+    },
+    {
+      "name": "Back Bay of Biloxi and Biloxi Bay",
+      "page": 6,
+      "type": "other"
+    },
+    {
+      "name": "Bayou Talla",
+      "page": 34,
+      "type": "stream"
+    },
+    {
+      "name": "City of Ocean Springs",
+      "page": 21,
+      "type": "city"
+    },
+    {
+      "name": "City of Gautier",
+      "page": 21,
+      "type": "city"
+    },
+    {
+      "name": "Jackson County",
+      "page": 21,
+      "type": "county"
+    },
+    {
+      "name": "St. Martin community",
+      "page": 18,
+      "type": "other"
+    },
+    {
+      "name": "Northern subunit",
+      "page": 39,
+      "type": "subwatershed"
+    },
+    {
+      "name": "Middle subunit",
+      "page": 39,
+      "type": "subwatershed"
+    },
+    {
+      "name": "Lower (southern) subunit",
+      "page": 39,
+      "type": "subwatershed"
+    },
+    {
+      "name": "Mississippi Sandhill Crane National Wildlife Refuge",
+      "page": 21,
+      "value": 19300,
+      "unit": "acres",
+      "type": "other"
+    },
+    {
+      "name": "Bayou Talla conservation and restoration properties",
+      "page": 48,
+      "value": 13.98,
+      "unit": "acres",
+      "type": "other"
+    },
+    {
+      "name": "Old Fort Bayou Mitigation Bank (TNC)",
+      "page": 45,
+      "type": "other"
+    },
+    {
+      "name": "The Preserve Golf Club",
+      "page": 45,
+      "type": "other"
+    },
+    {
+      "name": "Gulf Hills Golf Course",
+      "page": 49,
+      "type": "other"
+    },
+    {
+      "name": "Old Fort Bayou/Tuxachanie Creek Watershed demonstration project area",
+      "page": 43,
+      "value": 102000,
+      "unit": "acres",
+      "type": "other"
+    }
+  ],
   "negatives": []
 }
