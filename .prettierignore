@@ -6,3 +6,4 @@ eval/docs
 eval/results
 backend/samples
 pnpm-lock.yaml
+.e2e-data

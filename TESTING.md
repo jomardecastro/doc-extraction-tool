@@ -1,9 +1,29 @@
 # Testing
 
-Two kinds of tests: unit tests for the deterministic parts (layout reconstruction, cleaning,
-verification, dedupe, summary, JSON handling) and an accuracy harness that scores the whole
-pipeline against hand-labelled plans. The harness is the one that matters for the assessment's
-accuracy requirements, so most of this document is about it.
+Three kinds of tests: unit tests for the deterministic parts (layout reconstruction, cleaning,
+verification, dedupe, summary, JSON handling, job lifecycle), Playwright journeys that drive the
+built app the way a reviewer would, and an accuracy harness that scores the whole pipeline
+against hand-labelled plans. The harness is the one that matters for the assessment's accuracy
+requirements, so most of this document is about it.
+
+## Unit tests and journeys
+
+```bash
+pnpm test                  # 39 Vitest tests (backend/test/)
+pnpm e2e:install           # once: downloads Chromium for Playwright
+pnpm e2e                   # builds the app, runs it with the mock provider, drives the journeys
+E2E_BASE_URL=https://docextract.jdecastro.dev pnpm e2e   # read-only sweep of a deployed demo
+```
+
+The journeys (`e2e/journeys.spec.ts`) run at a 1440px desktop viewport and on a Pixel 7, and
+cover: the upload page (one primary action, the five bundled plans, the provider in the footer);
+opening a bundled plan through the stepper to the report, every category tab, expanding a row
+to its verbatim quote, and the JSON, CSV and Excel exports; uploading a PDF and finding it in
+the recent list; refusing a non-PDF before upload; the expired-link and unknown-address error
+states and their way back. Against a deployed demo the upload journey skips itself, because it
+would bill the model; everything else is read-only. CI runs the suite on every push and
+`ops/deploy.sh` runs it before an image is built, so nothing reaches the demo server that a
+person could not click through.
 
 ## Accuracy harness
 

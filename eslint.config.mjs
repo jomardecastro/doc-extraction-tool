@@ -19,6 +19,9 @@ export default defineConfig([
       "eval/docs/**",
       "eval/results/**",
       "backend/samples/**",
+      ".e2e-data/**",
+      "test-results/**",
+      "playwright-report/**",
     ],
   },
   js.configs.recommended,
@@ -35,7 +38,15 @@ export default defineConfig([
     },
   },
   {
-    files: ["backend/**/*.ts", "eval/**/*.{ts,mjs}", "scripts/**/*.mjs", "*.mjs", "backend/*.mjs"],
+    files: [
+      "backend/**/*.ts",
+      "eval/**/*.{ts,mjs}",
+      "e2e/**/*.ts",
+      "playwright.config.ts",
+      "scripts/**/*.mjs",
+      "*.mjs",
+      "backend/*.mjs",
+    ],
     languageOptions: { globals: globals.node },
   },
   {

@@ -75,6 +75,8 @@ if (( ROLLBACK )); then rollback; exit 0; fi
 if (( ! SKIP_TESTS )); then
   log "Preflight: typecheck, lint, format, unit tests"
   pnpm check
+  log "Preflight: Playwright journeys against the built app (mock provider)"
+  pnpm e2e
 fi
 
 TAG="$(date +%Y%m%d-%H%M)-$(git rev-parse --short HEAD)$(git diff --quiet || echo -dirty)"

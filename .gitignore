@@ -25,3 +25,6 @@ test-results/
 
 # built frontend copied next to the backend for local production-style runs
 backend/public/
+
+# Playwright server data and browser artefacts
+.e2e-data/

@@ -6,9 +6,15 @@ import { Icon } from "../ui.js";
 interface Column {
   key: string;
   label: string;
+  /** Sortable as a number; cells are right-aligned unless `numericCell` says otherwise. */
   numeric?: boolean;
+  /** Per-row override: a goal's "Target" is a number for "35%" but a sentence for "meet the criterion". */
+  numericCell?: (item: Record<string, unknown>) => boolean;
   render: (item: Record<string, unknown>) => string | null;
 }
+
+const isNumericCell = (c: Column, item: Record<string, unknown>) =>
+  c.numericCell ? c.numericCell(item) : Boolean(c.numeric);
 
 const text = (k: string) => (i: Record<string, unknown>) =>
   typeof i[k] === "string" && (i[k] as string).length ? (i[k] as string) : null;
@@ -34,6 +40,7 @@ const COLUMNS: Record<Category, Column[]> = {
       key: "target",
       label: "Target",
       numeric: true,
+      numericCell: (i) => typeof i.targetValue === "number",
       render: (i) => num("targetValue", "targetUnit")(i) ?? text("targetText")(i),
     },
     { key: "timeframe", label: "Timeframe", render: text("timeframe") },
@@ -97,9 +104,11 @@ const COLUMNS: Record<Category, Column[]> = {
 const CONFIDENCE: Record<Confidence, string> = { high: "High", medium: "Medium", low: "Low" };
 
 /**
- * One table per category. Numbers right-aligned with tabular figures, a hairline between rows,
- * a text filter, and every row expands to the verbatim quote and page it came from, which is
- * the reader's way to check the tool's work. Below ~770px the same rows render as cards.
+ * One table per category. Numbers right-aligned with tabular figures and never truncated; text
+ * left, one line with the full value in a tooltip; the name (the identity column) wraps to two
+ * lines and stays pinned while a wide table scrolls sideways. A hairline between rows, a text
+ * filter, and every row expands to the verbatim quote and page it came from, which is the
+ * reader's way to check the tool's work. Below ~770px the same rows render as cards.
  */
 export function ItemTable({ category, items }: { category: Category; items: ReportItem[] }) {
   const [filter, setFilter] = useState("");
@@ -163,16 +172,17 @@ export function ItemTable({ category, items }: { category: Category; items: Repo
       ) : (
         <div className="@container">
           {/* Table from ~770px up */}
-          <div className="hidden overflow-hidden rounded-lg border border-line bg-surface @3xl:block">
+          <div className="hidden overflow-x-auto rounded-lg border border-line bg-surface @3xl:block">
             <table className="w-full text-sm">
               <thead className="bg-surface-2 text-left text-ink-2">
-                <tr>
-                  <th className="w-8 px-2 py-2" />
-                  <th className="px-3 py-2 font-semibold">Name</th>
+                <tr className="bg-surface-2">
+                  <th className="sticky left-0 z-[1] min-w-[16rem] border-r border-line bg-inherit px-3 py-2 font-semibold">
+                    Name
+                  </th>
                   {columns.map((c) => (
                     <th
                       key={c.key}
-                      className={`px-3 py-2 font-semibold ${c.numeric ? "text-right" : ""}`}
+                      className={`px-3 py-2 font-semibold whitespace-nowrap ${c.numeric && rows.every((r) => isNumericCell(c, r)) ? "text-right" : ""}`}
                     >
                       {c.numeric ? (
                         <button
@@ -199,39 +209,58 @@ export function ItemTable({ category, items }: { category: Category; items: Repo
                   return (
                     <Fragment key={item.id}>
                       <tr
-                        className={`cursor-pointer border-t border-line hover:bg-surface-2 ${isOpen ? "bg-surface-2" : ""}`}
+                        className={`cursor-pointer border-t border-line hover:bg-surface-2 ${isOpen ? "bg-surface-2" : "bg-surface"}`}
                         onClick={() => setOpen(isOpen ? null : item.id)}
                       >
-                        <td className="px-2 py-2 text-ink-3">
-                          <button
-                            type="button"
-                            className="row-action flex items-center"
-                            aria-expanded={isOpen}
-                            aria-label={isOpen ? "Hide source" : "Show source"}
-                          >
-                            <Icon.Chevron open={isOpen} />
-                          </button>
+                        <td className="sticky left-0 z-[1] border-r border-line bg-inherit px-3 py-2 align-top">
+                          <div className="flex items-start gap-2">
+                            <button
+                              type="button"
+                              className="row-action -ml-1 flex shrink-0 items-center text-ink-3"
+                              aria-expanded={isOpen}
+                              aria-label={isOpen ? "Hide source" : "Show source"}
+                            >
+                              <Icon.Chevron open={isOpen} />
+                            </button>
+                            <span
+                              className={`max-w-[26rem] font-semibold text-ink ${isOpen ? "" : "line-clamp-2"}`}
+                              title={item.name}
+                            >
+                              {item.name}
+                            </span>
+                          </div>
                         </td>
-                        <td className="max-w-md px-3 py-2 font-semibold text-ink">{item.name}</td>
                         {columns.map((c) => {
                           const v = c.render(item);
+                          const numeric = isNumericCell(c, item);
                           return (
                             <td
                               key={c.key}
-                              className={`px-3 py-2 ${c.numeric ? "num text-right whitespace-nowrap" : "max-w-xs"} ${v === null ? "text-ink-3" : "text-ink-2"}`}
+                              className={`px-3 py-2 align-top ${numeric ? "num text-right whitespace-nowrap" : ""} ${v === null ? "text-ink-3" : "text-ink-2"}`}
                             >
-                              {v ?? "–"}
+                              {v === null ? (
+                                "–"
+                              ) : numeric ? (
+                                v
+                              ) : (
+                                <span className="block max-w-[18rem] truncate" title={v}>
+                                  {v}
+                                </span>
+                              )}
                             </td>
                           );
                         })}
-                        <td className="num px-3 py-2 text-right text-ink-2">{item.page}</td>
-                        <td className="px-3 py-2 text-ink-2">{CONFIDENCE[item.confidence]}</td>
+                        <td className="num px-3 py-2 text-right align-top whitespace-nowrap text-ink-2">
+                          {item.page}
+                        </td>
+                        <td className="px-3 py-2 align-top whitespace-nowrap text-ink-2">
+                          {CONFIDENCE[item.confidence]}
+                        </td>
                       </tr>
                       {isOpen && (
                         <tr className="border-t border-line bg-surface-2">
-                          <td />
                           <td colSpan={columns.length + 3} className="px-3 pt-1 pb-4">
-                            <SourceDetail item={item} />
+                            <SourceDetail item={item} columns={columns} />
                           </td>
                         </tr>
                       )}
@@ -246,7 +275,9 @@ export function ItemTable({ category, items }: { category: Category; items: Repo
           <ul className="divide-y divide-line rounded-lg border border-line bg-surface @3xl:hidden">
             {rows.map((item) => {
               const isOpen = open === item.id;
-              const primaryNum = columns.find((c) => c.numeric && c.render(item) !== null);
+              const primaryNum = columns.find(
+                (c) => isNumericCell(c, item) && c.render(item) !== null,
+              );
               return (
                 <li key={item.id}>
                   <button
@@ -300,9 +331,21 @@ export function ItemTable({ category, items }: { category: Category; items: Repo
   );
 }
 
-function SourceDetail({ item }: { item: ReportItem }) {
+function SourceDetail({ item, columns }: { item: ReportItem; columns?: Column[] }) {
+  const record = item as unknown as Record<string, unknown>;
+  const full = (columns ?? []).filter((c) => !isNumericCell(c, record) && c.render(record));
   return (
     <div className="text-sm">
+      {full.length > 0 && (
+        <dl className="mb-2 grid gap-x-4 gap-y-1 sm:grid-cols-[max-content_1fr]">
+          {full.map((c) => (
+            <Fragment key={c.key}>
+              <dt className="text-ink-3">{c.label}</dt>
+              <dd className="text-ink">{c.render(record)}</dd>
+            </Fragment>
+          ))}
+        </dl>
+      )}
       <p className="text-ink-2">{item.description}</p>
       <blockquote className="mt-2 border-l-2 border-accent pl-3 text-ink">
         “{item.sourceQuote}”

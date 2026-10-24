@@ -80,6 +80,7 @@ The full schema is `shared/src/schemas/report.ts`.
 | --------------------------------------------------------------------- | -------------------------------------------------- |
 | `pnpm dev`                                                            | API with pretty logs on :3000 and Vite on :5173    |
 | `pnpm check`                                                          | typecheck, lint, format check, unit tests          |
+| `pnpm e2e` (after `pnpm e2e:install`)                                 | Playwright journeys against the built app (mock)   |
 | `pnpm build`                                                          | frontend bundle and backend bundle                 |
 | `pnpm extract-text <pdf> [--blocks\|--pages\|--all]`                  | print what the model sees (debug the PDF layer)    |
 | `pnpm run-pipeline <pdf> [--provider mock] [--model id] [--no-cache]` | one extraction from the command line               |

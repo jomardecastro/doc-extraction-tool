@@ -31,7 +31,8 @@ cp .env.example .env            # set ANTHROPIC_API_KEY, set DATA_DIR=./data
 pnpm dev                        # API on :3000 with pretty logs, Vite on :5173 proxying /api
 ```
 
-Other scripts: `pnpm check` (typecheck, lint, format, unit tests), `pnpm build`,
+Other scripts: `pnpm check` (typecheck, lint, format, unit tests), `pnpm e2e` (Playwright
+journeys, see TESTING.md), `pnpm build`,
 `pnpm extract-text file.pdf` (what the model sees), `pnpm run-pipeline file.pdf`
 (one extraction from the command line), `pnpm eval` (accuracy harness, see TESTING.md).
 
@@ -73,7 +74,7 @@ and automatic rollback.
    the app), `proxy_read_timeout 600s`, and a `limit_req` zone on `POST /api/documents`.
    The DNS record is **not** proxied through Cloudflare, whose free plan rejects request bodies
    over 100 MB.
-4. **Deploy** (`ops/deploy.sh`): `pnpm check` → `docker build` → local smoke test of the image
+4. **Deploy** (`ops/deploy.sh`): `pnpm check` → `pnpm e2e` → `docker build` → local smoke test of the image
    (health, frontend, samples, one mock extraction) → `docker save | ssh docker load` →
    `docker compose up -d` on the box → poll `/api/health` until it reports the new version,
    rolling back to the previous tag if it never does → prune old images → public check.
